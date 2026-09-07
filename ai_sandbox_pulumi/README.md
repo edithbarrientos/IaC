@@ -1,8 +1,5 @@
 # 🤖 Plataforma AI-Ops Autónoma: ai_sandbox_pulumi
 
-> ⚠️ **ESTADO DEL PROYECTO: Proof of Concept (PoC) / Prueba de Concepto**
-> Este repositorio es una PoC técnica diseñada para validar la viabilidad de la autoreparación de infraestructura mediante sistemas agénticos avanzados. No está destinado a despliegues de producción directa sin previa auditoría corporativa de las políticas de aislamiento.
-
 Plataforma de ingeniería de plataformas y automatización cognitiva de infraestructura diseñada bajo los principios de **Clean Architecture**, **Sistemas Agénticos Autónomos (MoA)** y **Self-Healing Declarativo**. El sistema intercepta anomalías en clústeres de Kubernetes en tiempo real, debate la solución mediante un enjambre de agentes y valida los parches en micro-VMs efímeras antes de sincronizar el estado inmutable mediante **Pulumi TypeScript & Pulumi ESC**.
 
 ---
@@ -63,8 +60,6 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
     <img src="./images/ai-ops-sandbox-vista-dinamica.png" alt="Diagrama de Secuencia" class="lens-zoom">
   </div>
   
-
-
 ---
 
 
@@ -117,28 +112,6 @@ ai_sandbox_pulumi/
   <div class="image-lens-wrapper">
     <img src="./images/ai-ops-sandbox-arquitectura-grafo.ia.png" alt="Diagrama de Clases - Vista Lógica" class="lens-zoom">
   </div>
-  
-  <div class="technical-meta-data">
-    <p><b>Descripción General:</b> Mapea las abstracciones de código, los contratos y el diseño orientado a objetos del backend estructurado bajo Clean Architecture en Python 3.12+, asegurando el desacoplamiento estricto del dominio.</p>
-    
-    <div class="meta-subtitle-tech">📦 Componentes del Código Fuente:</div>
-    <ul>
-      <li><b>src.core (Dominio Puro):</b> Capa central que encapsula las entidades inmutables de datos optimizadas con <b>Pydantic</b> y contratos lógicos (<i>Python Protocols</i>).</li>
-      <li><b>src.use_cases (Casos de Uso):</b> Orquestadores puros del flujo lógico de la aplicación (Saga Execution) que coordinan los subsistemas sin depender de ellos.</li>
-      <li><b>src.infrastructure (Adaptadores):</b> Capa externa que implementa los detalles técnicos frente a las interfaces de dominio (LanceDB, Pulumi Automation API, clientes gRPC).</li>
-    </ul>
-
-    <div class="meta-subtitle-tech">🤖 Patrones y Algoritmos de Alto Rendimiento:</div>
-    <ul>
-      <li><b>Patrón Strategy & Facade:</b> Intercambio dinámico de agentes en tiempo de ejecución y simplificación pragmática del CLI programático de IaC.</li>
-      <li><b>HNSW SIMD-Accelerated Indexing:</b> Búsquedas vectoriales matemáticas por similitud de coseno resueltas directamente en la caché de la CPU.</li>
-      <li><b>Disruptor Pattern:</b> Procesamiento masivo de SandboxClaims mediante Ring Buffers concurrentes lock-free.</li>
-    </ul>
-
-    <div class="meta-subtitle-tech">🔄 Flujo de Trabajo del Código:</div>
-    <p>McpServer transforma los logs en un objeto <i>IncidentContext</i> &rarr; El caso de uso <i>SelfHealingOrchestrator</i> activa las corrutinas de <i>asyncio</i> &rarr; Se evalúa el parche de forma asíncrona en el <i>WarmPoolManager</i> (Patrón Flyweight) &rarr; Sincronización inmutable en Pulumi.</p>
-  </div>
-</div>
 ---
 
 ## 🏗️ ARQUITECTURA DE IA
@@ -183,6 +156,10 @@ Inicia el bucle reactivo de eventos asíncronos para comenzar a escuchar inciden
 poetry run python main.py
 ```
 ---
+
+> ⚠️ **ESTADO DEL PROYECTO: Proof of Concept (PoC) / Prueba de Concepto**
+> Este repositorio es una PoC técnica diseñada para validar la viabilidad de la autoreparación de infraestructura mediante sistemas agénticos avanzados. No está destinado a despliegues de producción directa sin previa auditoría corporativa de las políticas de aislamiento.
+
 
 <p align="center">
   <sub><b>Ecosistema AI-Ops Autónomo • Prueba de Concepto (PoC)</b></sub><br>
