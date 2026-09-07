@@ -126,7 +126,7 @@ ai_sandbox_pulumi/
   <div class="image-lens-wrapper">
     <p align="center">
         <a href="./images/ai-ops-sandbox-vista-logica.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/ai-ops-sandbox-arquitectura-global-2.png" alt="Diagrama de Clases" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+            <img src="./images/ai-ops-sandbox-vista-logica.png" alt="Diagrama de Clases" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
         </a>
     </p>
   </div>
