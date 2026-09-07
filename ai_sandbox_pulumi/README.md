@@ -158,7 +158,7 @@ poetry run python main.py
 ---
 
 > ⚠️ **ESTADO DEL PROYECTO: Proof of Concept (PoC) / Prueba de Concepto**
-> Este repositorio es una PoC técnica diseñada para validar la viabilidad de la autoreparación de infraestructura mediante sistemas agénticos avanzados. No está destinado a despliegues de producción directa sin previa auditoría corporativa de las políticas de aislamiento.
+> Este repositorio es una PoC técnica diseñada para validar la viabilidad de la autoreparación de infraestructura mediante sistemas agénticos avanzados. Se requiere auditoría corporativa de las políticas de aislamiento.
 
 
 <p align="center">
