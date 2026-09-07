@@ -1,0 +1,115 @@
+# ==============================================================================
+# .gitignore SÚPER ESTRICTO: ai_sandbox_pulumi (IaC & AI Enterprise Standard)
+# ==============================================================================
+
+# --- ENTORNO DE EJECUCIÓN Y CACHÉS DE PYTHON ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# --- ENTORNOS VIRTUALES (BLOQUEO DE DEPENDENCIAS LOCALES) ---
+.venv/
+venv/
+ENV/
+env/
+ENV_DIR/
+.poetry/
+poetry.lock
+
+# --- COMPILADORES, CALIDAD Y LINTERS (RUFF / MYPY ZERO-TRUST) ---
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.dmypy.json
+dmypy.json
+
+# --- INFRAESTRUCTURA COMO CÓDIGO (PULUMI & CLOUD SECRETS CRÍTICOS) ---
+.pulumi/
+*.pulumi.json
+.pulumi.state.json
+Pulumi.dev.yaml
+Pulumi.prod.yaml
+Pulumi.*.yaml
+!Pulumi.yaml
+credentials/
+.aws/
+.azure/
+.kube/
+config/*.kubeconfig
+*.pem
+*.key
+*.pub
+*.cert
+
+# --- CAPA COGNITIVA & IA (PERSISTENCIA VECTORIAL EMBEDIDA) ---
+# Se bloquea la base de datos local LanceDB para no subir gigas de vectores al repositorio
+*.lance/
+*.lancedb/
+/tmp/ai_ops_memory.lance/
+data/
+datasets/
+models/
+*.bin
+*.onnx
+*.gguf
+.huggingface/
+
+# --- CAPA 5: VALIDACIÓN FÍSICA & RUNTIMES EFÍMEROS ---
+# Bloquea sockets, discos virtuales y logs temporales de Firecracker/Kata
+*.sock
+*.img
+*.ext4
+sandbox_rootfs/
+firecracker.log
+/tmp/firecracker*
+
+# --- SISTEMA OPERATIVO Y EDITORES IDEs ---
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+.project
+.pydevproject
+.settings/
+
+# --- ARCHIVOS DE ENTORNO LOCAL (SECRETS & VARIABLES) ---
+.env
+.env.local
+.env.*
+.secrets
+__pycache__/
+*.pyc
+.venv/
+.poetry/
+.mypy_cache/
+.ruff_cache/
