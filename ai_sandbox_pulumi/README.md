@@ -15,25 +15,11 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
 <!-- ==============================================================================
      BLOQUE AISLADO 1: ARQUITECTURA GLOBAL
      ============================================================================== -->
-<div class="layer-block-isolated">
-  <div class="block-header-title">🌐 Bloque 1: Arquitectura Global por Niveles</div>
-  
+
   <div class="image-lens-wrapper">
     <img src="./images/ai-ops-sandbox-arquitectura-global-2.png" alt="Arquitectura Global" class="lens-zoom">
   </div>
   
-  <div class="technical-meta-data">
-    <p><b>Descripción General:</b> Establece la división modular estricta de la PoC en 5 niveles operativos e inmutables, aislando por completo las decisiones del enjambre cognitivo de las cargas de trabajo vivas.</p>
-    
-    <div class="meta-subtitle-tech">📦 Componentes de Infraestructura:</div>
-    <ul>
-      <li><b>Pulumi TypeScript Engine & ESC:</b> Responsables de la inmutabilidad y la mutación declarativa del estado de la red e inyección de políticas criptográficas.</li>
-      <li><b>Kubernetes MCP Server:</b> Adaptador del plano de control que expone el estado físico del clúster como telemetría semántica estructurada.</li>
-      <li><b>App Workload Pods:</b> Cargas de trabajo supervisadas activamente por recolectores reactivos de OpenTelemetry.</li>
-    </ul>
-
-
-
 * **Nivel 1: Capa de Configuración (IaC / GitOps)** 
   * *Componentes:* Pulumi TypeScript Engine & Pulumi ESC.
   * *Función:* Sincroniza y muta de forma declarativa el estado de producción frente al backend de estado inmutable (`~/.pulumi JSON`).
@@ -72,33 +58,12 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
 <!-- ==============================================================================
      BLOQUE AISLADO 2: VISTA DINÁMICA
      ============================================================================== -->
-<div class="layer-block-isolated">
-  <div class="block-header-title">⚡ Bloque 2: Vista Dinámica y Ciclo de Secuencia</div>
   
   <div class="image-lens-wrapper">
     <img src="./images/ai-ops-sandbox-vista-dinamica.png" alt="Diagrama de Secuencia" class="lens-zoom">
   </div>
   
-  <div class="technical-meta-data">
-    <p><b>Descripción General:</b> Ilustra la cronología exacta paso a paso del ciclo de autoreparación reactiva asíncrona ante la caída catastrófica de un microservicio.</p>
-    
-    <div class="meta-subtitle-tech">📦 Componentes de Infraestructura:</div>
-    <ul>
-      <li><b>OTel Collector Watchdog:</b> Centinela reactivo que dispara las señales de pánico ante un CrashLoopBackOff.</li>
-      <li><b>Sandbox Controller Operator:</b> Reconciliador del plano de control que procesa los reclamos declarativos de sandboxes.</li>
-      <li><b>SandboxWarmPool:</b> Pool circular optimizado por hardware que almacena instancias de Micro-VMs listas para ser rentadas.</li>
-    </ul>
 
-    <div class="meta-subtitle-tech">🤖 Roles Agénticos:</div>
-    <ul>
-      <li><b>SRE Debugger Agent:</b> Especialista que orquesta el bucle cognitivo de razonamiento y acción (ReAct Loop) para diseñar el parche.</li>
-      <li><b>LanceDB Store:</b> Base de datos vectorial embebida que actúa como memoria RAG de largo plazo para inyectar soluciones históricas.</li>
-    </ul>
-
-    <div class="meta-subtitle-tech">🔄 Flujo de Trabajo:</div>
-    <p>1. OTel reporta caída &rarr; 2. LanceDB inyecta contexto previo &rarr; 3. SRE Agent emite SandboxClaim &rarr; 4. El WarmPool inicializa una Micro-VM en ~5ms &rarr; 5. El parche se valida y se autoriza el despliegue GitOps final.</p>
-  </div>
-</div>
 
 ---
 
@@ -181,31 +146,11 @@ ai_sandbox_pulumi/
 <!-- ==============================================================================
      BLOQUE AISLADO 4: ARQUITECTURA DE IA
      ============================================================================== -->
-<div class="layer-block-isolated">
-  <div class="block-header-title">🧠 Bloque 4: Grafo Agéntico y Capas Cognitivas de IA</div>
-  
+
   <div class="image-lens-wrapper">
     <img src="./images/a" alt="Arquitectura IA" class="lens-zoom">
   </div>
   
-  <div class="technical-meta-data">
-    <p><b>Descripción General:</b> Detalla el comportamiento del cerebro cognitivo del sistema, estructurado como un Grafo de Estados Dirigido (Stateful Graph) encargado de la toma asíncrona de decisiones de nivel empresarial.</p>
-    
-    <div class="meta-subtitle-tech">📦 Componentes de Soporte:</div>
-    <ul>
-      <li><b>Semantic Router Guardrail:</b> Clasificador vectorial temprano que bypassa llamadas pesadas al LLM si el error ya cuenta con una solución en la caché.</li>
-      <li><b>Token Bucket Rate Limiter:</b> Guardrail de control que frena e intercepta bucles de alucinación para proteger la cuota financiera de las APIs.</li>
-    </ul>
-
-    <div class="meta-subtitle-tech">🤖 Roles Agénticos (Workers & Supervisor):</div>
-    <ul>
-      <li><b><&person> AgentSupervisor:</b> Director ejecutivo del grafo (Python LangGraph) encargado de la consistencia del estado y de la delegación paralela.</li>
-      <li><b><&shield> SecOpsGuardAgent:</b> Máximo auditor de seguridad. Aplica técnicas de <b>Reflexión Multi-Agente</b>, mitigación de inyecciones OWASP y un anonimizador estricto de <b>PII</b> (limpieza automática de contraseñas, JWTs y correos).</li>
-      <li><b><&bug> SreDebuggerAgent:</b> Diseña y muta el código del parche en un bucle iterativo cerrado con el entorno físico de validación.</li>
-      <li><b><&graph> FinOpsOptimizerAgent:</b> Analiza el impacto presupuestario de tokens y recursos de hardware de la solución propuesta.</li>
-    </ul>
-
-    <div class="meta-subtitle-tech">🔄 Flujo de Trabajo:</div>
 
 ---
 
