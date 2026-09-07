@@ -106,14 +106,6 @@ ai_sandbox_pulumi/
 ```
 ---
 
-
-## 🏗️ Vista de lógica
-
-  <div class="image-lens-wrapper">
-    <img src="./images/ai-ops-sandbox-arquitectura-grafo.ia.png" alt="Diagrama de Clases - Vista Lógica" class="lens-zoom">
-  </div>
----
-
 ## 🏗️ ARQUITECTURA DE IA
 
 <!-- ==============================================================================
@@ -124,7 +116,6 @@ ai_sandbox_pulumi/
     <img src="./images/ai-ops-sandbox-arquitectura-grafo.ia.png" alt="Arquitectura IA" class="lens-zoom">
   </div>
   
-
 ---
 
 ## 🚀 Guía de Instalación y Desarrollo
