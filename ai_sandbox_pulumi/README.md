@@ -133,23 +133,6 @@ ai_sandbox_pulumi/
   
 ---
 
-## 🏗️ ARQUITECTURA DE IA
-
-<!-- ==============================================================================
-     BLOQUE AISLADO 4: ARQUITECTURA DE IA
-     ============================================================================== -->
-
-  <div class="image-lens-wrapper">
-       <p align="center">
-        <a href="./images/ai-ops-sandbox-arquitectura-global-2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/ai-ops-sandbox-arquitectura-global-2.png" alt="Arquitectura AI"  style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
-        </a>
-    </p>
-    
-    <img src="./images/ai-ops-sandbox-arquitectura-grafo.ia.png" alt="Arquitectura IA" class="lens-zoom">
-  </div>
-  
----
 
 ## 🚀 Guía de Instalación y Desarrollo
 
