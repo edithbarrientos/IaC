@@ -15,8 +15,8 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
 
   <div class="image-lens-wrapper">
     <p align="center">
-    <a href="./images/arquitectura_global.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-      <img src="./images/ai-ops-sandbox-arquitectura-global-2.png" alt="Arquitectura Global" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+    <a href="./images/ai-ops-sandbox-arquitectura-global-3.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
+      <img src="./images/ai-ops-sandbox-arquitectura-global-3.png" alt="Arquitectura Global" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
     </a>
   </p>
   </div>
@@ -64,9 +64,9 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
   
   <div class="image-lens-wrapper">
     <p align="center">
-    <a href="./images/ai-ops-sandbox-vista-dinamica.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-      <img src="./images/ai-ops-sandbox-arquitectura-global-2.png" alt="Diagrama de Secuencial" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
-    </a>
+        <a href="./images/ai-ops-sandbox-vista-dinamica2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
+            <img src="./images/ai-ops-sandbox-arquitectura-global-2.png" alt="Diagrama de Secuencial" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+        </a>
   </p>
   </div>
   
@@ -125,14 +125,30 @@ ai_sandbox_pulumi/
   
   <div class="image-lens-wrapper">
     <p align="center">
-        <a href="./images/ai-ops-sandbox-vista-logica.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/ai-ops-sandbox-vista-logica.png" alt="Diagrama de Clases" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+        <a href="./images/ai-ops-sandbox-vista-logica2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
+            <img src="./images/ai-ops-sandbox-vista-logica2.png" alt="Diagrama de Clases" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
         </a>
     </p>
   </div>
   
 ---
 
+
+## 🏗️ Vista de infraestructura
+
+<!-- ==============================================================================
+     BLOQUE AISLADO 2: Diagrama de Arquitectura
+     ============================================================================== -->
+  
+  <div class="image-lens-wrapper">
+    <p align="center">
+        <a href="./images/ai-ops-sandbox-vista-infraestructura.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
+            <img src="./images/ai-ops-sandbox-vista-infraestructura.png" alt="Diagrama de Secuencial" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+        </a>
+  </p>
+  </div>
+  
+---
 
 ## 🚀 Guía de Instalación y Desarrollo
 
