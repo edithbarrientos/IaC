@@ -121,7 +121,7 @@ ai_sandbox_pulumi/
      ============================================================================== -->
 
   <div class="image-lens-wrapper">
-    <img src="./images/a" alt="Arquitectura IA" class="lens-zoom">
+    <img src="./images/ai-ops-sandbox-arquitectura-grafo.ia.png" alt="Arquitectura IA" class="lens-zoom">
   </div>
   
 
