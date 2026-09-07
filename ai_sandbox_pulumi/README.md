@@ -14,8 +14,14 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
      ============================================================================== -->
 
   <div class="image-lens-wrapper">
-    <img src="./images/ai-ops-sandbox-arquitectura-global-2.png" alt="Arquitectura Global" class="lens-zoom">
+    <p align="center">
+    <a href="./images/arquitectura_global.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
+      <img src="./images/ai-ops-sandbox-arquitectura-global-2.png" alt="Arquitectura Global" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+    </a>
+  </p>
   </div>
+  
+  
   
 * **Nivel 1: Capa de Configuración (IaC / GitOps)** 
   * *Componentes:* Pulumi TypeScript Engine & Pulumi ESC.
@@ -57,7 +63,11 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
      ============================================================================== -->
   
   <div class="image-lens-wrapper">
-    <img src="./images/ai-ops-sandbox-vista-dinamica.png" alt="Diagrama de Secuencia" class="lens-zoom">
+    <p align="center">
+    <a href="./images/ai-ops-sandbox-vista-dinamica.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
+      <img src="./images/ai-ops-sandbox-arquitectura-global-2.png" alt="Diagrama de Secuencial" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+    </a>
+  </p>
   </div>
   
 ---
@@ -114,7 +124,11 @@ ai_sandbox_pulumi/
      ============================================================================== -->
   
   <div class="image-lens-wrapper">
-    <img src="./images/ai-ops-sandbox-vista-logica.png" alt="Diagrama de Secuencia" class="lens-zoom">
+    <p align="center">
+        <a href="./images/ai-ops-sandbox-vista-logica.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
+            <img src="./images/ai-ops-sandbox-arquitectura-global-2.png" alt="Diagrama de Clases" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+        </a>
+    </p>
   </div>
   
 ---
@@ -126,6 +140,12 @@ ai_sandbox_pulumi/
      ============================================================================== -->
 
   <div class="image-lens-wrapper">
+       <p align="center">
+        <a href="./images/ai-ops-sandbox-arquitectura-global-2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
+            <img src="./images/ai-ops-sandbox-arquitectura-global-2.png" alt="Arquitectura AI"  style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+        </a>
+    </p>
+    
     <img src="./images/ai-ops-sandbox-arquitectura-grafo.ia.png" alt="Arquitectura IA" class="lens-zoom">
   </div>
   
