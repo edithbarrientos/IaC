@@ -106,6 +106,19 @@ ai_sandbox_pulumi/
 ```
 ---
 
+
+## 🏗️ Vista de lógica
+
+<!-- ==============================================================================
+     BLOQUE AISLADO 2: VISTA Lógica
+     ============================================================================== -->
+  
+  <div class="image-lens-wrapper">
+    <img src="./images/ai-ops-sandbox-vista-logica.png" alt="Diagrama de Secuencia" class="lens-zoom">
+  </div>
+  
+---
+
 ## 🏗️ ARQUITECTURA DE IA
 
 <!-- ==============================================================================
