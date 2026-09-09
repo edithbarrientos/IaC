@@ -5,7 +5,7 @@ capacidades avanzadas de autodetección del entorno físico perimetral en cascad
 Elimina bloques condicionales if/else mediante un Mapeo de Despacho Polimórfico.
 
 Información del Módulo:
-    * Autor: Alejandro Marín 💻
+    * Autor: Edith Barrientos 💻
     * Año: 2026 🚀
     * Estado: Proof of Concept (PoC)
     * Licencia: MIT / Enterprise Restricted Guardrails

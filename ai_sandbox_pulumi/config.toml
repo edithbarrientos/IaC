@@ -1,0 +1,31 @@
+[global]
+# Entorno operativo y nombre del stack de Infraestructura como Código (IaC)
+environment = "sandbox"
+pulumi_project_name = "ai_sandbox_pulumi"
+
+[networking]
+# Direccionamiento CIDR restrictivo para el plano de control y producción
+network_control_cidr = "10.240.0.0/16"
+network_production_cidr = "10.0.0.0/8"
+network_vpc_name = "aiops-sandbox-vpc"
+
+[infrastructure]
+# Proveedor de nube orquestado por Pulumi y metadatos del orquestador de contenedores
+cloud_provider = "aws"
+cloud_region = "us-east-1"
+cluster_name = "aiops-sandbox-cluster"
+
+[security]
+# Plano de control y puente de red unificado mediante el API Gateway corporativo
+apisix_gateway_host = "http://apisix-gateway.local"
+apisix_admin_token = "mock-admin-secret-token-value-12345"
+enable_mtls = false
+
+[governance]
+# Umbrales analíticos y límites para la mitigación del enjambre de agentes (HITL)
+max_self_healing_attempts = 3
+governance_risk_threshold = 70
+
+[persistence]
+# Ruta de almacenamiento inmutable para LanceDB (Base de datos vectorial)
+lance_db_uri = "data/lancedb"

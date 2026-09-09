@@ -32,3 +32,9 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "B", "I"]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::DeprecationWarning:pytest_asyncio.*",
+    "ignore::DeprecationWarning:pydantic.*"
+]

@@ -122,6 +122,6 @@ class SecurityZeroTrustWorker(AgentStrategy):
 
         return {
             "proposed_patch": patch_snippet,
-            "iam_policy_evaluations_failed": "iam_policy_evaluations_failed",
+            "ai_suggested_metric": "iam_policy_evaluations_failed",
             "security_risk_score": base_risk
         }
