@@ -26,14 +26,13 @@ La PoC **ai_sandbox_pulumi** valida formalmente las siguientes capacidades de au
 El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para garantizar alta concurrencia, inmutabilidad y seguridad zero-trust:
 
 
-  <div class="image-lens-wrapper">
+  <div>
     <p align="center">
     <a href="./images/ai-ops-sandbox-arquitectura-global-3.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
       <img src="./images/ai-ops-sandbox-arquitectura-global-3.png" alt="Arquitectura Global" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
     </a>
-  </p>
+    </p>
   </div>
-  
   
 * **Nivel 1: Capa de Configuración (IaC / GitOps)** 
   * *Componentes:* Pulumi TypeScript Engine & Pulumi ESC.
@@ -69,7 +68,7 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
 
 ## 🏗️ Vista de datos
 
-  <div class="image-lens-wrapper">
+  <div>
     <p align="center">
         <a href="./images/ai-ops-sandbox-vista-datos.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
             <img src="./images/ai-ops-sandbox-vista-datos.png" alt="Vista de Datos" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
@@ -111,8 +110,7 @@ Debido a la naturaleza columnar orientada a analítica de datos de LanceDB, las 
 
 ## 🏗️ Vista de dinámica
 
-
-  <div class="image-lens-wrapper">
+  <div>
     <p align="center">
         <a href="./images/ai-ops-sandbox-vista-dinamica.png2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
             <img src="./images/ai-ops-sandbox-vista-dinamica.png2.png" alt="Diagrama de Secuencia y Ciclo de Vida" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
@@ -149,7 +147,7 @@ Este diagrama modela el comportamiento reactivo y la cronología asíncrona no b
 
 ## 🏗️ Vista de dinámica del Plano de Control AIOps - Flujo Transaccional SAGA, MoA, Hot-Reload POSIX y HITL Checkpoint
 
-  <div class="image-lens-wrapper">
+  <div>
     <p align="center">
         <a href="./images/ai-ops-sandbox-vista-dinamica-agentes.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
             <img src="./images/ai-ops-sandbox-vista-dinamica-agentes.png" alt=" AIOps - Flujo Transaccional SAGA" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
@@ -230,10 +228,10 @@ ai_sandbox_pulumi/
 
 ## 🏗️ Vista de lógica
 
-  <div class="image-lens-wrapper">
+  <div>
     <p align="center">
         <a href="./images/ai-ops-sandbox-vista-logica2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/ai-ops-sandbox-vista-logica2.png" alt="Arquitectura Global" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+            <img src="./images/ai-ops-sandbox-vista-logica2.png" alt="Vista Lógica" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
         </a>
     </p>
   </div>
@@ -276,7 +274,7 @@ Capa de adaptadores finales encargada de inyectar las cargas vivas del negocio e
 
 ## 🏗️ Vista de Despliegue
 
-  <div class="image-lens-wrapper">
+  <div>
     <p align="center">
         <a href="./images/ai-ops-sandbox-vista-infraestructura.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
             <img src="./images/ai-ops-sandbox-vista-infraestructura.png" alt="Diagrama de despliegue" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
