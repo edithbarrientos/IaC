@@ -25,7 +25,6 @@ La PoC **ai_sandbox_pulumi** valida formalmente las siguientes capacidades de au
 
 El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para garantizar alta concurrencia, inmutabilidad y seguridad zero-trust:
 
-
 <!-- ==============================================================================
      BLOQUE AISLADO 1: ARQUITECTURA GLOBAL
      ============================================================================== -->
@@ -115,7 +114,6 @@ Debido a la naturaleza columnar orientada a analítica de datos de LanceDB, las 
 1. El sistema realiza una consulta vectorial de proximidad o búsqueda exacta por hash sobre `incident_knowledge_cache`.
 2. Una vez extraído el `incident_id`, el backend ejecuta un escaneo indexado columnar ultra veloz sobre `governance_immutable_audit` filtrando por el campo compartido (`table.search("incident_id = 'XYZ'")`).
 
-
 ---
 
 ## 🏗️ Vista de dinámica
@@ -163,33 +161,43 @@ Este diagrama modela el comportamiento reactivo y la cronología asíncrona no b
 
 ## 🏗️ Vista de dinámica del Plano de Control AIOps - Flujo Transaccional SAGA, MoA, Hot-Reload POSIX y HITL Checkpoint
 
-<!-- ==============================================================================
+     <!-- ==============================================================================
      BLOQUE AISLADO 2: VISTA DINÁMICA
      ============================================================================== -->
   
-<div align="center">
-    [![Diagrama de Secuencia SAGA MoA](./images/ai-ops-sandbox-vista-dinamica-agentes.png#gh-light-mode-only)](./images/ai-ops-sandbox-vista-dinamica-agentes.png?raw=true)
-</div>
-
-
+  <div class="image-lens-wrapper">
+    <p align="center">
+        <a href="./images/ai-ops-sandbox-vista-dinamica-agentes.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
+            <img src="./images/ai-ops-sandbox-vista-dinamica-agentes.png" alt="Diagrama de Secuencia Agentes" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+        </a>
+    </p>
+  </div>
+  
+     
 ### Desglose de Fases y Mecanismos de Ingeniería Distribuidos
 
-#### 1. Ingestión y Mapeo en Memoria RAM (Fase 1)
-Al arrancar el proceso o inicializarse un despliegue, el sistema lee de forma prioritaria el manifiesto externo de texto plano `config.toml` abstrayendo la ruta absoluta en las trazas de logs. Las variables perimetrales, tokens de Apache APISIX y requerimientos de red corporativos se aplanan en el diccionario global volátil `runtime_settings` residente en la memoria RAM, garantizando un acceso lock-free con una latencia de nanosegundos y eliminando por completo cualquier variable quemada (*hardcode*) en el código fuente.
+#### 1. Parametrizacion e Inicializacion por el SRE Humano (Fase Inicial)
+El ciclo de vida de la plataforma es gobernado por el factor humano desde el microsegundo cero. El Operador SRE Humano parametriza el manifiesto externo de texto plano `config.toml` en la raiz del proyecto, fijando las reglas zero-trust, los rangos de red `172.16.x.x` y el proveedor cloud inicial. Al disparar la orden de arranque, el modulo `src/core/config.py` procesa el TOML exponiendo la ruta absoluta en la consola. Las variables perimetrales y tokens de Apache APISIX se mapean en el diccionario global volatil `runtime_settings` residente en la memoria RAM, asegurando un acceso lock-free con una latencia de nanosegundos y eliminando por completo valores quemados (*hardcode*).
 
-#### 2. Debate Concurrente Mixture-of-Agents (Fase 2)
-Ante la detección de una anomalía en el clúster observado, el orquestador `AsyncAgentSupervisor` despacha tareas asíncronas concurrentes en el Event Loop mediante `asyncio.gather()`. 
-*   **SreDebuggerAgent (SRE):** Interroga el mapa de firmas indexadas en la RAM (`_API_SIGNATURE_CACHE`) para anular la degradación de rendimiento provocada por la reflexión con el módulo `inspect`. Diseña el parche IaC candidato aplicando un algoritmo estocástico **Epsilon-Greedy (\(\epsilon\)-greedy)** (10% de probabilidad de azar controlado) para forzar la innovación sintáctica y romper de raíz la inercia del contexto histórico o soluciones obsoletas del pasado.
-*   **SecOpsGuardAgent (SecOps):** Ejecuta una evaluación por cortocircuito lógico (*Short-Circuit Evaluation*) barriendo cadenas pesadas de texto únicamente si las banderas en caché lo exigen. Audita la propuesta contra las políticas Zero-Trust corporativas y traduce violaciones a un score flotante instantáneo de riesgo OWASP (`0.95`).
+#### 2. Deteccion de Incidente y Debate Concurrente MoA con Aprendizaje Continuo (Fase 2)
+Ante una anomalia en el cluster observado, el orquestador `AsyncAgentSupervisor` toma el control de la maquina de estados y despacha tareas asincronas concurrentes en el Event Loop mediante `asyncio.gather()`, habilitando el debate Mixture-of-Agents (MoA):
+*   **SreDebuggerAgent (SRE):** Interroga el mapa de firmas de la RAM (`_API_SIGNATURE_CACHE`) para anular la latencia de reflexion. Diseña el parche IaC candidato usando un algoritmo estocastico **Epsilon-Greedy** (10% de probabilidad de azar controlado) para innovar y romper la inercia del contexto historico de fallos obsoletos.
+*   **Mecanismo de Retroalimentacion de Contexto (MCTS Pruning):** Si una simulacion o despliegue falla, el supervisor invoca la penalizacion del agente SRE. La sintaxis erronea se inyecta en una lista negra en la RAM de forma inmediata, autotrenando al agente para que pode (*pruning*) esa rama del arbol y no vuelva a proponer el mismo error.
+*   **SecOpsGuardAgent (SecOps):** Ejecuta una evaluacion por cortocircuito logico (*Short-Circuit Evaluation*) barriendo cadenas pesadas de texto solo si las banderas en cache lo exigen. Audita la propuesta contra las politicas Zero-Trust corporativas y traduce violaciones a un score flotante instantaneo de riesgo OWASP (`0.95`).
 
-#### 3. Checkpoint Transaccional Humano Mandatorio - HITL (Fase 3)
-El motor de políticas `AgentGovernanceEngine` intercepta la transacción distributiva Saga en runtime. Si detecta que la IA propone un desborde físico o migración cruzada (*Hot-Swapping*) que difiere del proveedor activo en RAM, el componente activa un **Circuit Breaker Cognitivo**. Congela de inmediato las corrutinas de `asyncio` y levanta un checkpoint mandatorio que retiene el motor de Pulumi en seco hasta recibir un webhook criptográfico de confirmación con la firma digital obligatoria del operador humano de guardia.
+#### 3. Intercepcion de Gobierno, Checkpoint Humano HITL y Opcion de Rollback Atomico (Fase 3)
+El motor de politicas `AgentGovernanceEngine` intercepta la transaccion distributiva Saga en runtime. Si detecta que la IA propone un desborde fisico o migracion cruzada (*Hot-Swapping*) que difiere del proveedor activo en RAM, activa un **Circuit Breaker Cognitivo**. Las corrutinas de `asyncio` se congelan y se levanta un Checkpoint Humano Mandatorio que detiene la ejecucion en seco. La automatizacion permanece suspendida en un bloque lock-free esperando la resolucion del operador bajo dos compuertas estrictas:
+*   **Compuerta A (Aprobacion y Desborde):** El operador introduce su firma digital de validacion perimetral a traves del callback del webhook (`context.is_approved_by_gov = True`), liberando el estado en la RAM para dar luz verde al despliegue en la nueva nube meta.
+*   **Compuerta B (Rechazo y Rollback Seguro):** Si el operador detecta anomalias, ejecuta la instruccion de Rollback. El motor de Gobierno aborta la conmutacion en caliente y ordena a la fachada de Pulumi extraer el ultimo estado inmutable de configuracion exitosa previa (`~/.pulumi/stacks`), restaurando la ultima topologia de red sana en la nube de origen en milisegundos y forzando al enjambre a re-evaluar la anomalia.
 
-#### 4. Reconciliación Agnóstica y Retroalimentación Continua (Fases 4 y 5)
-Una vez validado el checkpoint, la fachada de Pulumi (`PulumiAutomationFacade`) invoca de forma polimórfica la Automation API delegando la compilación asíncrona a un hilo ejecutor secundario (`run_in_executor`). Al converger con éxito en la nube meta, el sistema inmortaliza la bitácora forense NoSQL en el almacenamiento columnar elástico de **LanceDB**, cerrando el círculo mediante un **Feedback Loop Métrico-Reactivo**. El sistema aprende del éxito reportado por la telemetría de Prometheus, inmunizando la caché semántica para resolver bugs idénticos futuros en menos de 10 milisegundos mediante consultas relacionales **Zero-Copy con DuckDB**, evadiendo futuras inferencias costosas de LLMs.
+#### 4. Reconciliacion Fisica Multi-Cloud (Fase 4)
+Una vez aprobado el checkpoint por la intervencion del operador, la fachada de Pulumi (`PulumiAutomationFacade`) se despierta y consume el estado liberado de la RAM. El sistema inicializa la Abstract Factory correspondiente y delega la ejecucion e inyeccion del parche a la Pulumi Automation API, despachando el comando `stack.up()` de forma no bloqueante a traves de un hilo ejecutor secundario (`run_in_executor`) para que la infraestructura real del cluster converja exitosamente en el nuevo proveedor cloud meta.
 
-#### 5. Hot-Reload de Políticas en Runtime vía Señales POSIX (Escenario Extra)
-Para garantizar la compatibilidad zero-trust en entornos contenerizados de alta disponibilidad (Docker o Pods elásticos de Kubernetes) donde los ConfigMaps rompen los watchers físicos de disco por el uso de enlaces simbólicos (*symlinks*), el sistema se suscribe a los eventos del Kernel del Sistema Operativo. Si el operador altera una directiva de red en el `config.toml`, emite la señal del sistema **`signal.SIGUSR1`** ejecutando un comando de terminal rápido: `kill -USR1 <PID>`. El proceso de Python intercepta la señal POSIX de forma limpia, invalida la caché de configuración antigua y re-mapea la memoria RAM compartida al vuelo con un impacto de CPU de 0ms y sin necesidad de reiniciar la plataforma.
+#### 5. Persistencia Forense y ML Feedback Loop (Fase 5)
+Al completarse el despliegue fisico, el supervisor inmortaliza la bitacora NoSQL inmutable en el almacenamiento columnar elastico de **LanceDB** para auditorias de cumplimiento. Acto seguido, se activa un **Feedback Loop Metrico-Reactivo**: el plano de control aprende de las metricas de rendimiento reales raspadas desde Apache APISIX por Prometheus; si la mitigacion es exitosa, se refuerza la cache semantica asociando la firma del error con el parche. Esto inmuniza el cluster, permitiendo que fallas idnticas futuras se resuelvan en menos de 10 milisegundos mediante consultas relacionales **Zero-Copy con DuckDB**, reportando el estado convergente final de vuelta al operador SRE Humano y evadiendo por completo inferencias costosas de LLMs.
+
+#### 6. Hot-Reload de Politicas en Runtime via Senales POSIX (Escenario Extra)
+Para garantizar la compatibilidad zero-trust en entornos contenerizados de alta disponibilidad (Docker o Pods elasticos de Kubernetes) donde los ConfigMaps rompen los watchers fisicos de disco por el uso de enlaces simbolicos (*symlinks*), el sistema se mantiene bajo la escucha del Operador. Si el humano altera una directiva de red en el `config.toml`, emite la senal del sistema **`signal.SIGUSR1`** ejecutando un comando de terminal rapido: `kill -USR1 <PID>`. El proceso de Python intercepta la senal POSIX de forma limpia, invalida la cache de configuracion antigua y re-mapea la memoria RAM compartida al vuelo con un impacto de CPU de 0ms y sin necesidad de reiniciar la plataforma, mostrando las actualizaciones finales directamente en la pantalla del SRE.
 
 ---
 
@@ -284,7 +292,6 @@ Capa de adaptadores finales encargada de inyectar las cargas vivas del negocio e
 *   **WorkloadContainerFactory [Abstract Factory]:** Contrato abstracto para generar manifiestos de Kubernetes e Ingress de forma uniforme.
 *   **Frontend / Backend Pod Adapters:** Clases concretas que configuran los objetos de la API de Kubernetes (`Deployment`, `Service` ClusterIP, balanceo Ingress) tratando las aplicaciones como cajas grises universales, abstrayendo si la carga contiene una app React o un servidor REST en FastAPI con PyTorch.
 
-  
 ---
 
 ## 🏗️ Vista de Despliegue
@@ -338,7 +345,7 @@ Este diagrama modela la topología física, la segregación perimetral y el plan
 ### Requisitos Previos
 * Python 3.12 o superior.
 * Poetry (Gestor de entornos y paquetes).
-* Pulumi CLI configurado con acceso a tu cuenta/backend.
+* Pulumi CLI configurado con acceso a la cuenta/backend.
 
 ### 1. Inicializar el Entorno e Instalar Dependencias
 Instala el ecosistema completo junto con las herramientas de verificación estricta (**Ruff** para linter de alta velocidad en Rust y **Mypy** para validación estática de tipos):
@@ -363,9 +370,8 @@ poetry run python main.py
 ```
 ---
 
-> ⚠️ **ESTADO DEL PROYECTO: Proof of Concept (PoC) / Prueba de Concepto**
-> Este repositorio es una PoC técnica diseñada para validar la viabilidad de la autoreparación de infraestructura mediante sistemas agénticos avanzados. Se requiere auditoría corporativa de las políticas de aislamiento.
-
+> ⚠️ **ESTADO DEL PROYECTO: Proof of Concept (PoC) / Human-Centric AIOps**
+> Este repositorio es una PoC tecnica diseñada para validar la viabilidad de la autoreparacion de infraestructura mediante sistemas agenticos avanzados. El plano de control opera bajo un enfoque centrado en el ser humano, requiriendo obligatoriamente la intervencion tactica del operador SRE para autorizar desbordes multi-cloud (Firma HITL) o ejecutar planes de contingencia (Rollback Seguro). Ademas, se requiere auditoria corporativa de las politicas de aislamiento de red.
 
 <p align="center">
   <sub><b>Ecosistema AI-Ops Autónomo • Prueba de Concepto (PoC)</b></sub><br>
