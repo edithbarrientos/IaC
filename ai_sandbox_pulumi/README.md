@@ -33,29 +33,38 @@ La PoC **ai_sandbox_pulumi** valida formalmente las siguientes capacidades de au
 ### 1. Pilar de Resiliencia, Conectividad y Redes (Telematic Self-Healing)
 
 *   **🌐 Mitigación y Aislamiento de Red:** Ante alertas de saturación o denegación de servicio (DDoS), el `NetworkSpecialistWorker` analiza las VPC en microsegundos y genera parches inmutables (Security Groups / NACLs) para aislar subredes y desviar tráfico anómalo sin interrumpir los servicios adyacentes.
+
 *   **🛣️ Enrutamiento Dinámico ante Caídas (Failover):** Detecta la degradación de latencia o quiebre de handshakes TCP en zonas de disponibilidad de AWS/GCP, modificando dinámicamente los pesos en Apache APISIX y DNS para redirigir el tráfico hacia regiones sanas.
+
 *   **⚡ Ingesta Telemétrica Masiva sin Bloqueos (Throughput O(1)):** Absorbe "tormentas de alertas" (*Alert Fatigue*) de Prometheus o Datadog. Valida esquemas JSON en microsegundos, libera la red con un código HTTP `202 Accepted` y delega el análisis pesado del MoA a un Worker Pool virtual en segundo plano.
+
 *   **🔄 Autoreparación de Conectividad Inter-Servicios (Mesh Recovery):** Resuelve quiebres en mallas de servicios (Linkerd/Istio) re-inyectando certificados TLS locales caducados o parches de ruteo mTLS sin requerir intervención humana.
 
 ### 2. Pilar de Seguridad Extrema y Cumplimiento (SecOps / Zero-Trust)
 
 *   **🛡️ Respuesta Reactiva ante Brechas de Seguridad:** Ante la detección de exfiltración de datos o llaves de API expuestas, la plataforma genera una "cárcel criptográfica perimetral", revocando tokens comprometidos y modificando políticas IAM bajo el principio de *Mínimo Privilegio* en milisegundos.
+
 *   **⚖️ Control de Riesgo de Gobierno Humano (HITL):** Cuando el score analítico de riesgo de un parche de infraestructura calculado por la IA supera el **70%**, el Supervisor Cognitivo aplica un "freno de mano" operativo. Congela el hilo en el `MemorySaver` global e intercepta el flujo, exigiendo una aprobación manual (Web/Slack) antes de impactar producción.
+
 *   **📜 Remediación de Deriva de Configuración (*Configuration Drift*):** Detecta mutaciones manuales hechas directamente en las consolas de AWS/GCP que vulneren el cumplimiento corporativo. El sistema re-compila el stack de Infraestructura como Código (IaC) y ejecuta una reconciliación forzada para restaurar la conformidad normativa.
+
 *   **🔐 Rotación Criptográfica de Emergencia:** Ante alertas de cómputo cuántico o fuerza bruta sobre endpoints expuestos, coordina de manera automatizada la re-certificación y distribución de llaves criptográficas simétricas en los secretos del clúster de Kubernetes.
 
 ### 3. Pilar de Eficiencia Financiera y Optimización (FinOps)
 
 *   **💸 Estrangulamiento de Costos por Bucles de Escalamiento:** Detecta bucles infinitos en el software que disparen el auto-escalamiento infinito de contenedores o instancias (evitando facturas catastróficas). La IA decide balanceadamente si el incidente requiere más cómputo o aplicar un *Throttling* controlado.
+
 *   **📉 Drenado y Consolidación de Cómputo Vacío (De-provisioning):** Analiza subutilización persistente en el clúster. Orquesta el desalojo seguro de pods (*Pod Eviction*), compacta los nodos físicos y apaga instancias remanentes para reducir la huella de carbono y el gasto operativo en O(1).
+
 *   **📊 Arbitraje de Instancias Spot / Interrumpibles:** Monitorea las ventanas de desalojo de instancias Spot en AWS/GCP, moviendo en tiempo real las cargas analíticas hacia nodos bajo demanda estables antes de que el proveedor de nube interrumpa el servicio.
 
 ### 4. Pilar de Rendimiento de Aplicaciones e Infraestructura (PerfOps)
 
 *   **📈 Re-dimensionamiento Elástico de Recursos (VPA/HPA Autónomo):** Corrige cuellos de botella por falta de memoria RAM o CPU (OOM Kills). El enjambre MoA calcula el desvío y re-asigna límites de recursos en caliente sin reiniciar los pods críticos.
-*   **💽 Depuración Automatizada de Capas de Persistencia:** Detecta hilos de bases de datos bloqueados (*Deadlocks*) o saturación de IOPS en discos SSD NVMe, ejecutando limpiezas de búfer, escalamiento de IOPS o kill de procesos huérfanos concurrentes.
-*   **📦 Rollback Automatizado ante Despliegues Fallidos:** Si un nuevo despliegue orquestado por GitOps/ArgoCD degrada la telemetría del API Gateway de Apache APISIX en los primeros 60 segundos, la IA instruye una reversión inmediata (*Rollback*) al último estado estable registrado en Git.
 
+*   **💽 Depuración Automatizada de Capas de Persistencia:** Detecta hilos de bases de datos bloqueados (*Deadlocks*) o saturación de IOPS en discos SSD NVMe, ejecutando limpiezas de búfer, escalamiento de IOPS o kill de procesos huérfanos concurrentes.
+
+*   **📦 Rollback Automatizado ante Despliegues Fallidos:** Si un nuevo despliegue orquestado por GitOps/ArgoCD degrada la telemetría del API Gateway de Apache APISIX en los primeros 60 segundos, la IA instruye una reversión inmediata (*Rollback*) al último estado estable registrado en Git.
 
   <div>
     <p align="center">
@@ -140,7 +149,6 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
 
 ### 📦 Descripción Técnica Detallada del Esquema de Datos (LanceDB)
 
-
 Esta vista modela el diseño físico de almacenamiento de baja latencia e inmutabilidad de datos en **LanceDB**. Al ser un motor de base de datos vectorial empotrado basado en el formato de memoria **Apache Arrow (`.lance`)**, el almacenamiento descarta el modelo relacional tradicional (SQL). No existen llaves foráneas (`FK`) ni restricciones rígidas en el disco; en su lugar, la consistencia, el filtrado y las relaciones se delegan de forma ultra veloz a la capa de aplicación en Python.
 
 
@@ -209,7 +217,6 @@ Debido a la naturaleza columnar orientada a analítica de datos de LanceDB, las 
 
 Este diagrama modela el comportamiento reactivo y la cronología asíncrona no bloqueante (`asyncio`) de la plataforma ante una falla crítica en producción. Ilustra cómo el sistema coordina el aislamiento semántico, el debate del enjambre Mixture-of-Agents (MoA), la validación en laboratorios efímeros y la reconciliación atómica, todo bajo los límites de una transacción distribuida regulada por políticas corporativas.
 
-
 #### 🏁 Fase 1: Detección, Filtrado PII y Poda Semántica
 
 1.  **Gatillo del Incidente:** El centinela de telemetría (`OpenTelemetry Watchdog`) intercepta un evento de caída (ej. `CrashLoopBackOff`) en un Pod vivo del NodePool de producción. Dispara de forma inmediata un stream reactivo vía gRPC hacia el proxy de la IA.
@@ -218,13 +225,11 @@ Este diagrama modela el comportamiento reactivo y la cronología asíncrona no b
 
 3.  **Bypass de Inferencia (Caché RAG):** El proxy vectoriza la firma del error y consulta en caliente a **LanceDB** mediante distancias de coseno con indexación **HNSW/PQ**. Si el error ya ocurrió en el pasado, recupera el parche histórico y salta la ejecución pesada del LLM. Si es inédito, formatea e inyecta el objeto inmutable `IncidentContext` hacia la Capa 2.
 
-
 #### 🧠 Fase 2: Debate Cognitivo y Árbol de Pensamiento (ToT)
 
 4.  **Despacho y Razonamiento:** El `AgentSupervisor` (LangGraph Core) inicializa la máquina de estados del incidente y delega subtareas en paralelo a los especialistas de la Capa 3.
 
 5.  **Simulación Monte Carlo (MCTS):** El `SreDebuggerAgent` abre un bucle de Razonamiento y Acción (*ReAct Loop*). En lugar de proponer una línea única de código, ejecuta el algoritmo **Monte Carlo Tree Search (MCTS)** sobre un **Árbol de Pensamiento (Tree of Thoughts - ToT)**, ramificando 3 propuestas candidatas de parches IaC. Simultáneamente, diseña un nuevo esquema Prometheus customizado (`/metrics/custom-ai`) diseñado específicamente para auto-monitorear la anomalía bajo análisis en el futuro. El enjambre evalúa y consolida la rama ganadora.
-
 
 #### 🔒 Fase 3: Intercepción de Gobierno Corporativo Zero-Trust
 
@@ -238,7 +243,6 @@ Este diagrama modela el comportamiento reactivo y la cronología asíncrona no b
 8.  **Construcción de Infraestructura Agnóstica:** El Gobierno habilita la `CloudProviderFactory` (Abstract Factory). El componente lee en caliente las variables locales `.env` (`CLOUD_PROVIDER=google`, `azure` o `aws`), carga programáticamente la topología física correspondiente y ejecuta el método `Up` asíncrono de la **Pulumi Automation API** sin usar comandos CLI rígidos de shell, creando redes, firewalls y permisos IAM de privilegios mínimos.
 
 9.  **Despliegue Multi-Tier de Caja Negra:** Pulumi dispara de forma sincronizada la `WorkloadContainerFactory` (Abstract Factory). Esta fábrica despliega la arquitectura de la aplicación viva tratando los Pods como cajas grises universales, inyectando de forma automatizada las rutas y políticas criptográficas de **Apache APISIX** perimetrales sobre la topología del clúster real.
-
 
 #### 🔄 Fase 5: Trazabilidad Forense e Inmunidad Métrico-Reactiva
 
@@ -408,7 +412,9 @@ Orquesta el flujo transaccional y aplica las fronteras de control de la PoC.
 
 Plano cognitivo encargado del razonamiento, análisis y diseño de soluciones.
 *   **AgentSupervisor:** Demonio basado en estados que administra la máquina del grafo agéntico (`LangGraph`). Consume el estado común y orquesta la ejecución paralela o secuencial de su colección de trabajadores (`AgentStrategy`).
+
 *   **SreDebuggerAgent:** Worker especialista encargado del diseño sintáctico del parche IaC. Implementa de forma simulada el algoritmo **Monte Carlo Tree Search (MCTS)** dentro de un árbol de pensamiento (**Tree of Thoughts**) para evaluar ramas de soluciones. Integra el generador de esquemas dinámicos de Prometheus.
+
 *   **SecOpsGuardAgent:** Worker de validación perimetral. Ejecuta auditorías semánticas bajo estándares **OWASP Top 10 para LLMs** y aplica la función nativa `scrub_pii_from_logs` para limpiar JWTs, contraseñas y variables privadas antes del procesamiento.
 *   **FinOpsOptimizerAgent:** Worker enfocado en el control de costes financieros de tokens y recursos físicos.
 
@@ -416,7 +422,9 @@ Plano cognitivo encargado del razonamiento, análisis y diseño de soluciones.
 
 Capa de adaptadores técnicos encargada de la inmutabilidad de la infraestructura y el polimorfismo multi-nube.
 *   **CloudProviderFactory [Abstract Factory]:** Interfaz de fábrica que obliga a todos los adaptadores a implementar métodos uniformes para crear redes, inyectar permisos con privilegios mínimos y provisionar Kubernetes de forma declarativa.
+
 *   **PulumiAutomationFacade [Facade Pattern]:** Encapsula y simplifica la complejidad de la **Pulumi Automation API** programática en Python, inicializando *stacks* locales en caliente de forma asíncrona no bloqueante (`asyncio`).
+
 *   **AWS / GCP / Azure Adapters:** Implementaciones concretas de la fábrica. Traducen las órdenes de la IA en recursos físicos específicos de cada proveedor (`Vpc`, `Account` de IAM, clústeres `EKS`, `GKE Standard` o `AKS`).
 
 #### 📦 5. Fábrica de Aplicaciones Multi-Tier Desacopladas (src/infrastructure/k8s_runtime/)
@@ -488,6 +496,28 @@ Este diagrama modela la topología física, la segregación perimetral y el plan
 
 ---
 
+## ⚙️ Configuración Parametrizada (`config.toml`)
+
+El comportamiento del motor de mutación y el clúster de inferencia se controla de manera agnóstica sin alterar código de ejecución:
+
+```toml
+[ai.ollama]
+host = "http://localhost:11434"
+model = "qwen2.5:1.5b"
+
+[persistence]
+lance_db_uri = "data/lancedb"
+
+[iac.pulumi]
+stack = "sandbox"
+mode = "simulado"       # Opciones: "simulado" (Offline, local state backend) o "real" (AWS)
+backend_url = "file://~"
+```
+
+---
+
+
+
 ## 🚀 Guía de Instalación y Desarrollo
 
 ### Requisitos Previos
@@ -497,6 +527,7 @@ Este diagrama modela la topología física, la segregación perimetral y el plan
 * **Pulumi CLI** configurado con acceso seguro al backend de infraestructura.
 
 ### 1. Inicializar el Entorno e Instalar Dependencias
+
 Instala el ecosistema completo junto con las herramientas de verificación estricta de código corporativo (**Ruff** para linter de alta velocidad basado en Rust y **Mypy** para validación estática de tipos):
 ```bash
 poetry install
@@ -516,19 +547,20 @@ poetry run ruff check src --fix
 ### 3. Lanzar la Plataforma Autónoma (API Gateway)
 
 Antes de encender el servidor, asegúrate de liberar el puerto `8000` de cualquier proceso zombi en tu Mac y arranca el plano de control cognitivo inyectando la ruta de namespaces de la Clean Architecture:
+
 ```bash
 # Liberar el puerto secuestrado de fondo
+
 sudo kill -9 \$(lsof -t -i:8000) 2>/dev/null
 
 # Arrancar el servidor en modo Single-Worker de alta velocidad
 PYTHONPATH=.:src poetry run python main.py
 ```
-
 ---
 
 ## 🧪 Simulación del Ciclo de Vida del Incidente (Prueba de Humo)
 
-Abre una **nueva pestaña** en tu terminal Zsh y ejecuta los siguientes comandos secuenciales para validar el enjambre Mixture of Agents de forma manual con `curl` o mediante los scripts automatizados de soporte.
+Abre una **nueva pestaña** en tu terminal y ejecuta los siguientes comandos secuenciales para validar el enjambre Mixture of Agents de forma manual con `curl` o mediante los scripts automatizados de soporte.
 
 ### 🎛️  Ingesta de Alerta (Fase 1: Debate de Agentes y Checkpoint)
 
