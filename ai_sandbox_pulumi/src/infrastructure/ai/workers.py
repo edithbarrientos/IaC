@@ -1,127 +1,72 @@
-"""Módulo de Trabajadores Especialistas del Enjambre Cognitivo de AIOps.
-
-Este módulo implementa los agentes especialistas (Workers) que participan en el
-debate concurrente Mixture of Agents (MoA). Cada worker hereda de la interfaz
-pura de la capa Core y ejecuta heurísticas analíticas asíncronas en paralelo,
-optimizando el rendimiento mediante TypedDict nativos para eludir el overhead de Pydantic.
-"""
-
-import asyncio
-from typing import Optional, List, Dict, TypedDict
+from typing import Dict, Any, List
 from loguru import logger
+from src.infrastructure.ai.brains.cortexLlm import CortexLlm
 
-# Importaciones de dependencias del dominio base (Capa Core)
-from src.core.entities import IncidentContext
-from src.core.interfaces import AgentStrategy
+class BaseWorker:
+    """Clase base inmutable que define el comportamiento del ciclo de inferencia de un agente."""
+    def __init__(self, role_key: str, agent_role: str, system_prompt: str, log_identifier: str, *args, **kwargs):
+        self.role_key: str = role_key
+        self.agent_role: str = agent_role
+        self.system_prompt: str = system_prompt
+        
+        # Asignación polimórfica: Usa agent_id si viene de los kwargs, de lo contrario usa el log_identifier por defecto
+        self.log_identifier: str = kwargs.get("agent_id", log_identifier)
 
-# =========================================================================
-# --- DTO ULTRA-EFICIENTE PARA ALTA CONCURRENCIA ---
-# =========================================================================
-
-class WorkerReasoningResult(TypedDict):
-    """Estructura atómica de transferencia de datos para el veredicto del agente."""
-    proposed_patch: Optional[str]
-    ai_suggested_metric: Optional[str]
-    security_risk_score: int
-
-
-# =========================================================================
-# --- AGENTE ESPECIALISTA 1: TOPOLOGÍA Y REDES ---
-# =========================================================================
-
-class NetworkSpecialistWorker(AgentStrategy):
-    """Agente experto en la capa de topología de red, subredes y ruteo multi-cloud.
-    
-    Analiza anomalías de conectividad y propone parches de infraestructura inmutables
-    para aislar tráfico anómalo o mitigar denegaciones de servicio (DDoS).
-    """
-
-    def __init__(self, agent_id: str = "worker-net-01") -> None:
-        """Inicializa el agente de red asignándole un identificador único."""
-        self.agent_id: str = agent_id
-
-    async def execute_reasoning(self, incident: IncidentContext) -> WorkerReasoningResult:
-        """Analiza de forma asíncrona los CIDR de red y propone un aislamiento de seguridad.
-
-        Args:
-            incident (IncidentContext): Contexto transaccional mutable del incidente.
-
-        Returns:
-            WorkerReasoningResult: Propuesta técnica de red calculada por el agente.
+    async def execute_reasoning(self, cortex_brain: CortexLlm, incident_context: Any) -> str:
         """
-        logger.info(f"[{self.agent_id}] Analizando vectores de tráfico e integridad de VPC...")
+        Template Method: Ejecuta de forma lineal y determinista el flujo de consulta hacia el Córtex.
+        """
+        logger.info(f"[{self.log_identifier}] Despertando agente. Consultando al Córtex LLM...")
         
-        # Simulación de latencia de cómputo analítico de alto rendimiento
-        await asyncio.sleep(0.005)
+        telemetry_logs: str = getattr(incident_context, "raw_logs", str(incident_context))
         
-        # Heurística polimórfica basada en el historial de intentos (Evita branching rígido)
-        score_mapping: Dict[int, int] = {0: 45, 1: 65, 2: 85}
-        calculated_risk: int = score_mapping.get(incident.self_healing_attempts, 90)
+        veredicto_ia: str = await cortex_brain.reason_incident_telemetry(
+            agent_role=self.agent_role,
+            system_prompt=self.system_prompt,
+            telemetry_logs=f"Contexto: {telemetry_logs}"
+        )
+        
+        return veredicto_ia
 
-        patch_snippet = (
-            "resource 'aws_vpc_security_group_rule' 'ingress_jail' {\n"
-            "  type        = 'ingress'\n"
-            "  from_port   = 0\n"
-            "  to_port     = 0\n"
-            "  protocol    = '-1'\n"
-            "  cidr_blocks = ['10.240.0.0/16']\n"
-            "}"
+class NetworkSpecialistWorker(BaseWorker):
+    """Especialización que acepta e inyecta dinámicamente parámetros de inicialización del caso de uso."""
+    def __init__(self, *args, **kwargs):
+        super().__init__(
+            "networking",
+            "NetworkSpecialistWorker",
+            "Eres un especialista de redes corporativas en AWS. Analiza anomalías de enrutamiento y CIDR.",
+            "prod-worker-networking",
+            *args,
+            **kwargs
         )
 
-        logger.success(f"[{self.agent_id}] Análisis completado. Riesgo de red: {calculated_risk}")
-        
-        return {
-            "proposed_patch": patch_snippet,
-            "ai_suggested_metric": "network_throughput_bits",
-            "security_risk_score": calculated_risk
-        }
-
-
-# =========================================================================
-# --- AGENTE ESPECIALISTA 2: GOBIERNO ZERO-TRUST ---
-# =========================================================================
-
-class SecurityZeroTrustWorker(AgentStrategy):
-    """Agente experto en gobernanza de identidades (IAM) y endurecimiento (Hardening).
-    
-    Audita que los parches propuestos por otros agentes no introduzcan brechas de
-    seguridad o vulneren las políticas de mínimo privilegio corporativas.
-    """
-
-    def __init__(self, agent_id: str = "worker-sec-01") -> None:
-        """Inicializa el agente de seguridad asignándole un identificador único."""
-        self.agent_id: str = agent_id
-
-    async def execute_reasoning(self, incident: IncidentContext) -> WorkerReasoningResult:
-        """Audita el incidente y restringe los accesos periféricos del sandbox de IA.
-
-        Args:
-            incident (IncidentContext): Contexto transaccional mutable del incidente.
-
-        Returns:
-            WorkerReasoningResult: Restricciones de seguridad y score de riesgo global.
-        """
-        logger.info(f"[{self.agent_id}] Evaluando compliance normativo y firmas criptográficas...")
-        
-        # Simulación de latencia analítica no bloqueante
-        await asyncio.sleep(0.005)
-        
-        # Escalamiento lineal dinámico basado en la reincidencia del evento
-        risk_escalation: Dict[int, int] = {0: 30, 1: 55, 2: 75}
-        base_risk: int = risk_escalation.get(incident.self_healing_attempts, 95)
-
-        patch_snippet = (
-            "resource 'aws_iam_policy' 'restrictive_jail' {\n"
-            "  name        = 'AI-Sandbox-Jail-Policy'\n"
-            "  description = 'Denegar mutaciones fuera del plano de control'\n"
-            "  policy      = jsonencode({ Version = '2012-10-17', Statement = [...] })\n"
-            "}"
+class SecurityZeroTrustWorker(BaseWorker):
+    """Especialización que acepta e inyecta dinámicamente parámetros de inicialización del caso de uso."""
+    def __init__(self, *args, **kwargs):
+        super().__init__(
+            "zerotrust",
+            "SecurityZeroTrustWorker",
+            "Eres un auditor de seguridad Zero Trust. Evalúa riesgos críticos en el API Gateway y mTLS.",
+            "prod-worker-zerotrust",
+            *args,
+            **kwargs
         )
 
-        logger.success(f"[{self.agent_id}] Auditoría de cumplimiento cerrada. Riesgo de Gobierno: {base_risk}")
-
-        return {
-            "proposed_patch": patch_snippet,
-            "iam_policy_evaluations_failed": "iam_policy_evaluations_failed",
-            "security_risk_score": base_risk
+class WorkerRegistry:
+    """Fábrica O(1) encargada de almacenar y despachar las instancias preconfiguradas del enjambre."""
+    def __init__(self):
+        self._agents: Dict[str, BaseWorker] = {
+            "networking": NetworkSpecialistWorker(),
+            "zerotrust": SecurityZeroTrustWorker()
         }
+
+    def get_all_workers(self) -> List[BaseWorker]:
+        """Retorna el enjambre completo de agentes listo para el Scatter-Gather."""
+        return list(self._agents.values())
+
+    def get_worker(self, role_key: str) -> BaseWorker:
+        """Retorna un agente específico mediante indexación directa O(1)."""
+        return self._agents[role_key.lower()]
+
+# Instancia global inmutable de la fábrica para consumo interno si es necesario
+WORKER_FACTORY = WorkerRegistry()
