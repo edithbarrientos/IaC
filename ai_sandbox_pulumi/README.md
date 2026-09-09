@@ -72,7 +72,7 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
   <div class="image-lens-wrapper">
     <p align="center">
         <a href="./images/ai-ops-sandbox-vista-datos.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/ai-ops-sandbox-vista-datos.png" alt="Arquitectura Global" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+            <img src="./images/ai-ops-sandbox-vista-datos.png" alt="Vista de Datos" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
         </a>
     </p>
   </div>
@@ -114,8 +114,8 @@ Debido a la naturaleza columnar orientada a analítica de datos de LanceDB, las 
 
   <div class="image-lens-wrapper">
     <p align="center">
-        <a href="./images/ai-ops-sandbox-vista-dinamica2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/ai-ops-sandbox-arquitectura-global-2.png" alt="Arquitectura Global" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+        <a href="./images/ai-ops-sandbox-vista-dinamica.png2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
+            <img src="./images/ai-ops-sandbox-vista-dinamica.png2.png" alt="Diagrama de Secuencia y Ciclo de Vida" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
         </a>
     </p>
   </div>
@@ -145,16 +145,14 @@ Este diagrama modela el comportamiento reactivo y la cronología asíncrona no b
 10. **Inmortalización del Veredicto:** Validada la convergencia exitosa de la infraestructura, el Gobierno toma los metadatos de la transacción y persiste de forma obligatoria un registro `AuditLogEntry` inmutable dentro de la tabla de auditoría forense de **LanceDB**.
 11. **Hot-Reload del Centinela:** El SRE Agent inyecta el endpoint dinámico `/metrics/custom-ai` directamente en el recolector perimetral. El sistema converge, el microservicio se recupera y el clúster adquiere inmunidad proactiva contra el nuevo tipo de fallo.
 
-
 ---
-
 
 ## 🏗️ Vista de dinámica del Plano de Control AIOps - Flujo Transaccional SAGA, MoA, Hot-Reload POSIX y HITL Checkpoint
 
   <div class="image-lens-wrapper">
     <p align="center">
         <a href="./images/ai-ops-sandbox-vista-dinamica-agentes.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/ai-ops-sandbox-vista-dinamica-agentes.png" alt="Arquitectura Global" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+            <img src="./images/ai-ops-sandbox-vista-dinamica-agentes.png" alt=" AIOps - Flujo Transaccional SAGA" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
         </a>
     </p>
   </div>
