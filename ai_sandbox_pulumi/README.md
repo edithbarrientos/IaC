@@ -71,6 +71,53 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
 
 ---
 
+## 🏗️ Vista de datos
+
+<!-- ==============================================================================
+     BLOQUE AISLADO 2: VISTA DE DATOS
+     ============================================================================== -->
+  
+  <div class="image-lens-wrapper">
+    <p align="center">
+        <a href="./images/ai-ops-sandbox-vista-datos.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
+            <img src="./images/ai-ops-sandbox-vista-datos.png" alt="Vista de Datos" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+        </a>
+  </p>
+  </div>
+  
+### 📦 Descripción Técnica Detallada del Esquema de Datos (LanceDB)
+
+Esta vista modela el diseño físico de almacenamiento de baja latencia e inmutabilidad de datos en **LanceDB**. Al ser un motor de base de datos vectorial empotrado basado en el formato de memoria **Apache Arrow (`.lance`)**, el almacenamiento descarta el modelo relacional tradicional (SQL). No existen llaves foráneas (`FK`) ni restricciones rígidas en el disco; en su lugar, la consistencia, el filtrado y las relaciones se delegan de forma ultra veloz a la capa de aplicación en Python.
+
+#### b 1. Tabla de Caché Semántica Proactiva (`incident_knowledge_cache`)
+Funciona como un almacén indexado vectorialmente de alta velocidad para el *Semantic Router*. Su objetivo es evitar llamadas redundantes a LLMs en la nube para fallos de clúster que ya cuentan con una solución histórica en el repositorio.
+*   **error_signature_hash [Primary Key]:** Cadena de texto indexada mediante un hash criptográfico **SHA-256** derivado del log de error original podado por el SLM. Actúa como el identificador único físico de búsqueda exacta.
+*   **incident_id [Control Mapping]:** Identificador único global (`UUIDv4`) asignado de forma dinámica por la transacción distribuida Saga para correlacionar el fallo con sus bitácoras operativas.
+*   **vector [Vector Index]:** Array de tamaño fijo conteniendo **1536 dimensiones** de punto flotante (`float32`). Almacena los embeddings semánticos procesados localmente. Está indexado de forma nativa en disco bajo el algoritmo **HNSW (Hierarchical Navigable Small World)** con aceleración por hardware **SIMD**, coordinado con compresión **Product Quantization (PQ)** para ejecutar cálculos de *Distancia de Coseno* en menos de **10ms**.
+*   **sanitized_logs:** Bloque de texto plano de ráfagas de pánico limpio de **PII** (enmascarado con expresiones regulares en la Capa 1).
+*   **resolved_iac_patch:** Código de infraestructura declarativo inmutable (plantillas de Pulumi TypeScript / Pulumi ESC) validado y listo para reconciliar en caliente.
+*   **custom_prometheus_metrics:** Esquema dinámico en formato YAML con las métricas personalizadas propuestas autónomamente por la IA para inyectar en el endpoint `/metrics/custom-ai`.
+*   **cloud_provider_target:** Bandera de control paramétrico (`aws`, `google` o `azure`) para activar el ruteo hacia la `CloudProviderFactory`.
+
+#### 🔒 2. Tabla de Trazabilidad Forense e Inmutabilidad de Gobierno (`governance_immutable_audit`)
+Diseñada bajo los principios de *Policy-as-Code* para auditorías corporativas estrictas, cumplimiento legal de operaciones autónomas y control financiero de la IA.
+*   **audit_entry_id [Primary Key]:** Identificador único de registro físico estructurado en formato `UUIDv4`.
+*   **incident_id [Logical Mapping]:** Campo común de tipo string que actúa como enlace lógico hacia la caché del conocimiento. 
+*   **timestamp:** Marca de tiempo estricta en milisegundos (`timestamp(ms)`) capturada de forma obligatoria en el momento exacto de la confirmación de la corrutina de escritura.
+*   **agent_name:** Cadena de texto que identifica de forma inequívoca qué pieza del enjambre Mixture-of-Agents emitió el veredicto (`SRE-MCTS-Worker`, `SecOps-OWASP-Shield` o `FinOps-Cost-Guard`).
+*   **action_taken:** Estado y etapa alcanzada dentro del ciclo de vida del incidente (hitos de la transacción distribuidora Saga).
+*   **decision_rationale:** Bitácora inmutable que inmortaliza la cadena de pensamiento (*Chain-of-Thought*) y la ruta ganadora del algoritmo **Monte Carlo Tree Search (MCTS)** evaluada por el SRE Agent.
+*   **security_risk_score:** Métrica flotante de 32 bits (`float32`) que registra el porcentaje de riesgo de seguridad evaluado en el Sandbox bajo estándares de OWASP Top 10.
+*   **financial_token_cost:** Entero de 64 bits (`int64`) que almacena la cantidad exacta de tokens e hilos de cómputo consumidos durante la transacción, asegurando la auditoría financiera perimetral.
+
+#### 🔗 3. Relación Lógica por Aplicación (Application-Side Joins)
+Debido a la naturaleza columnar orientada a analítica de datos de LanceDB, las dos tablas residen como fragmentos de datos independientes e inconexos en el disco duro. La relación jerárquica de uno a muchos (**1 a Muchos**) entre un incidente y sus bitácoras de gobierno se resuelve en caliente en la capa de software en Python:
+1. El sistema realiza una consulta vectorial de proximidad o búsqueda exacta por hash sobre `incident_knowledge_cache`.
+2. Una vez extraído el `incident_id`, el backend ejecuta un escaneo indexado columnar ultra veloz sobre `governance_immutable_audit` filtrando por el campo compartido (`table.search("incident_id = 'XYZ'")`).
+
+
+---
+
 ## 🏗️ Vista de dinámica
 
 <!-- ==============================================================================
@@ -80,7 +127,7 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
   <div class="image-lens-wrapper">
     <p align="center">
         <a href="./images/ai-ops-sandbox-vista-dinamica2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/ai-ops-sandbox-arquitectura-global-2.png" alt="Diagrama de Secuencial" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+            <img src="./images/ai-ops-sandbox-arquitectura-global-2.png" alt="Diagrama de Secuencia" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
         </a>
   </p>
   </div>
@@ -113,6 +160,38 @@ Este diagrama modela el comportamiento reactivo y la cronología asíncrona no b
 
 ---
 
+
+## 🏗️ Vista de dinámica del Plano de Control AIOps - Flujo Transaccional SAGA, MoA, Hot-Reload POSIX y HITL Checkpoint
+
+<!-- ==============================================================================
+     BLOQUE AISLADO 2: VISTA DINÁMICA
+     ============================================================================== -->
+  
+<div align="center">
+    [![Diagrama de Secuencia SAGA MoA](./images/ai-ops-sandbox-vista-dinamica-agentes.png#gh-light-mode-only)](./images/ai-ops-sandbox-vista-dinamica-agentes.png?raw=true)
+</div>
+
+
+### Desglose de Fases y Mecanismos de Ingeniería Distribuidos
+
+#### 1. Ingestión y Mapeo en Memoria RAM (Fase 1)
+Al arrancar el proceso o inicializarse un despliegue, el sistema lee de forma prioritaria el manifiesto externo de texto plano `config.toml` abstrayendo la ruta absoluta en las trazas de logs. Las variables perimetrales, tokens de Apache APISIX y requerimientos de red corporativos se aplanan en el diccionario global volátil `runtime_settings` residente en la memoria RAM, garantizando un acceso lock-free con una latencia de nanosegundos y eliminando por completo cualquier variable quemada (*hardcode*) en el código fuente.
+
+#### 2. Debate Concurrente Mixture-of-Agents (Fase 2)
+Ante la detección de una anomalía en el clúster observado, el orquestador `AsyncAgentSupervisor` despacha tareas asíncronas concurrentes en el Event Loop mediante `asyncio.gather()`. 
+*   **SreDebuggerAgent (SRE):** Interroga el mapa de firmas indexadas en la RAM (`_API_SIGNATURE_CACHE`) para anular la degradación de rendimiento provocada por la reflexión con el módulo `inspect`. Diseña el parche IaC candidato aplicando un algoritmo estocástico **Epsilon-Greedy (\(\epsilon\)-greedy)** (10% de probabilidad de azar controlado) para forzar la innovación sintáctica y romper de raíz la inercia del contexto histórico o soluciones obsoletas del pasado.
+*   **SecOpsGuardAgent (SecOps):** Ejecuta una evaluación por cortocircuito lógico (*Short-Circuit Evaluation*) barriendo cadenas pesadas de texto únicamente si las banderas en caché lo exigen. Audita la propuesta contra las políticas Zero-Trust corporativas y traduce violaciones a un score flotante instantáneo de riesgo OWASP (`0.95`).
+
+#### 3. Checkpoint Transaccional Humano Mandatorio - HITL (Fase 3)
+El motor de políticas `AgentGovernanceEngine` intercepta la transacción distributiva Saga en runtime. Si detecta que la IA propone un desborde físico o migración cruzada (*Hot-Swapping*) que difiere del proveedor activo en RAM, el componente activa un **Circuit Breaker Cognitivo**. Congela de inmediato las corrutinas de `asyncio` y levanta un checkpoint mandatorio que retiene el motor de Pulumi en seco hasta recibir un webhook criptográfico de confirmación con la firma digital obligatoria del operador humano de guardia.
+
+#### 4. Reconciliación Agnóstica y Retroalimentación Continua (Fases 4 y 5)
+Una vez validado el checkpoint, la fachada de Pulumi (`PulumiAutomationFacade`) invoca de forma polimórfica la Automation API delegando la compilación asíncrona a un hilo ejecutor secundario (`run_in_executor`). Al converger con éxito en la nube meta, el sistema inmortaliza la bitácora forense NoSQL en el almacenamiento columnar elástico de **LanceDB**, cerrando el círculo mediante un **Feedback Loop Métrico-Reactivo**. El sistema aprende del éxito reportado por la telemetría de Prometheus, inmunizando la caché semántica para resolver bugs idénticos futuros en menos de 10 milisegundos mediante consultas relacionales **Zero-Copy con DuckDB**, evadiendo futuras inferencias costosas de LLMs.
+
+#### 5. Hot-Reload de Políticas en Runtime vía Señales POSIX (Escenario Extra)
+Para garantizar la compatibilidad zero-trust en entornos contenerizados de alta disponibilidad (Docker o Pods elásticos de Kubernetes) donde los ConfigMaps rompen los watchers físicos de disco por el uso de enlaces simbólicos (*symlinks*), el sistema se suscribe a los eventos del Kernel del Sistema Operativo. Si el operador altera una directiva de red en el `config.toml`, emite la señal del sistema **`signal.SIGUSR1`** ejecutando un comando de terminal rápido: `kill -USR1 <PID>`. El proceso de Python intercepta la señal POSIX de forma limpia, invalida la caché de configuración antigua y re-mapea la memoria RAM compartida al vuelo con un impacto de CPU de 0ms y sin necesidad de reiniciar la plataforma.
+
+---
 
 ## 📂 Estructura Limpia del Proyecto
 
@@ -208,18 +287,18 @@ Capa de adaptadores finales encargada de inyectar las cargas vivas del negocio e
   
 ---
 
-## 🏗️ Vista de infraestructura
+## 🏗️ Vista de Despliegue
 
 <!-- ==============================================================================
-     BLOQUE AISLADO 2: Diagrama de Arquitectura
+     BLOQUE AISLADO 2: Diagrama de Despliegue
      ============================================================================== -->
   
   <div class="image-lens-wrapper">
     <p align="center">
         <a href="./images/ai-ops-sandbox-vista-infraestructura.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/ai-ops-sandbox-vista-infraestructura.png" alt="Diagrama de Secuencial" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+            <img src="./images/ai-ops-sandbox-vista-infraestructura.png" alt="Diagrama de despliegue" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
         </a>
-  </p>
+    </p>
   </div>
   
 ### 🌐 Descripción Técnica Detallada del Diagrama de Despliegue de Infraestructura
