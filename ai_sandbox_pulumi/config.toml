@@ -29,3 +29,18 @@ governance_risk_threshold = 70
 [persistence]
 # Ruta de almacenamiento inmutable para LanceDB (Base de datos vectorial)
 lance_db_uri = "data/lancedb"
+
+[ai]
+[ai.ollama]
+host = "http://localhost:11434"
+model = "qwen2.5:1.5b"
+
+# ==============================================================================
+# NUEVA SECCIÓN PARAMETRIZADA: Motor de Mutación Física e Infraestructura
+# ==============================================================================
+[iac]
+[iac.pulumi]
+stack = "sandbox"
+# Modos soportados: "simulado" (Offline, local state, dry-run) o "real" (Aplica cambios en AWS)
+mode = "simulado" 
+backend_url = "file://~"
