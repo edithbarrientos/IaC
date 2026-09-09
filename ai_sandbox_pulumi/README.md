@@ -25,9 +25,6 @@ La PoC **ai_sandbox_pulumi** valida formalmente las siguientes capacidades de au
 
 El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para garantizar alta concurrencia, inmutabilidad y seguridad zero-trust:
 
-<!-- ==============================================================================
-     BLOQUE AISLADO 1: ARQUITECTURA GLOBAL
-     ============================================================================== -->
 
   <div class="image-lens-wrapper">
     <p align="center">
@@ -72,10 +69,6 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
 
 ## 🏗️ Vista de datos
 
-<!-- ==============================================================================
-     BLOQUE AISLADO 2: VISTA DE DATOS
-     ============================================================================== -->
-  
   <div class="image-lens-wrapper">
     <p align="center">
         <a href="./images/ai-ops-sandbox-vista-datos.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
@@ -118,10 +111,7 @@ Debido a la naturaleza columnar orientada a analítica de datos de LanceDB, las 
 
 ## 🏗️ Vista de dinámica
 
-<!-- ==============================================================================
-     BLOQUE AISLADO 2: VISTA DINÁMICA
-     ============================================================================== -->
-  
+
   <div class="image-lens-wrapper">
     <p align="center">
         <a href="./images/ai-ops-sandbox-vista-dinamica2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
@@ -161,10 +151,6 @@ Este diagrama modela el comportamiento reactivo y la cronología asíncrona no b
 
 ## 🏗️ Vista de dinámica del Plano de Control AIOps - Flujo Transaccional SAGA, MoA, Hot-Reload POSIX y HITL Checkpoint
 
-     <!-- ==============================================================================
-     BLOQUE AISLADO 2: VISTA DINÁMICA
-     ============================================================================== -->
-  
   <div class="image-lens-wrapper">
     <p align="center">
         <a href="./images/ai-ops-sandbox-vista-dinamica-agentes.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
@@ -246,10 +232,6 @@ ai_sandbox_pulumi/
 
 ## 🏗️ Vista de lógica
 
-<!-- ==============================================================================
-     BLOQUE AISLADO 2: VISTA Lógica
-     ============================================================================== -->
-  
   <div class="image-lens-wrapper">
     <p align="center">
         <a href="./images/ai-ops-sandbox-vista-logica2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
@@ -296,10 +278,6 @@ Capa de adaptadores finales encargada de inyectar las cargas vivas del negocio e
 
 ## 🏗️ Vista de Despliegue
 
-<!-- ==============================================================================
-     BLOQUE AISLADO 2: Diagrama de Despliegue
-     ============================================================================== -->
-  
   <div class="image-lens-wrapper">
     <p align="center">
         <a href="./images/ai-ops-sandbox-vista-infraestructura.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
