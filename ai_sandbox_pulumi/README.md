@@ -79,9 +79,9 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
   <div class="image-lens-wrapper">
     <p align="center">
         <a href="./images/ai-ops-sandbox-vista-datos.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/ai-ops-sandbox-vista-datos.png" alt="Vista de Datos" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+            <img src="./images/ai-ops-sandbox-vista-datos.png" alt="Arquitectura Global" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
         </a>
-  </p>
+    </p>
   </div>
   
 ### 📦 Descripción Técnica Detallada del Esquema de Datos (LanceDB)
@@ -125,9 +125,9 @@ Debido a la naturaleza columnar orientada a analítica de datos de LanceDB, las 
   <div class="image-lens-wrapper">
     <p align="center">
         <a href="./images/ai-ops-sandbox-vista-dinamica2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/ai-ops-sandbox-arquitectura-global-2.png" alt="Diagrama de Secuencia" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+            <img src="./images/ai-ops-sandbox-arquitectura-global-2.png" alt="Arquitectura Global" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
         </a>
-  </p>
+    </p>
   </div>
   
 ### ⚡ Descripción Técnica Detallada de la Vista Dinámica (Diagrama de Secuencia y Ciclo de Vida)
@@ -168,7 +168,7 @@ Este diagrama modela el comportamiento reactivo y la cronología asíncrona no b
   <div class="image-lens-wrapper">
     <p align="center">
         <a href="./images/ai-ops-sandbox-vista-dinamica-agentes.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/ai-ops-sandbox-vista-dinamica-agentes.png" alt="Diagrama de Secuencia Agentes" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+            <img src="./images/ai-ops-sandbox-vista-dinamica-agentes.png" alt="Arquitectura Global" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
         </a>
     </p>
   </div>
@@ -253,7 +253,7 @@ ai_sandbox_pulumi/
   <div class="image-lens-wrapper">
     <p align="center">
         <a href="./images/ai-ops-sandbox-vista-logica2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/ai-ops-sandbox-vista-logica2.png" alt="Diagrama de Clases" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
+            <img src="./images/ai-ops-sandbox-vista-logica2.png" alt="Arquitectura Global" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;">
         </a>
     </p>
   </div>
