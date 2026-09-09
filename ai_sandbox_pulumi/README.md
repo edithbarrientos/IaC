@@ -59,8 +59,8 @@ La PoC **ai_sandbox_pulumi** valida formalmente las siguientes capacidades de au
 
   <div>
     <p align="center">
-    <a href="./images/diagrams/i-ops-sandbox-vista-casos-de-uso.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-      <img src="./images/diagrams/i-ops-sandbox-vista-casos-de-uso.png" alt="Vista de Casos de Uso" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;" >
+    <a href="./images/diagrams/ai-ops-sandbox-vista-casos-de-uso.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
+      <img src="./images/diagrams/ai-ops-sandbox-vista-casos-de-uso.png" alt="Vista de Casos de Uso" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;" >
     </a>
     </p>
   </div>
