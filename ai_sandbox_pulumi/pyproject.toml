@@ -2,7 +2,7 @@
 name = "ai-sandbox-pulumi"
 version = "0.1.0"
 description = "PoC Autónoma de AI-Ops y Self-Healing con Pulumi e IA"
-authors = ["Alejandro Marín <tu@email.com>"]
+authors = ["Edith Barrientos"]
 readme = "README.md"
 package-mode = false
 
