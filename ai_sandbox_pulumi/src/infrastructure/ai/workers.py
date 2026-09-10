@@ -1,72 +1,73 @@
-from typing import Dict, Any, List
+"""
+👥 MÓDULO DE AGENTES ESPECIALISTAS COGNITIVOS (TEMPORAL DISTRIBUTED ACTIVITIES)
+========================================================================================
+Cada worker expone sus capacidades analíticas como actividades distribuidas. Detecta
+de forma elástica si está en modo 'simulado' para cortocircuitar la inferencia de Ollama.
+"""
+
+import os
+from temporalio import activity
 from loguru import logger
-from src.infrastructure.ai.brains.cortexLlm import CortexLlm
 
-class BaseWorker:
-    """Clase base inmutable que define el comportamiento del ciclo de inferencia de un agente."""
-    def __init__(self, role_key: str, agent_role: str, system_prompt: str, log_identifier: str, *args, **kwargs):
-        self.role_key: str = role_key
-        self.agent_role: str = agent_role
-        self.system_prompt: str = system_prompt
-        
-        # Asignación polimórfica: Usa agent_id si viene de los kwargs, de lo contrario usa el log_identifier por defecto
-        self.log_identifier: str = kwargs.get("agent_id", log_identifier)
+# =========================================================================
+# --- ACTIVIDAD DISTRIBUIDA 1: ANÁLISIS DE REDES ---
+# =========================================================================
 
-    async def execute_reasoning(self, cortex_brain: CortexLlm, incident_context: Any) -> str:
-        """
-        Template Method: Ejecuta de forma lineal y determinista el flujo de consulta hacia el Córtex.
-        """
-        logger.info(f"[{self.log_identifier}] Despertando agente. Consultando al Córtex LLM...")
-        
-        telemetry_logs: str = getattr(incident_context, "raw_logs", str(incident_context))
-        
-        veredicto_ia: str = await cortex_brain.reason_incident_telemetry(
-            agent_role=self.agent_role,
-            system_prompt=self.system_prompt,
-            telemetry_logs=f"Contexto: {telemetry_logs}"
-        )
-        
-        return veredicto_ia
+@activity.defn(name="execute_network_worker_activity")
+async def execute_network_worker_activity(incident_logs: str) -> dict:
+    """Actividad distribuida inmutable encargada del aislamiento forense de red."""
+    mode = (os.getenv("DEPLOYMENT_MODE") or "simulado").lower().strip()
+    logger.info(f"[Temporal-Activity] Agente de Red despertando en el clúster. Modo: {mode.upper()}")
 
-class NetworkSpecialistWorker(BaseWorker):
-    """Especialización que acepta e inyecta dinámicamente parámetros de inicialización del caso de uso."""
-    def __init__(self, *args, **kwargs):
-        super().__init__(
-            "networking",
-            "NetworkSpecialistWorker",
-            "Eres un especialista de redes corporativas en AWS. Analiza anomalías de enrutamiento y CIDR.",
-            "prod-worker-networking",
-            *args,
-            **kwargs
-        )
-
-class SecurityZeroTrustWorker(BaseWorker):
-    """Especialización que acepta e inyecta dinámicamente parámetros de inicialización del caso de uso."""
-    def __init__(self, *args, **kwargs):
-        super().__init__(
-            "zerotrust",
-            "SecurityZeroTrustWorker",
-            "Eres un auditor de seguridad Zero Trust. Evalúa riesgos críticos en el API Gateway y mTLS.",
-            "prod-worker-zerotrust",
-            *args,
-            **kwargs
-        )
-
-class WorkerRegistry:
-    """Fábrica O(1) encargada de almacenar y despachar las instancias preconfiguradas del enjambre."""
-    def __init__(self):
-        self._agents: Dict[str, BaseWorker] = {
-            "networking": NetworkSpecialistWorker(),
-            "zerotrust": SecurityZeroTrustWorker()
+    # 🚨 CORTOCIRCUITO TOTAL EN MODO SIMULADO: Evita tocar la red o colgarse esperando a Ollama
+    if mode == "simulado":
+        logger.info("[Worker-Net-Sandbox] Simulando análisis de red en microsegundos para desarrollo local...")
+        return {
+            "agent_id": "temporal-worker-networking-01",
+            "security_risk_score": 65,
+            "brain_rationale": "CORTEX_VERDICT: Sandbox de Red mitigado exitosamente de forma virtual en Temporal."
         }
 
-    def get_all_workers(self) -> List[BaseWorker]:
-        """Retorna el enjambre completo de agentes listo para el Scatter-Gather."""
-        return list(self._agents.values())
+    # --- FLUJO REAL DE PRODUCCIÓN / QA (GOLPEA A OLLAMA LOCAL) ---
+    from src.infrastructure.ai.brains.cortexLlm import CortexLLMEngine
+    cortex = CortexLLMEngine(temperature=0.1)
+    system_prompt = "Eres un specialist de redes corporativas en AWS."
+    veredicto = await cortex.reason_incident_telemetry("NetworkSpecialistWorker", system_prompt, incident_logs)
+    
+    return {
+        "agent_id": "temporal-worker-networking-01",
+        "security_risk_score": 65,
+        "brain_rationale": veredicto
+    }
 
-    def get_worker(self, role_key: str) -> BaseWorker:
-        """Retorna un agente específico mediante indexación directa O(1)."""
-        return self._agents[role_key.lower()]
 
-# Instancia global inmutable de la fábrica para consumo interno si es necesario
-WORKER_FACTORY = WorkerRegistry()
+# =========================================================================
+# --- ACTIVIDAD DISTRIBUIDA 2: AUDITORÍA ZERO-TRUST ---
+# =========================================================================
+
+@activity.defn(name="execute_security_worker_activity")
+async def execute_security_worker_activity(incident_logs: str) -> dict:
+    """Actividad distribuida inmutable encargada del cumplimiento Zero-Trust."""
+    mode = (os.getenv("DEPLOYMENT_MODE") or "simulado").lower().strip()
+    logger.info(f"[Temporal-Activity] Agente de Seguridad despertando en el clúster. Modo: {mode.upper()}")
+
+    # 🚨 CORTOCIRCUITO TOTAL EN MODO SIMULADO: Evita tocar la red o colgarse esperando a Ollama
+    if mode == "simulado":
+        logger.info("[Worker-Sec-Sandbox] Simulando auditoría Zero-Trust en microsegundos para desarrollo local...")
+        return {
+            "agent_id": "temporal-worker-zerotrust-01",
+            "security_risk_score": 55,
+            "brain_rationale": "CORTEX_VERDICT: Sandbox Zero-Trust auditado exitosamente de forma virtual en Temporal."
+        }
+
+    # --- FLUJO REAL DE PRODUCCIÓN / QA (GOLPEA A OLLAMA LOCAL) ---
+    from src.infrastructure.ai.brains.cortexLlm import CortexLLMEngine
+    cortex = CortexLLMEngine(temperature=0.1)
+    system_prompt = "Eres un auditor de seguridad Zero Trust."
+    veredicto = await cortex.reason_incident_telemetry("SecurityZeroTrustWorker", system_prompt, incident_logs)
+    
+    return {
+        "agent_id": "temporal-worker-zerotrust-01",
+        "security_risk_score": 55,
+        "brain_rationale": veredicto
+    }

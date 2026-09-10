@@ -1,1 +1,82 @@
+# ========================================================================================
+# 🔒 MATRIZ DE EXCLUSIÓN INMUTABLE ZERO-TRUST (.gitignore) - PLATAFORMA AIOPS DISTRIBUIDA
+# =====================================================================================
+
+# 🐍 ENTORES VIRTUALES Y PAQUETES (PYTHON / POETRY)
+# -------------------------------------------------------------------------------------
+.venv_nativa/
+.venv/
+.venv_distribuido/
+venv/
+ENV/
+env/
+.poetry/
+poetry.lock
+.pdm/
+.pdm-plugins/
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# 🧪 CACHÉS DE INFERENCIA, CPU Y VERIFICACIÓN ESTRICTA
+# -------------------------------------------------------------------------------------
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.hypothesis/
+.coverage
+htmlcov/
+
+# 🍏 BASURA EXCLUSIVA DE MACOS (APPLE SILICON) E IDEs
+# -------------------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# 🔒 SECRETOS, CRIPTO-TOKENS Y CONFIGURACIONES SENSIBLES
+# -------------------------------------------------------------------------------------
 .env
+.env.*
+*.pem
+*.crt
+*.key
+*.pub
+*.pfx
+secrets.toml
+credentials.json
+
+# 🏗️ METADATA DE INFRAESTRUCTURA COMO CÓDIGO (IaC PULUMI / CLÚSTERES)
+# -------------------------------------------------------------------------------------
+.pulumi/
+.terraform/
+*.tfstate
+*.tfstate.backup
+dynamic_mutation.json
+/tmp/ray/
+ray_results/
+.temporal/
+
+# 📊 PERSISTENCIA EFÍMERA, LOGS Y ALMACENAMIENTO VECTORIAL
+# -------------------------------------------------------------------------------------
+*.log
+*.sqlite
+*.db
+.lancedb/
+data/
