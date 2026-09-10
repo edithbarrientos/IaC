@@ -66,10 +66,10 @@ La PoC **ai_sandbox_pulumi** valida formalmente las siguientes capacidades de au
 
 *   **📦 Rollback Automatizado ante Despliegues Fallidos:** Si un nuevo despliegue orquestado por GitOps/ArgoCD degrada la telemetría del API Gateway de Apache APISIX en los primeros 60 segundos, la IA instruye una reversión inmediata (*Rollback*) al último estado estable registrado en Git.
 
-  <div>
+  <div style="width: 100%; max-width: 1200px; min-height: 1200px; text-align: center; margin: 30px auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
     <p align="center">
     <a href="./images/diagrams/ai-ops-sandbox-vista-casos-de-uso.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-      <img src="./images/diagrams/ai-ops-sandbox-vista-casos-de-uso.png" alt="Vista de Casos de Uso" style="max-width: 100%; height:1800; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;" >
+      <img src="./images/diagrams/ai-ops-sandbox-vista-casos-de-uso.png" alt="Vista de Casos de Uso" style="max-width: 100%; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;" >
     </a>
     </p>
   </div>
@@ -80,7 +80,7 @@ La PoC **ai_sandbox_pulumi** valida formalmente las siguientes capacidades de au
 
 El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para garantizar alta concurrencia, inmutabilidad y seguridad zero-trust:
 
-  <div>
+  <div style="width: 100%; max-width: 1200px; min-height: 1200px; text-align: center; margin: 30px auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
     <p align="center">
     <a href="./images/diagrams/ai-ops-sandbox-arquitectura-global-3.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
       <img src="./images/diagrams/ai-ops-sandbox-arquitectura-global-3.png" alt="Arquitectura Global" style="max-width: 100%; height:1800; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;" >
@@ -138,7 +138,7 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
 
 ## 🏗️ Vista de datos
 
-  <div>
+  <div style="width: 100%; max-width: 1200px; min-height: 1200px; text-align: center; margin: 30px auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-datos.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
             <img src="./images/diagrams/ai-ops-sandbox-vista-datos.png" alt="Vista de Datos" style="max-width: 100%; height:1800; border: 1px solid #BDC3C7; border-radius: 4px;" cursor: zoom-in;>
@@ -204,7 +204,7 @@ Debido a la naturaleza columnar orientada a analítica de datos de LanceDB, las 
 
 ## 🏗️ Vista de dinámica
 
-  <div>
+  <div style="width: 100%; max-width: 1200px; min-height: 1200px; text-align: center; margin: 30px auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-dinamica.png3.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
             <img src="./images/diagrams/ai-ops-sandbox-vista-dinamica.png3.png" alt="Diagrama de Secuencia y Ciclo de Vida" style="max-width: 100%; height:1800; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
@@ -254,7 +254,7 @@ Este diagrama modela el comportamiento reactivo y la cronología asíncrona no b
 
 ## 🏗️ Vista de dinámica del Plano de Control AIOps - Flujo Transaccional SAGA, MoA, Hot-Reload POSIX y HITL Checkpoint
 
-  <div>
+  <div style="width: 100%; max-width: 1200px; min-height: 1200px; text-align: center; margin: 30px auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-dinamica-agentes2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
             <img src="./images/diagrams/ai-ops-sandbox-vista-dinamica-agentes2.png" alt="AIOps - Flujo Transaccional SAGA" style="max-width: 100%; height:1800; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
@@ -305,68 +305,43 @@ Para garantizar la compatibilidad zero-trust en entornos contenerizados de alta 
 El código fuente se organiza siguiendo estrictamente principios **SOLID**, garantizando que el núcleo del negocio no dependa de frameworks externos:
 
 ```text
-ai_sandbox_pulumi/                     # 📂 Raíz del Repositorio Corporativo
-│
-├── 🔑 .env                            # Variables de entorno secretas (RAM Session Fallback)
-├── ⚙️ config.toml                     # Parámetros analíticos globales del Sandbox cognitivo
-├── 📦 pyproject.toml                  # Descriptor maestro y dependencias de Poetry
-├── 🔒 poetry.lock                      # Candado de control de versiones del ecosistema
-├── 📝 README.md                        # Manual de ingeniería y certificación de la plataforma
-│
-├── 📁 docs/                            # Documentación de texto y especificaciones del sistema
-│
-├── 🖼️ images/                          # Registro histórico de evidencias de pruebas e imágenes
-│   └── 📐 diagrams/                    # Planos de arquitectura y grafos de IA (PlantUML)
-│
-├── 🛠️ scripts/                         # UTILLAJES DE DESARROLLO (Nomenclatura [Verbo] + Contexto)
-│   ├── ⚙️ ejecutarPruebasDesarrollo.sh# Botón atómico de simulación local (Ingesta + HITL)
-│   └── 🧹 clearPruebasDesarrollo.sh   # Restauración forense de la red y sockets de macOS
-│
-└── 🧩 src/                             # 🚀 CÓDIGO FUENTE DE PRODUCCIÓN (Núcleo Autónomo)
-    │
-    ├── ⚡ main.py                      # Punto de entrada unificado y Daemon de FastAPI (Uvicorn)
-    │
-    ├── 🏢 core/                       # CAPA 1: Entidades de Negocio Puras y Gobernanza
-    │   ├── 🐍 __init__.py              # Inicializador de módulo de la capa Core
-    │   ├── ⚙️ config.py                # Cargador e inyector estricto de config.toml a memoria
-    │   ├── 📊 entities.py              # Contexto inmutable del incidente (IncidentContext DTO)
-    │   ├── ⚖️ governance.py            # Motor de evaluación y políticas de riesgo Zero-Trust
-    │   └── 📜 interfaces.py            # Contratos, firmas y abstracciones de repositorios
-    │
-    ├── 💼 use_cases/                  # CAPA 2: Orquestación de Reglas de Negocio (Sagas)
-    │   ├── 🐍 __init__.py              # Inicializador de módulo de la capa de Casos de Uso
-    │   └── 🔄 self_healing.py          # Coordinador de auto-recuperación y control de LangGraph
-    │
-    └── 🕸️ infrastructure/             # CAPA 3: Adaptadores de Red y Herramientas Externas
-        ├── 🐍 __init__.py              # Inicializador de módulo de la capa de Infraestructura
-        ├── 💬 api_slack.py             # Receptor interactivo de callbacks y firmas de Slack
-        │
-        ├── ☸️ k8s_runtime/            # Abstracciones de ciclo de vida del clúster de Kubernetes
-        │   └── 🐍 __init__.py          # Inicializador de módulo del runtime de K8s
-        │
-        ├── ☁️ pulumi/                 # Orquestación de Nube (Infraestructura como Código)
-        │   ├── 🐍 __init__.py          # Inicializador de módulo de automatización IaC
-        │   ├── 🛠️ apisix_gateway.py    # Despliegue parametrizado y encriptado de Apache APISIX
-        │   └── 📊 stack.py             # Gestor de entornos e hilos de Pulumi (Sandbox/Prod)
-        │
-        └── 🤖 ai/                     # Clúster Cognitivo (Enjambre Mixture of Agents)
-            ├── 🐍 __init__.py          # Inicializador de módulo del motor de IA
-            ├── 📇 agents.py            # Firma de agentes base y contratos cognitivos
-            ├── 💾 memory.py            # Manejador analítico de buffers de memoria volátil
-            ├── 🕸️ supervisor.py        # Orquestador del Grafo de Estados (LangGraph Checkpointer)
-            ├── 👥 workers.py           # Agentes Especialistas de Red y Seguridad (TypedDicts)
-            │
-            └── 🧠 brains/             # LA SUB-CAPA DEL CEREBRO AGENCIAL (DESACOPLADA)
-                ├── 🐍 __init__.py      # Inicializador del sistema cerebral del enjambre
-                ├── 🔮 cortex_llm.py    # Motores de inferencia y prompts (LLM Reasoning Core)
-                ├── 🗄️ hipocampo_memory.py # Memoria contextual a largo plazo (Vector DB)
-                └── 🧰 toolbelt_actions.py # Herramientas del sistema (Scripts/API bindings)
+ai_sandbox_pulumi/
+├── ⚙️ config.toml                       # Parámetros estáticos y targets globales de Pulumi IaC.
+├── 📦 pyproject.toml / poetry.lock      # Gobernanza, restricciones y versionado de dependencias (Poetry). [INDEX]
+├── 📝 README.md                         # Manual de operaciones distribuido y bitácora de arquitectura.
+├── 📂 data/                             # 💾 CAPA DE PERSISTENCIA COLD-STORAGE (HARDWARE LOCAL)
+│   ├── 📊 lancedb/                      # Base de datos vectorial corporativa purificada de producción. [INDEX]
+│   └── 🧪 test_lancedb/                 # Tablas fragmentadas .lance para telemetría aislada de pruebas de estrés. [INDEX]
+├── 📂 images/                           # 🖼️ Almacén central de capturas de pantalla forenses y diagramas. [INDEX]
+├── 📂 scripts/                          # 🛠️ UTILITARIOS AUTOMATIZADOS DE ORQUESTACIÓN PERIMETRAL
+│   ├── 🧹 clearPruebasDesarrollo.sh     # Purga forense de DNS local, sockets zombis y restauración de pfctl de Apple. [INDEX]
+│   ├── 🚀 ejecutarPruebasDesarrollo.sh  # Inyector automatizado de ráfagas e inyecciones humanas gRPC a la queue. [INDEX]
+│   └── 🔍 test_vector_query.py          # Script de validación heurística para queries de similitud en LanceDB. [INDEX]
+└── 📂 src/                              # 🧠 NÚCLEO OPERATIVO DE LA PLATAFORMA COGNITIVA
+    ├── 🎛️ main.py                      # Daemon principal. Contiene la Fábrica de Driver Elástica O(1) libre de ifs. [INDEX]
+    ├── 📂 core/                         # 💎 CAPA DE DOMINIO INMUTABLE (ENTERPRISE BUSINESS RULES)
+    │   ├── 🧬 entities.py               # DTOs y tipado estricto inmutable del negocio (IncidentContext).
+    │   ├── ⚖️ governance.py               # Motor de políticas y validación de cumplimiento zero-trust.
+    │   └── 📜 interfaces.py             # Contratos abstractos y firmas de aislamiento de los componentes core.
+    ├── 📂 use_cases/                    # 🕸️ CAPA DE APLICACIÓN (APPLICATION BUSINESS RULES)
+    │   └── 🩹 self_healing.py           # Orquestador del flujo lógico de auto-recuperación cognitiva autónoma.
+    └── 📂 infrastructure/               # 🔌 CAPA DE ADAPTADORES FÍSICOS Y ACOPLAMIENTOS EXTERNOS
+        ├── 📂 tools/                    # 🛠️ CATÁLOGO DE COMANDOS PERIMETRALES (TOOLBELT)
+        │   └── ⚙️ mitigationToolbelt.py  # Comandos AWS CLI/SSH polimórficos de alta velocidad controlados por Drivers. [INDEX]
+        ├── 📂 persistence/              # 🗄️ ADAPTADORES DE PERSISTENCIA VECTORIAL
+        │   └── 🗃️ vector_repo.py        # Implementación de queries y repositorios de datos indexados en LanceDB. [INDEX]
+        └── 📂 ai/                       # 🤖 INTELIGENCIA ARTIFICIAL DISTRIBUIDA (TEMPORAL CLUSTER)
+            ├── 🔀 supervisor.py         # Workflow inmutable determinista de la Saga de Temporal (HITL / Checkpoints). [INDEX]
+            ├── 👥 workers.py            # Actividades distributed Mixture of Agents (MoA) aisladas de la red. [INDEX]
+            └── 📂 brains/               # 🧠 ENJAMBRE DE PROCESAMIENTO COGNITIVO PROFUNDO
+                ├── 💬 cortexLlm.py      # Motor de inferencia acoplado a Ollama/Qwen 2.5 local sin colisiones. [INDEX]
+                └── 💾 hipocampoMemory.py# Gestor de memoria semántica y embebidos para LanceDB. [INDEX]
 ```
 ---
 
 ## 🏗️ Vista de lógica
 
-  <div>
+  <div style="width: 100%; max-width: 1200px; min-height: 1200px; text-align: center; margin: 30px auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-logica3.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
             <img src="./images/diagrams/ai-ops-sandbox-vista-logica3.png" alt="Vista Lógica" style="max-width: 100%; height:1800; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
@@ -439,7 +414,7 @@ Capa de adaptadores finales encargada de inyectar las cargas vivas del negocio e
 
 ## 🏗️ Vista de Despliegue
 
-  <div>
+  <div style="width: 100%; max-width: 1200px; min-height: 1200px; text-align: center; margin: 30px auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-infraestructura.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
             <img src="./images/diagrams/ai-ops-sandbox-vista-infraestructura.png" alt="Diagrama de despliegue" style="max-width: 100%; height:1200; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
