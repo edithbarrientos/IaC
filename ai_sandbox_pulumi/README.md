@@ -69,7 +69,7 @@ La PoC **ai_sandbox_pulumi** valida formalmente las siguientes capacidades de au
   <div>
     <p align="center">
     <a href="./images/diagrams/ai-ops-sandbox-vista-casos-de-uso.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-      <img src="./images/diagrams/ai-ops-sandbox-vista-casos-de-uso.png" alt="Vista de Casos de Uso" style="max-width: 100%; height:1200; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;" >
+      <img src="./images/diagrams/ai-ops-sandbox-vista-casos-de-uso.png" alt="Vista de Casos de Uso" style="max-width: 100%; height:1800; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;" >
     </a>
     </p>
   </div>
@@ -83,7 +83,7 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
   <div>
     <p align="center">
     <a href="./images/diagrams/ai-ops-sandbox-arquitectura-global-3.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-      <img src="./images/diagrams/ai-ops-sandbox-arquitectura-global-3.png" alt="Arquitectura Global" style="max-width: 100%; height:1200; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;" >
+      <img src="./images/diagrams/ai-ops-sandbox-arquitectura-global-3.png" alt="Arquitectura Global" style="max-width: 100%; height:1800; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;" >
     </a>
     </p>
   </div>
@@ -141,7 +141,7 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
   <div>
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-datos.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/diagrams/ai-ops-sandbox-vista-datos.png" alt="Vista de Datos" style="max-width: 100%; height:1200; border: 1px solid #BDC3C7; border-radius: 4px;" cursor: zoom-in;>
+            <img src="./images/diagrams/ai-ops-sandbox-vista-datos.png" alt="Vista de Datos" style="max-width: 100%; height:1800; border: 1px solid #BDC3C7; border-radius: 4px;" cursor: zoom-in;>
         </a>
     </p>
   </div>
@@ -207,7 +207,7 @@ Debido a la naturaleza columnar orientada a analítica de datos de LanceDB, las 
   <div>
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-dinamica.png3.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/diagrams/ai-ops-sandbox-vista-dinamica.png3.png" alt="Diagrama de Secuencia y Ciclo de Vida" style="max-width: 100%; height:1200; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
+            <img src="./images/diagrams/ai-ops-sandbox-vista-dinamica.png3.png" alt="Diagrama de Secuencia y Ciclo de Vida" style="max-width: 100%; height:1800; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
         </a>
     </p>
   </div>
@@ -257,7 +257,7 @@ Este diagrama modela el comportamiento reactivo y la cronología asíncrona no b
   <div>
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-dinamica-agentes2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/diagrams/ai-ops-sandbox-vista-dinamica-agentes2.png" alt="AIOps - Flujo Transaccional SAGA" style="max-width: 100%; height:1200; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
+            <img src="./images/diagrams/ai-ops-sandbox-vista-dinamica-agentes2.png" alt="AIOps - Flujo Transaccional SAGA" style="max-width: 100%; height:1800; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
         </a>
     </p>
   </div>
@@ -369,7 +369,7 @@ ai_sandbox_pulumi/                     # 📂 Raíz del Repositorio Corporativo
   <div>
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-logica3.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/diagrams/ai-ops-sandbox-vista-logica3.png" alt="Vista Lógica" style="max-width: 100%; height:1200; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
+            <img src="./images/diagrams/ai-ops-sandbox-vista-logica3.png" alt="Vista Lógica" style="max-width: 100%; height:1800; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
         </a>
     </p>
   </div>
@@ -523,14 +523,14 @@ backend_url = "file://~"
 
 ### Requisitos Previos
 
-* **Python 3.12** o superior (entorno virtual puro estabilizado para producción) [INDEX].
-* **Poetry** o **Pip** (Gestor de entornos y resolución de paquetes) [INDEX].
-* **Temporal CLI** (Motor de orquestación distributed de grado industrial) [INDEX].
-* **Pulumi CLI** configurado con acceso seguro al backend de infraestructura [INDEX].
+* **Python 3.12** o superior (entorno virtual puro estabilizado para producción).
+* **Poetry** o **Pip** (Gestor de entornos y resolución de paquetes).
+* **Temporal CLI** (Motor de orquestación distributed de grado industrial).
+* **Pulumi CLI** configurado con acceso seguro al backend de infraestructura.
 
 ### 1. Inicializar el Entorno e Instalar Dependencias
 
-Instala el ecosistema completo junto con las herramientas de verificación estricta de código corporativo (**Ruff** para linter de alta velocidad basado en Rust y **Mypy** para validación estática de tipos) [INDEX]:
+Instala el ecosistema completo junto con las herramientas de verificación estricta de código corporativo (**Ruff** para linter de alta velocidad basado en Rust y **Mypy** para validación estática de tipos):
 ```bash
 # Activar entorno nativo puro
 source .venv_nativa/bin/activate
@@ -541,7 +541,7 @@ pip install temporalio loguru python-dotenv langchain-core langchain-ollama ruff
 
 ### 2. Ejecutar la Suite de Calidad (Verificación Estricta)
 
-Antes de levantar el daemon asíncrono, el código debe superar el control de tipado zero-trust y formato estricto [INDEX]:
+Antes de levantar el daemon asíncrono, el código debe superar el control de tipado zero-trust y formato estricto:
 ```bash
 # Ejecutar verificación de tipos estáticos
 mypy src
@@ -552,7 +552,7 @@ ruff check src --fix
 
 ### 3. Lanzar la Plataforma Autónoma (Temporal Daemon Server)
 
-Antes de encender el servidor, asegúrate de iniciar el motor distribuido físico de fondo de tu Mac y arranca el plano de control cognitivo inyectando la ruta de namespaces de la Clean Architecture [INDEX]:
+Antes de encender el servidor, asegúrate de iniciar el motor distribuido físico de fondo de tu Mac y arranca el plano de control cognitivo inyectando la ruta de namespaces de la Clean Architecture:
 
 ```bash
 # Pestaña Terminal 3: Arrancar el servidor de desarrollo local real de Temporal
@@ -562,9 +562,9 @@ temporal server start-dev
 find . -type d -name "__pycache__" -exec rm -rf {} +
 DEPLOYMENT_MODE="simulado" TEMPORAL_HOST="127.0.0.1:7233" python -m src.main
 ```
-*   🏭 `[FÁBRICA_O1]` -> Autodetectará el tag de entorno inyectado de forma instantánea [INDEX].
-*   🧪 `[CONECTOR_ESTADO]` -> Resolverá el enlace gRPC polimórfico hacia el clúster sin condicionales rígidos [INDEX].
-*   🦾 `[COLA_DISTRIBUIDA]` -> Quedará escuchando activamente el canal: `'aiops-incident-task-queue'` [INDEX].
+*   🏭 `[FÁBRICA_O1]` -> Autodetectará el tag de entorno inyectado de forma instantánea.
+*   🧪 `[CONECTOR_ESTADO]` -> Resolverá el enlace gRPC polimórfico hacia el clúster sin condicionales rígidos.
+*   🦾 `[COLA_DISTRIBUIDA]` -> Quedará escuchando activamente el canal: `'aiops-incident-task-queue'`.
 
 ---
 
@@ -574,7 +574,7 @@ Abre una **nueva pestaña** en tu terminal (Pestaña 2) y ejecuta los siguientes
 
 ### 🎛️ Ingesta de Alerta (Fase 1: Despacho del Workflow a la Queue)
 
-Envía un payload de telemetría forense real directo hacia el motor distribuido [INDEX]. El clúster validará el esquema en microsegundos, registrará el ID de forma inmutable y delegará la discusión pesada a las actividades concurrentes de tus agentes de IA [INDEX].
+Envía un payload de telemetría forense real directo hacia el motor distribuido. El clúster validará el esquema en microsegundos, registrará el ID de forma inmutable y delegará la discusión pesada a las actividades concurrentes de tus agentes de IA.
 
 ```bash
 temporal workflow start \
@@ -583,11 +583,11 @@ temporal workflow start \
   --task-queue "aiops-incident-task-queue" \
   --input "\"Alerta Crítica: Anomalía de handshake detectada en el API Gateway corporativo.\""
 ```
-*   **Resultado esperado:** Tu consola desplegará los hashes, `WorkflowId` y `RunId` auténticos generados por el clúster, quedando a la espera de la intervención humana [INDEX].
+*   **Resultado esperado:** Tu consola desplegará los hashes, `WorkflowId` y `RunId` auténticos generados por el clúster, quedando a la espera de la intervención humana.
 
 ### 🎛️ Aprobación Humana (Fase 2: Intercepción de Señales y Cierre con Pulumi)
 
-Simula que un operador de SRE autorizó las mutaciones de infraestructura calculadas por el enjambre MoA, inyectando la aprobación inmutable directo en la base de datos distribuida [INDEX].
+Simula que un operador de SRE autorizó las mutaciones de infraestructura calculadas por el enjambre MoA, inyectando la aprobación inmutable directo en la base de datos distribuida.
 
 ```bash
 temporal workflow signal \
@@ -595,7 +595,7 @@ temporal workflow signal \
   --name "receive_human_approval" \
   --input "true"
 ```
-*   **Resultado esperado:** El hilo distribuido despertará de su checkpoint, consumirá la señal gRPC, autorizará el comando de Pulumi y completará el flujo arrojándote la salida e historial criptográfico completo (`COMPLETED`) [INDEX].
+*   **Resultado esperado:** El hilo distribuido despertará de su checkpoint, consumirá la señal gRPC, autorizará el comando de Pulumi y completará el flujo arrojándote la salida e historial criptográfico completo (`COMPLETED`).
 
 ---
 
@@ -614,7 +614,7 @@ Si prefieres omitir la copia manual de los comandos gRPC anteriores, puedes dele
 
 ### 🛑 Apagado Seguro de Memoria (Anti-Crashes)
 
-El sistema incorpora un interceptor global de señales físicas [INDEX]. Al presionar **`Ctrl + C`**, el plano de control captura el evento, drena los sockets gRPC y evacúa el clúster de la memoria RAM de forma limpia y en absoluto silencio corporativo [INDEX]:
+El sistema incorpora un interceptor global de señales físicas. Al presionar **`Ctrl + C`**, el plano de control captura el evento, drena los sockets gRPC y evacúa el clúster de la memoria RAM de forma limpia y en absoluto silencio corporativo [INDEX]:
 *   🛑 `[DRENADO_RAM]` -> Interrupción de señal interceptada.
 *   ✨ `[DRENADO_RAM]` -> Servidor Distribuido evacuado de la RAM de forma limpia.
 
