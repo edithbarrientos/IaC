@@ -66,7 +66,7 @@ La PoC **ai_sandbox_pulumi** valida formalmente las siguientes capacidades de au
 
 *   **📦 Rollback Automatizado ante Despliegues Fallidos:** Si un nuevo despliegue orquestado por GitOps/ArgoCD degrada la telemetría del API Gateway de Apache APISIX en los primeros 60 segundos, la IA instruye una reversión inmediata (*Rollback*) al último estado estable registrado en Git.
 
-  <div style="width: 100%; max-width: 1200px; min-height: 1200px; text-align: center; margin: 30px auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+  <div align="center">
     <p align="center">
     <a href="./images/diagrams/ai-ops-sandbox-vista-casos-de-uso.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
       <img src="./images/diagrams/ai-ops-sandbox-vista-casos-de-uso.png" alt="Vista de Casos de Uso" style="max-width: 100%; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;" >
@@ -80,10 +80,10 @@ La PoC **ai_sandbox_pulumi** valida formalmente las siguientes capacidades de au
 
 El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para garantizar alta concurrencia, inmutabilidad y seguridad zero-trust:
 
-  <div style="width: 100%; max-width: 1200px; min-height: 1200px; text-align: center; margin: 30px auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+  <div align="center">
     <p align="center">
     <a href="./images/diagrams/ai-ops-sandbox-arquitectura-global-3.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-      <img src="./images/diagrams/ai-ops-sandbox-arquitectura-global-3.png" alt="Arquitectura Global" style="max-width: 100%; height:1800; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;" >
+      <img src="./images/diagrams/ai-ops-sandbox-arquitectura-global-3.png" alt="Arquitectura Global" width="1200" height="1800">
     </a>
     </p>
   </div>
@@ -138,10 +138,10 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
 
 ## 🏗️ Vista de datos
 
-  <div style="width: 100%; max-width: 1200px; min-height: 1200px; text-align: center; margin: 30px auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+  <div align="center">
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-datos.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/diagrams/ai-ops-sandbox-vista-datos.png" alt="Vista de Datos" style="max-width: 100%; height:1800; border: 1px solid #BDC3C7; border-radius: 4px;" cursor: zoom-in;>
+            <img src="./images/diagrams/ai-ops-sandbox-vista-datos.png" alt="Vista de Datos"  width="1200" height="1800">
         </a>
     </p>
   </div>
@@ -204,10 +204,10 @@ Debido a la naturaleza columnar orientada a analítica de datos de LanceDB, las 
 
 ## 🏗️ Vista de dinámica
 
-  <div style="width: 100%; max-width: 1200px; min-height: 1200px; text-align: center; margin: 30px auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+  <div salign="center">
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-dinamica.png3.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/diagrams/ai-ops-sandbox-vista-dinamica.png3.png" alt="Diagrama de Secuencia y Ciclo de Vida" style="max-width: 100%; height:1800; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
+            <img src="./images/diagrams/ai-ops-sandbox-vista-dinamica.png3.png" alt="Diagrama de Secuencia y Ciclo de Vida"  width="1200" height="1800">
         </a>
     </p>
   </div>
@@ -254,10 +254,10 @@ Este diagrama modela el comportamiento reactivo y la cronología asíncrona no b
 
 ## 🏗️ Vista de dinámica del Plano de Control AIOps - Flujo Transaccional SAGA, MoA, Hot-Reload POSIX y HITL Checkpoint
 
-  <div style="width: 100%; max-width: 1200px; min-height: 1200px; text-align: center; margin: 30px auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+  <div align="center">
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-dinamica-agentes2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/diagrams/ai-ops-sandbox-vista-dinamica-agentes2.png" alt="AIOps - Flujo Transaccional SAGA" style="max-width: 100%; height:1800; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
+            <img src="./images/diagrams/ai-ops-sandbox-vista-dinamica-agentes2.png" alt="AIOps - Flujo Transaccional SAGA" width="1200" height="1800">
         </a>
     </p>
   </div>
@@ -303,7 +303,6 @@ Para garantizar la compatibilidad zero-trust en entornos contenerizados de alta 
 ## 📂 Estructura Limpia del Proyecto
 
 El código fuente se organiza siguiendo estrictamente principios **SOLID**, garantizando que el núcleo del negocio no dependa de frameworks externos:
-
 ```text
 ai_sandbox_pulumi/
 ├── ⚙️ config.toml                       # Parámetros estáticos y targets globales de Pulumi IaC.
@@ -341,10 +340,10 @@ ai_sandbox_pulumi/
 
 ## 🏗️ Vista de lógica
 
-  <div style="width: 100%; max-width: 1200px; min-height: 1200px; text-align: center; margin: 30px auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+  <div align="center">
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-logica3.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/diagrams/ai-ops-sandbox-vista-logica3.png" alt="Vista Lógica" style="max-width: 100%; height:1800; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
+            <img src="./images/diagrams/ai-ops-sandbox-vista-logica3.png" alt="Vista Lógica"  width="1200" height="1800">
         </a>
     </p>
   </div>
@@ -414,10 +413,10 @@ Capa de adaptadores finales encargada de inyectar las cargas vivas del negocio e
 
 ## 🏗️ Vista de Despliegue
 
-  <div style="width: 100%; max-width: 1200px; min-height: 1200px; text-align: center; margin: 30px auto; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+  <div align="center">
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-infraestructura.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/diagrams/ai-ops-sandbox-vista-infraestructura.png" alt="Diagrama de despliegue" style="max-width: 100%; height:1200; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
+            <img src="./images/diagrams/ai-ops-sandbox-vista-infraestructura.png" alt="Diagrama de despliegue" width="1200" height="1800">
         </a>
     </p>
   </div>
