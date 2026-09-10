@@ -69,7 +69,7 @@ La PoC **ai_sandbox_pulumi** valida formalmente las siguientes capacidades de au
   <div>
     <p align="center">
     <a href="./images/diagrams/ai-ops-sandbox-vista-casos-de-uso.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-      <img src="./images/diagrams/ai-ops-sandbox-vista-casos-de-uso.png" alt="Vista de Casos de Uso" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;" >
+      <img src="./images/diagrams/ai-ops-sandbox-vista-casos-de-uso.png" alt="Vista de Casos de Uso" style="max-width: 100%; height:1200; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;" >
     </a>
     </p>
   </div>
@@ -83,7 +83,7 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
   <div>
     <p align="center">
     <a href="./images/diagrams/ai-ops-sandbox-arquitectura-global-3.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-      <img src="./images/diagrams/ai-ops-sandbox-arquitectura-global-3.png" alt="Arquitectura Global" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;" >
+      <img src="./images/diagrams/ai-ops-sandbox-arquitectura-global-3.png" alt="Arquitectura Global" style="max-width: 100%; height:1200; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;" >
     </a>
     </p>
   </div>
@@ -141,7 +141,7 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
   <div>
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-datos.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/diagrams/ai-ops-sandbox-vista-datos.png" alt="Vista de Datos" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px;" cursor: zoom-in;>
+            <img src="./images/diagrams/ai-ops-sandbox-vista-datos.png" alt="Vista de Datos" style="max-width: 100%; height:1200; border: 1px solid #BDC3C7; border-radius: 4px;" cursor: zoom-in;>
         </a>
     </p>
   </div>
@@ -206,8 +206,8 @@ Debido a la naturaleza columnar orientada a analítica de datos de LanceDB, las 
 
   <div>
     <p align="center">
-        <a href="./images/diagrams/ai-ops-sandbox-vista-dinamica.png2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/diagrams/ai-ops-sandbox-vista-dinamica.png2.png" alt="Diagrama de Secuencia y Ciclo de Vida" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
+        <a href="./images/diagrams/ai-ops-sandbox-vista-dinamica.png3.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
+            <img src="./images/diagrams/ai-ops-sandbox-vista-dinamica.png3.png" alt="Diagrama de Secuencia y Ciclo de Vida" style="max-width: 100%; height:1200; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
         </a>
     </p>
   </div>
@@ -256,8 +256,8 @@ Este diagrama modela el comportamiento reactivo y la cronología asíncrona no b
 
   <div>
     <p align="center">
-        <a href="./images/diagrams/ai-ops-sandbox-vista-dinamica-agentes.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/diagrams/ai-ops-sandbox-vista-dinamica-agentes.png" alt="AIOps - Flujo Transaccional SAGA" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
+        <a href="./images/diagrams/ai-ops-sandbox-vista-dinamica-agentes2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
+            <img src="./images/diagrams/ai-ops-sandbox-vista-dinamica-agentes2.png" alt="AIOps - Flujo Transaccional SAGA" style="max-width: 100%; height:1200; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
         </a>
     </p>
   </div>
@@ -368,8 +368,8 @@ ai_sandbox_pulumi/                     # 📂 Raíz del Repositorio Corporativo
 
   <div>
     <p align="center">
-        <a href="./images/diagrams/ai-ops-sandbox-vista-logica2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/diagrams/ai-ops-sandbox-vista-logica2.png" alt="Vista Lógica" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
+        <a href="./images/diagrams/ai-ops-sandbox-vista-logica3.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
+            <img src="./images/diagrams/ai-ops-sandbox-vista-logica3.png" alt="Vista Lógica" style="max-width: 100%; height:1200; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
         </a>
     </p>
   </div>
@@ -442,7 +442,7 @@ Capa de adaptadores finales encargada de inyectar las cargas vivas del negocio e
   <div>
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-infraestructura.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/diagrams/ai-ops-sandbox-vista-infraestructura.png" alt="Diagrama de despliegue" style="max-width: 100%; height: auto; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
+            <img src="./images/diagrams/ai-ops-sandbox-vista-infraestructura.png" alt="Diagrama de despliegue" style="max-width: 100%; height:1200; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;">
         </a>
     </p>
   </div>
@@ -464,6 +464,7 @@ Este diagrama modela la topología física, la segregación perimetral y el plan
   
   - **rate-limiting Plugin:** Implementa un guardrail antiavalanchas (*Token Bucket*) para mitigar ataques DDoS o frenar bucles de alucinación concurrentes.
 
+
 #### 🧠 2. Entorno de Ejecución del Plano de Control (Namespace: ai-ops-control-plane)
 
 * **Segmento de Red Dedicado (CIDR: 172.16.10.0/24):** Aísla de forma estricta los componentes lógicos de la IA del tráfico ordinario de la aplicación.
@@ -474,11 +475,13 @@ Este diagrama modela la topología física, la segregación perimetral y el plan
 
 * **LanceDB Persistent Store:** Repositorio vectorial empotrado que opera como la memoria RAG de largo plazo. Indexa firmas de errores y configuraciones usando algoritmos **HNSW con soporte SIMD** y compresión **Product Quantization (PQ)** para búsquedas en menos de 10ms.
 
+
 #### 🔬 4. Nodo de Aislamiento Experimental (Validation Sandbox Jailer)
 
 * **SandboxController API & Firecracker WarmPool Manager:** Componentes del plano de control que administran un búfer circular libre de bloqueos (*Lock-Free Ring Buffer*) para el aprovisionamiento inmediato de laboratorios protegidos.
 
 * **Micro-VM Sandbox Minimalista:** Entorno virtual seguro y efímero que se inicializa en **~5 milisegundos** clonando un sistema de archivos base de solo lectura (`rootfs.ext4`). El **SRE Agent** despliega de forma aislada la propuesta de parche aquí para validar su comportamiento real antes de propagar cambios a producción.
+
 
 #### 📦 5. Plano de Cargas Vivas y Balanceo Multi-Tier (Namespace: production-workloads)
 
@@ -487,6 +490,7 @@ Este diagrama modela la topología física, la segregación perimetral y el plan
 * **Balanceo Interno Kube-Proxy:** Utiliza IPTables/IPVS para exponer los servicios de red internos de Kubernetes. `frontend-service` actúa en Capa 4 distribuyendo el tráfico web de forma equitativa (*Round-Robin*) entre dos réplicas redundantes (`Replica A` y `Replica B`), garantizando alta disponibilidad.
 
 * **Universal Kubernetes Pod [Caja Gris Agnóstica]:** Representa el backend observado del sistema. Es una auténtica caja negra inmutable para el plano de control (el cual puede albergar cualquier microservicio, API REST o App genérica). Está definido estrictamente por sus límites de hardware (`limits.cpu/memory`), variables de entorno cifradas de un objeto `Secret` y un volumen de persistencia elástico de datos (`pvc-app-storage` de 50Gi), quedando completamente aislado de la exposición pública de internet.
+
 
 #### 🔄 6. Resiliencia y Mecanismo Automático de Retorno de Versión (Saga Rollback)
 
@@ -513,95 +517,107 @@ stack = "sandbox"
 mode = "simulado"       # Opciones: "simulado" (Offline, local state backend) o "real" (AWS)
 backend_url = "file://~"
 ```
-
 ---
-
-
 
 ## 🚀 Guía de Instalación y Desarrollo
 
 ### Requisitos Previos
 
-* **Python 3.14** o superior (optimizado para el bucle de eventos estricto).
-* **Poetry** (Gestor de entornos y resolución de paquetes).
-* **Pulumi CLI** configurado con acceso seguro al backend de infraestructura.
+* **Python 3.12** o superior (entorno virtual puro estabilizado para producción) [INDEX].
+* **Poetry** o **Pip** (Gestor de entornos y resolución de paquetes) [INDEX].
+* **Temporal CLI** (Motor de orquestación distributed de grado industrial) [INDEX].
+* **Pulumi CLI** configurado con acceso seguro al backend de infraestructura [INDEX].
 
 ### 1. Inicializar el Entorno e Instalar Dependencias
 
-Instala el ecosistema completo junto con las herramientas de verificación estricta de código corporativo (**Ruff** para linter de alta velocidad basado en Rust y **Mypy** para validación estática de tipos):
+Instala el ecosistema completo junto con las herramientas de verificación estricta de código corporativo (**Ruff** para linter de alta velocidad basado en Rust y **Mypy** para validación estática de tipos) [INDEX]:
 ```bash
-poetry install
+# Activar entorno nativo puro
+source .venv_nativa/bin/activate
+
+# Instalar dependencias distribuidas y de calidad
+pip install temporalio loguru python-dotenv langchain-core langchain-ollama ruff mypy
 ```
 
 ### 2. Ejecutar la Suite de Calidad (Verificación Estricta)
 
-Antes de levantar el daemon asíncrono, el código debe superar el control de tipado zero-trust y formato estricto:
+Antes de levantar el daemon asíncrono, el código debe superar el control de tipado zero-trust y formato estricto [INDEX]:
 ```bash
 # Ejecutar verificación de tipos estáticos
-poetry run mypy src
+mypy src
 
 # Ejecutar formateador y linter automatizado
-poetry run ruff check src --fix
+ruff check src --fix
 ```
 
-### 3. Lanzar la Plataforma Autónoma (API Gateway)
+### 3. Lanzar la Plataforma Autónoma (Temporal Daemon Server)
 
-Antes de encender el servidor, asegúrate de liberar el puerto `8000` de cualquier proceso zombi en tu Mac y arranca el plano de control cognitivo inyectando la ruta de namespaces de la Clean Architecture:
+Antes de encender el servidor, asegúrate de iniciar el motor distribuido físico de fondo de tu Mac y arranca el plano de control cognitivo inyectando la ruta de namespaces de la Clean Architecture [INDEX]:
 
 ```bash
-# Liberar el puerto secuestrado de fondo
+# Pestaña Terminal 3: Arrancar el servidor de desarrollo local real de Temporal
+temporal server start-dev
 
-sudo kill -9 \$(lsof -t -i:8000) 2>/dev/null
-
-# Arrancar el servidor en modo Single-Worker de alta velocidad
-PYTHONPATH=.:src poetry run python main.py
+# Pestaña Terminal 1 (Principal): Arrancar tu plano de control distribuido real
+find . -type d -name "__pycache__" -exec rm -rf {} +
+DEPLOYMENT_MODE="simulado" TEMPORAL_HOST="127.0.0.1:7233" python -m src.main
 ```
+*   🏭 `[FÁBRICA_O1]` -> Autodetectará el tag de entorno inyectado de forma instantánea [INDEX].
+*   🧪 `[CONECTOR_ESTADO]` -> Resolverá el enlace gRPC polimórfico hacia el clúster sin condicionales rígidos [INDEX].
+*   🦾 `[COLA_DISTRIBUIDA]` -> Quedará escuchando activamente el canal: `'aiops-incident-task-queue'` [INDEX].
+
 ---
 
 ## 🧪 Simulación del Ciclo de Vida del Incidente (Prueba de Humo)
 
-Abre una **nueva pestaña** en tu terminal y ejecuta los siguientes comandos secuenciales para validar el enjambre Mixture of Agents de forma manual con `curl` o mediante los scripts automatizados de soporte.
+Abre una **nueva pestaña** en tu terminal (Pestaña 2) y ejecuta los siguientes comandos secuenciales gRPC nativos mediante la CLI oficial de Temporal para validar el enjambre de forma cruda, transparente y sin filtros HTTP ocultos [INDEX].
 
-### 🎛️  Ingesta de Alerta (Fase 1: Debate de Agentes y Checkpoint)
+### 🎛️ Ingesta de Alerta (Fase 1: Despacho del Workflow a la Queue)
 
-Envía un payload de telemetría simulando una falla crítica en la nube. El endpoint validará el esquema en microsegundos, retornará un éxito inmediato `202 Accepted` y delegará la discusión pesada a un hilo virtual en segundo plano.
-
-```bash
-curl -X POST "http://localhost:8000/v1/alerts/ingest" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "incident_id": "incident-edithbaga-exitoso",
-       "cloud_provider": "aws",
-       "alert_description": "{\"message\": \"Plano de control verificado\", \"raw_logs\": \"Exception in thread 0x01\"}",
-       "notification_channel": "web",
-       "slack_webhook_url": null
-     }'
-```
-* **Resultado esperado:** Recibirás un JSON confirmando el estatus de aceptado. En los logs del servidor verás a los workers debatir en paralelo y congelar el estado en el checkpoint global compartido.
-
-### 🎛️  Aprobación Humana (Fase 2: Reanudación de la Saga y Cierre Forense)
-
-Simula que un operador de SRE presionó el botón de **[🟢 Aprobar]** desde la interfaz web local para autorizar las mutaciones de infraestructura calculadas por la IA.
+Envía un payload de telemetría forense real directo hacia el motor distribuido [INDEX]. El clúster validará el esquema en microsegundos, registrará el ID de forma inmutable y delegará la discusión pesada a las actividades concurrentes de tus agentes de IA [INDEX].
 
 ```bash
-curl -X POST "http://localhost:8000/v1/alerts/resume-web?thread_id=incident-edithbaga-exitoso&approved=true"
+temporal workflow start \
+  --workflow-id "incident-dev-temporal-sandbox-id" \
+  --type "IncidentMitigationWorkflow" \
+  --task-queue "aiops-incident-task-queue" \
+  --input "\"Alerta Crítica: Anomalía de handshake detectada en el API Gateway corporativo.\""
 ```
-* **Resultado esperado:** El hilo de LangGraph despertará de su checkpoint, validará la firma de autorización, extraerá síncronamente el snapshot y guardará la bitácora forense de auditoría (`200 OK`).
+*   **Resultado esperado:** Tu consola desplegará los hashes, `WorkflowId` y `RunId` auténticos generados por el clúster, quedando a la espera de la intervención humana [INDEX].
+
+### 🎛️ Aprobación Humana (Fase 2: Intercepción de Señales y Cierre con Pulumi)
+
+Simula que un operador de SRE autorizó las mutaciones de infraestructura calculadas por el enjambre MoA, inyectando la aprobación inmutable directo en la base de datos distribuida [INDEX].
+
+```bash
+temporal workflow signal \
+  --workflow-id "incident-dev-temporal-sandbox-id" \
+  --name "receive_human_approval" \
+  --input "true"
+```
+*   **Resultado esperado:** El hilo distribuido despertará de su checkpoint, consumirá la señal gRPC, autorizará el comando de Pulumi y completará el flujo arrojándote la salida e historial criptográfico completo (`COMPLETED`) [INDEX].
 
 ---
 
-### 🛠️  Automatización del Flujo (Estrategia [Verbo] + PruebasDesarrollo)
+### 🛠️ Automatización del Flujo (Estrategia [Verbo] + PruebasDesarrollo)
 
-Si prefieres omitir el copiado manual de los comandos `curl` anteriores, puedes delegar el ciclo completo o la restauración del sistema a los utilitarios locales de desarrollo:
+Si prefieres omitir la copia manual de los comandos gRPC anteriores, puedes delegar el ciclo completo o la restauración del sistema a los utilitarios locales de desarrollo:
 
-* **Ejecutar la Simulación Completa con Un Solo Clic:**
-  ```bash
-  ./scripts/ejecutarPruebasDesarrollo.sh
-  ```
-* **Restauración y Desmantelamiento de Red al Terminar de Programar:**
-  ```bash
-  ./scripts/clearPruebasDesarrollo.sh
-  ```
+*   **Ejecutar la Simulación Completa con Un Solo Clic:**
+    ```bash
+    ./scripts/ejecutarPruebasDesarrollo.sh
+    ```
+*   **Restauración y Desmantelamiento de Red al Terminar de Programar:**
+    ```bash
+    ./scripts/clearPruebasDesarrollo.sh
+    ```
+
+### 🛑 Apagado Seguro de Memoria (Anti-Crashes)
+
+El sistema incorpora un interceptor global de señales físicas [INDEX]. Al presionar **`Ctrl + C`**, el plano de control captura el evento, drena los sockets gRPC y evacúa el clúster de la memoria RAM de forma limpia y en absoluto silencio corporativo [INDEX]:
+*   🛑 `[DRENADO_RAM]` -> Interrupción de señal interceptada.
+*   ✨ `[DRENADO_RAM]` -> Servidor Distribuido evacuado de la RAM de forma limpia.
+
 ---
 
 > ⚠️ **ESTADO DEL PROYECTO: Proof of Concept (PoC) / Human-Centric AIOps**
