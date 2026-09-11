@@ -8,7 +8,7 @@ vectores y logs forenses de incidentes utilizando el motor de almacenamiento loc
 import os
 from typing import Any, Dict, List, Optional, cast
 
-# 🚨 PARCHE MYPY: Silenciamos la falta de stubs internos de las librerías nativas
+# PARCHE MYPY: Silenciamos la falta de stubs internos de las librerías nativas
 import lancedb  # type: ignore[import-untyped]
 import pyarrow as pa  # type: ignore[import-untyped]
 from loguru import logger
@@ -61,8 +61,9 @@ class PhysicalLanceDbStorage(BaseStorageStrategy):
         return self._db
 
     def _define_schema(self) -> pa.Schema:
+        # 🚨 CORRECCIÓN CLAVE: Sincronizado a las 768 dimensiones reales de nomic-embed-text
         return pa.schema([
-            pa.field("vector", pa.list_(pa.float32(), 384)),
+            pa.field("vector", pa.list_(pa.float32(), 768)),
             pa.field("incident_id", pa.string()),
             pa.field("cloud_provider", pa.string()),
             pa.field("security_risk_score", pa.int32()),
@@ -94,7 +95,6 @@ class PhysicalLanceDbStorage(BaseStorageStrategy):
                 return []
             table = db.open_table(table_name)
             raw_results = table.search(embedding).limit(limit).to_list()
-            # 🚨 PARCHE MYPY: Caspeamos explícitamente el Any para cumplir el contrato del tipo
             return cast(List[Dict[str, Any]], raw_results)
         except Exception as e:
             logger.error(
@@ -115,7 +115,6 @@ class IncidentVectorRepository:
         mode_key = (os.getenv("DEPLOYMENT_MODE") or "simulado").lower().strip()
         self.table_name = "incident_forensics"
         
-        # 🚨 PARCHE MYPY: Instanciamos los objetos directo eliminando funciones lambda conflictivas
         environment_factory: Dict[str, BaseStorageStrategy] = {
             "simulado": InMemorySimulatedStorage(),
             "real": PhysicalLanceDbStorage(db_path=db_path),
@@ -123,14 +122,12 @@ class IncidentVectorRepository:
             "produccion": PhysicalLanceDbStorage(db_path=db_path)
         }
         
-        # Resolución dinámica polimórfica instantánea pura
         self.storage = environment_factory.get(mode_key, environment_factory["simulado"])
         logger.info(f"🏭 [FÁBRICA_O1] Inyectado Driver de Persistencia para: '{mode_key.upper()}'")
 
     async def upsert_incident_vector(
         self, incident_data: Dict[str, Any], embedding: List[float]
     ) -> bool:
-        """Inserta o actualiza un registro forense delegando polimórficamente al driver."""
         record = {
             "vector": embedding,
             "incident_id": str(incident_data.get("incident_id")),
@@ -144,5 +141,4 @@ class IncidentVectorRepository:
     async def query_similar_incidents(
         self, query_embedding: List[float], limit: int = 2
     ) -> List[Dict[str, Any]]:
-        """Busca incidentes del clúster con similitud semántica de forma polimórfica."""
         return await self.storage.search_vector(self.table_name, query_embedding, limit)
