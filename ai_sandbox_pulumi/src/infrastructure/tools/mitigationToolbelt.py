@@ -1,122 +1,195 @@
 """
-⚙️ MÓDULO DE INFRAESTRUCTURA: HIGH-PERFORMANCE MITIGATION TOOLBELT (DRIVEN STRATEGY)
+⚙️ CAPA DE INFRAESTRUCTURA: HIGH-PERFORMANCE PARAMETRIZABLE MULTI-CLOUD TOOLBELT
 ========================================================================================
-Empaqueta comandos perimetrales mediante inyección de drivers polimórficos en O(1),
-eliminando estructuras condicionales y optimizando el throughput de la CPU en la Mac.
+Manejador perimetral elástico encargado de interactuar de forma asíncrona pura
+con AWS, Azure, GCP y servidores remotos mediante subprocesos de la CPU.
 """
 
-import os
 import asyncio
-from typing import Dict, Any, List, Type
+import os
+from typing import Any, Dict, Tuple, Type
+
 from loguru import logger
 
 # =====================================================================================
-# 🔌 DRIVERS POLIMÓRFICOS DE EJECUCIÓN (ELIMINACIÓN ABSOLUTA DE IFS)
+# 🔌 PROVIDERS POLIMÓRFICOS MULTI-CLOUD (ELIMINACIÓN DE HARDCODING)
 # =====================================================================================
 
-class BaseExecutionDriver:
-    """Contrato inmutable para las estrategias de ejecución en el sistema operativo."""
-    async def run_command(self, binary: str, args: List[str], log_tag: str) -> bool:
+class BaseCloudProvider:
+    """Contrato base para el aislamiento táctico en cualquier proveedor de nube."""
+    def build_isolation_command(self, resource_id: str, target_security: str) -> list[str]:
         raise NotImplementedError
 
 
-class SimulatedExecutionDriver(BaseExecutionDriver):
-    """Driver encargado de cortocircuitar las llamadas de red en el Sandbox local."""
-    async def run_command(self, binary: str, args: List[str], log_tag: str) -> bool:
-        logger.success(f"✨ [{log_tag}-Sandbox] Simulación exitosa -> {binary} {' '.join(args)}")
-        await asyncio.sleep(0.05) # Latencia mínima simulada de bus de datos
-        return True
+class AwsCloudProvider(BaseCloudProvider):
+    """Implementación oficial nativa de comandos para la AWS CLI corporativa."""
+    def build_isolation_command(self, resource_id: str, target_security: str) -> list[str]:
+        return [
+            "aws", "ec2", "modify-instance-attribute",
+            "--instance-id", resource_id,
+            "--groups", target_security
+        ]
 
 
-class RealProcessExecutionDriver(BaseExecutionDriver):
-    """Driver de producción encargado de interactuar con los binarios de la Mac/AWS."""
-    async def run_command(self, binary: str, args: List[str], log_tag: str) -> bool:
-        full_cmd = [binary] + args
+class AzureCloudProvider(BaseCloudProvider):
+    """Implementación oficial para el aislamiento táctico perimetral en Azure CLI."""
+    def build_isolation_command(self, resource_id: str, target_security: str) -> list[str]:
+        return [
+            "az", "network", "nic", "update",
+            "--ids", resource_id,
+            "--security-group", target_security
+        ]
+
+
+class GcpCloudProvider(BaseCloudProvider):
+    """Implementación oficial nativa de comandos para la gcloud CLI."""
+    def build_isolation_command(self, resource_id: str, target_security: str) -> list[str]:
+        return [
+            "gcloud", "compute", "instances", "add-tags", resource_id,
+            "--tags", target_security,
+            "--quiet"
+        ]
+
+
+class LocalVirtualProvider(BaseCloudProvider):
+    """Estrategia Sandbox elástica local para simulaciones instantáneas en memoria."""
+    def build_isolation_command(self, resource_id: str, target_security: str) -> list[str]:
+        return ["echo", f"Sandbox: {resource_id} aislado en {target_security}"]
+
+# =====================================================================================
+# 🎛️ CAPA DE ORQUESTACIÓN DE LA PLATAFORMA DE MITIGACIÓN PERIMETRAL
+# =====================================================================================
+
+class MitigationToolbelt:
+    """Catálogo orquestador perimetral parametrizado mediante el Patrón Strategy."""
+
+    def __init__(self) -> None:
+        self.mode = (os.getenv("DEPLOYMENT_MODE") or "simulado").lower().strip()
+        cloud_key = (os.getenv("CLOUD_PROVIDER_TARGET") or "aws").lower().strip()
+        
+        provider_factory: Dict[str, Type[BaseCloudProvider]] = {
+            "aws": AwsCloudProvider,
+            "azure": AzureCloudProvider,
+            "gcp": GcpCloudProvider,
+            "simulado": LocalVirtualProvider
+        }
+        
+        target_class = provider_factory.get(cloud_key, LocalVirtualProvider)
+        self.cloud_provider = target_class()
+        
+        log_msg = f"🏭 [TOOLBELT] Estrategia: '{cloud_key.upper()}' [{self.mode.upper()}]"
+        logger.info(log_msg)
+
+    async def _execute_shell_command(self, cmd: list[str]) -> Tuple[int, str, str]:
+        """Ejecuta un comando nativo usando subprocesos asíncronos en la CPU con Timeout."""
         try:
-            # Ejecución no bloqueante multi-core de alto rendimiento
             process = await asyncio.create_subprocess_exec(
-                *full_cmd,
+                *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE
             )
-            stdout, stderr = await process.communicate()
+            # 🚀 INTERCEPTOR ANTI-CONGELAMIENTO: Aborta en 2.0 segundos si hay un pipe bloqueado
+            stdout, stderr = await asyncio.wait_for(process.communicate(), timeout=2.0)
+            return (
+                process.returncode or 0,
+                stdout.decode(errors="ignore").strip(),
+                stderr.decode(errors="ignore").strip()
+            )
+        except asyncio.TimeoutError:
+            logger.warning(f"⚠️ [TOOLBELT-Timeout] Abortado comando colapsado: {cmd}")
+            try:
+                process.kill()
+            except Exception:
+                pass
+            return 1, "", "TIMEOUT_EXCEEDED"
+        except Exception as e:
+            logger.error(f"💥 [TOOLBELT-Failure] Error invocando binario: {str(e)}")
+            return 1, "", str(e)
+
+    async def isolate_cloud_resource(
+        self, resource_id: str, target_security: str
+    ) -> Dict[str, Any]:
+        """Aísla un recurso en la nube delegando el comando polimórficamente."""
+        logger.info(f"🔒 [TOOLBELT] Solicitando aislamiento de recurso: {resource_id}")
+        
+        if self.mode == "simulado":
+            return {
+                "InstanceId": resource_id,
+                "CurrentSetting": {
+                    "SecurityGroups": [
+                        {
+                            "GroupId": target_security,
+                            "GroupName": "AIOps-Isolation-Zone"
+                        }
+                    ]
+                },
+                "ResponseMetadata": {
+                    "RequestId": "f841-e501-4940-12000-crypto-token",
+                    "HTTPStatusCode": 200,
+                    "RetryAttempts": 0
+                }
+            }
+
+        cmd = self.cloud_provider.build_isolation_command(resource_id, target_security)
+        code, out, err = await self._execute_shell_command(cmd)
+        
+        if code != 0:
+            logger.error(f"💥 [CLOUD-Failure] Error modificando perímetro: {err}")
+            return {"status": "FAILED", "error": err}
             
-            if process.returncode == 0:
-                logger.success(f"⚙️ [{log_tag}] Comando ejecutado con éxito en la infraestructura física.")
-                return True
-            else:
-                logger.error(f"💥 [{log_tag}-Failure] El subproceso retornó código de error: {stderr.decode('utf-8')}")
-                return False
-        except FileNotFoundError:
-            logger.critical(f"💥 [{log_tag}-Failure] El binario '{binary}' no se encuentra instalado en la máquina.")
-            return False
+        logger.success(f"✨ [CLOUD-SUCCESS] Recurso {resource_id} mitigado con éxito.")
+        return {"status": "SUCCESS", "output": out}
 
-
-# =====================================================================================
-# 🛠️ COMANDOS INMUTABLES PARAMETRIZADOS (PATRÓN COMMAND)
-# =====================================================================================
-
-class BaseMitigationTool:
-    def __init__(self, driver: BaseExecutionDriver) -> None:
-        self.driver = driver
-
-    async def execute_action(self, target_id: str, metadata: Dict[str, Any]) -> bool:
-        raise NotImplementedError
-
-
-class AwsCliAislarInstanciaTool(BaseMitigationTool):
-    """Encargado de aislar instancias EC2 modificando sus perfiles perimetrales."""
-    async def execute_action(self, target_id: str, metadata: Dict[str, Any]) -> bool:
-        sg_isolated = metadata.get("security_group_isolated", "sg-isolated-jail-99")
-        logger.info(f"⚙️ [TOOL_AWS] Solicitando contención para la instancia EC2: {target_id}")
+    async def collect_ssh_forensics(
+        self, target_ip: str, ssh_user: str
+    ) -> Dict[str, Any]:
+        """Conecta vía SSH nativo y extrae de forma asíncrona logs forenses del host."""
+        logger.info(f"🔍 [TOOLBELT] Conectando vía SSH a {target_ip} para forense...")
         
-        # Declaramos los argumentos limpios del binario de AWS
-        args = ["ec2", "modify-instance-attribute", "--instance-id", target_id, "--groups", sg_isolated]
-        # Delegamos polimórficamente la ejecución al driver asignado sin preguntar el entorno
-        return await self.driver.run_command(binary="aws", args=args, log_tag="TOOL_AWS")
+        if self.mode == "simulado":
+            return {
+                "status": "SUCCESS",
+                "logs": "[Handshake-Failure] TLS version mismatch on API perimetral."
+            }
 
-
-class SshBashMitigationTool(BaseMitigationTool):
-    """Encargado de inyectar scripts forenses inmutables para recolección de telemetría."""
-    async def execute_action(self, target_id: str, metadata: Dict[str, Any]) -> bool:
-        ip_host = metadata.get("ip_address", "127.0.0.1")
-        logger.info(f"⚙️ [TOOL_SSH] Abriendo canal seguro gRPC/SSH hacia el host: {ip_host}")
+        cmd = [
+            "ssh", "-o", "StrictHostKeyChecking=no", "-o", "BatchMode=yes",
+            f"{ssh_user}@{target_ip}",
+            "tail", "-n", "50", "/var/log/syslog"
+        ]
         
-        bash_script = "sudo netstat -tupn | grep ESTABLISHED > /tmp/forensic_dump.log"
-        args = ["-o", "StrictHostKeyChecking=no", f"admin@{ip_host}", bash_script]
-        return await self.driver.run_command(binary="ssh", args=args, log_tag="TOOL_SSH")
-
-
-# =====================================================================================
-# 🧠 COMPONENTE MAESTRO: CATÁLOGO REGISTRY DEL TOOLBELT O(1)
-# =====================================================================================
-
-class MitigationToolbeltRegistry:
-    """Fábrica elástica encargada de inyectar el entorno e inicializar las herramientas."""
-    def __init__(self) -> None:
-        mode_key = (os.getenv("DEPLOYMENT_MODE") or "simulado").lower().strip()
+        code, out, err = await self._execute_shell_command(cmd)
         
-        # Mapa de resolución de drivers en O(1)
-        driver_factory: Dict[str, Type[BaseExecutionDriver]] = {
-            "simulado": SimulatedExecutionDriver,
-            "real": RealProcessExecutionDriver,
-            "qa": RealProcessExecutionDriver,
-            "produccion": RealProcessExecutionDriver
-        }
-        
-        # Instanciamos el driver inmutable del ambiente
-        resolved_driver_class = driver_factory.get(mode_key, SimulatedExecutionDriver)
-        logger.info(f"🏭 [FÁBRICA_O1] Inyectando Driver de Mitigación para el entorno: '{mode_key.upper()}'")
-        driver_instance = resolved_driver_class()
-        
-        # Composición limpia libre de ifs condicionales
-        self._tools: Dict[str, BaseMitigationTool] = {
-            "AWS_ISOLATE_EC2": AwsCliAislarInstanciaTool(driver=driver_instance),
-            "SSH_FORENSIC_DUMP": SshBashMitigationTool(driver=driver_instance)
-        }
-        
-    def get_tool(self, tool_key: str) -> BaseMitigationTool:
-        return self._tools[tool_key.upper().strip()]
+        if code != 0:
+            logger.error(f"💥 [SSH-Failure] Error recolectando telemetría de {target_ip}: {err}")
+            return {"status": "FAILED", "error": err}
+            
+        logger.success(f"✨ [SSH-SUCCESS] Telemetría forense extraída de {target_ip} con éxito.")
+        return {"status": "SUCCESS", "logs": out}
 
-# Instancia global del catálogo
-MITIGATION_TOOLBELT = MitigationToolbeltRegistry()
+    async def inject_perimetral_firewall_block(
+        self, target_ip: str, ssh_user: str, attacker_ip: str
+    ) -> Dict[str, Any]:
+        """Inyecta una regla iptables rígida en el host perimetral vía SSH."""
+        logger.info(f"🚫 [TOOLBELT] Bloqueando tráfico en {target_ip} contra: {attacker_ip}")
+        
+        if self.mode == "simulado":
+            return {
+                "status": "SUCCESS",
+                "message": f"Bloqueo iptables aplicado en firewall local de {target_ip}."
+            }
+
+        cmd = [
+            "ssh", "-o", "StrictHostKeyChecking=no", "-o", "BatchMode=yes",
+            f"{ssh_user}@{target_ip}",
+            "sudo", "iptables", "-A", "INPUT", "-s", attacker_ip, "-j", "DROP"
+        ]
+        
+        code, out, err = await self._execute_shell_command(cmd)
+        
+        if code != 0:
+            logger.error(f"💥 [FIREWALL-Failure] Error aplicando bloqueo en {target_ip}: {err}")
+            return {"status": "FAILED", "error": err}
+            
+        logger.success(f"✨ [FIREWALL-SUCCESS] Tráfico de {attacker_ip} bloqueado en {target_ip}.")
+        return {"status": "SUCCESS", "message": out}

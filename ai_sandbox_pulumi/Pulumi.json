@@ -1,0 +1,79 @@
+{
+  "description": "Cluster AWS EKS de nivel empresarial con VPC dedicada, OIDC y KMS para aws-eks-enterprise",
+  "name": "aws-eks-enterprise",
+  "outputs": {
+    "clusterName": "${aws-eks-enterprise-eks.eksCluster.name}",
+    "kubeconfig": "${aws-eks-enterprise-eks.kubeconfig}",
+    "oidcProviderUrl": "${aws-eks-enterprise-eks.core.oidcProvider.url}"
+  },
+  "resources": {
+    "aws-eks-enterprise-eks": {
+      "properties": {
+        "createOidcProvider": true,
+        "enabledClusterLogTypes": [
+          "api",
+          "audit",
+          "authenticator",
+          "controllerManager",
+          "scheduler"
+        ],
+        "encryptionProviders": [
+          {
+            "keyArn": "${aws-eks-enterprise-kms-key.arn}",
+            "resources": [
+              "secrets"
+            ]
+          }
+        ],
+        "endpointPrivateAccess": true,
+        "endpointPublicAccess": true,
+        "managedNodeGroups": [
+          {
+            "desiredCapacity": 3,
+            "instanceType": "m5.large",
+            "labels": {
+              "environment": "production",
+              "tier": "application"
+            },
+            "maxSize": 10,
+            "minSize": 3,
+            "name": "aws-eks-enterprise-apps-pool"
+          }
+        ],
+        "privateSubnetIds": "${aws-eks-enterprise-vpc.privateSubnetIds}",
+        "publicAccessCidrs": [
+          "192.168.1.0/24",
+          "10.50.0.0/16"
+        ],
+        "publicSubnetIds": "${aws-eks-enterprise-vpc.publicSubnetIds}",
+        "vpcId": "${aws-eks-enterprise-vpc.vpcId}"
+      },
+      "type": "eks:Cluster"
+    },
+    "aws-eks-enterprise-kms-key": {
+      "properties": {
+        "deletionWindowInDays": 7,
+        "description": "Llave KMS para cifrar secretos de Kubernetes etcd en aws-eks-enterprise"
+      },
+      "type": "aws:kms:Key"
+    },
+    "aws-eks-enterprise-vpc": {
+      "properties": {
+        "cidrBlock": "10.0.0.0/16",
+        "numberOfAvailabilityZones": 3,
+        "subnetSpecs": [
+          {
+            "cidrMask": 24,
+            "type": "Public"
+          },
+          {
+            "cidrMask": 22,
+            "type": "Private"
+          }
+        ]
+      },
+      "type": "awsx:ec2:Vpc"
+    }
+  },
+  "runtime": "yaml"
+}

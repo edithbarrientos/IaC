@@ -3,9 +3,11 @@
 ========================================================================================
 Mapea proveedores de inferencia mediante estados polimórficos con despacho en O(1),
 eliminando estructuras if/else ramificadas y asegurando extensibilidad limpia.
+========================================================================================
 """
 
 import os
+import json
 import unicodedata
 from typing import Optional, Dict, Any, Type
 from loguru import logger
@@ -53,7 +55,6 @@ class OllamaCortexState(BaseCortexState):
     def invoke_llm(self, messages: list) -> str:
         if not self.client:
             raise RuntimeError("Instalación de langchain-ollama corrupta o ausente.")
-        # Envío síncrono puente compatible con el bucle asíncrono superior
         response = self.client.invoke(messages)
         return response.content
 
@@ -78,39 +79,46 @@ class OpenAiCortexState(BaseCortexState):
 
 
 class VirtualCortexState(BaseCortexState):
-    """Estado de contingencia determinista (Pattern Null Object) para desarrollo local."""
+    """
+    Estado de contingencia determinista (Pattern Null Object) Parametrizado.
+    Garantiza el desacoplamiento: Consume el plano inmutable inyectado por la fábrica.
+    """
     
+    def __init__(self, model_name: str, temperature: float, external_factory_blueprint: str) -> None:
+        super().__init__(model_name, temperature)
+        # CONTRATO SOLID: El estado solo almacena el artefacto mandado por la factoría externa
+        self.external_factory_blueprint = external_factory_blueprint
+
     def invoke_llm(self, messages: list) -> str:
-        # Recuperamos el rol del mensaje del sistema para contextualizar el mock
-        system_content = str(messages[0][1]).lower() if messages else ""
-        logger.info("[Cortex-Virtual] Generando veredicto determinista local en microsegundos.")
-        
-        if "redes" in system_content or "networking" in system_content:
-            return "CORTEX_VERDICT: Anomalía TCP identificada. Recomiendo aislamiento inmutable perimetral de la subred."
-        return "CORTEX_VERDICT: Auditoría Zero-Trust completada. Brechas bloqueadas de forma virtual."
+        logger.info("[Cortex-Virtual] Despachando artefacto emitido por la factoría externa en microsegundos.")
+        return self.external_factory_blueprint
 
-
-# =====================================================================================
+    # =====================================================================================
 # 🧠 COMPONENTE MAESTRO REFACTORIZADO (CON DISPACHO EN TIEMPO CONSTANTE O(1))
 # =====================================================================================
 
 class CortexLLMEngine:
-    """Motor unificado agnóstico encargado de despachar inferencias mediante estados polimórficos."""
+    """Motor unificado agnóstico encargado de despachar inferencias mediante la inyección estricta de fábricas."""
 
-    def __init__(self, model_name: Optional[str] = None, temperature: float = 0.1) -> None:
+    def __init__(self, model_name: Optional[str] = None, temperature: float = 0.1, factory_blueprint: Optional[Dict[str, Any]] = None) -> None:
         self.temperature = temperature
-        
-        # 1. Recuperamos el proveedor desde el entorno global sanitizado
         self.provider_key = (os.getenv("AI_PROVIDER") or "virtual").lower().strip()
         
-        # 2. Diccionario de Mapeo Algorítmico de Estados (Sustituye por completo los if/else)
-        state_registry: Dict[str, Type[BaseCortexState]] = {
-            "ollama": OllamaCortexState,
-            "openai": OpenAiCortexState,
-            "virtual": VirtualCortexState
+        # PRINCIPIO DE INVERSIÓN DE DEPENDENCIAS:
+        # Se exige de forma mandatoria que la factoría externa provea la estructura de infraestructura
+        assert factory_blueprint is not None, "[Cortex-Error] Violación de Clean Architecture: Se requiere inyectar el blueprint desde la factoría."
+        
+        # Serialización limpia inmutable a formato string JSON
+        blueprint_string = json.dumps(factory_blueprint, indent=2)
+        
+        # Registro de estrategias O(1) inyectando la firma de la factoría
+        state_registry = {
+            "ollama": lambda: OllamaCortexState(self.model_name, self.temperature),
+            "openai": lambda: OpenAiCortexState(self.model_name, self.temperature),
+            "virtual": lambda: VirtualCortexState(self.model_name, self.temperature, blueprint_string)
         }
         
-        # 3. Resolución elástica inteligente del cerebro analítico
+        # Resolución del modelo analítico
         resolved_model = model_name or os.getenv("LLM_MODEL_NAME")
         if self.provider_key == "ollama" and (not resolved_model or "gpt" in str(resolved_model).lower()):
             self.model_name = "qwen2.5:1.5b"
@@ -118,15 +126,14 @@ class CortexLLMEngine:
             fallbacks = {"ollama": "qwen2.5:1.5b", "openai": "gpt-4o-mini"}
             self.model_name = resolved_model or fallbacks.get(self.provider_key, "virtual-model")
 
-        # 4. Despacho dinámico del estado O(1)
-        state_class = state_registry.get(self.provider_key, VirtualCortexState)
+        # Despacho dinámico de la factoría de estados
+        initializer = state_registry.get(self.provider_key, state_registry["virtual"])
         logger.info(f"[Cortex-Engine] 🚀 Despachando estado en fábrica O(1) hacia: '{self.provider_key.upper()}'")
-        self._state_driver = state_class(self.model_name, self.temperature)
+        self._state_driver = initializer()
         
-        # Si la inicialización física falló por dependencias, degradamos de forma segura a modo virtual
-        if not self._state_driver.client and self.provider_key != "virtual":
-            logger.warning(f"[Cortex-Engine] Enlace físico fallido para '{self.provider_key}'. Conmutando a VirtualCortexState.")
-            self._state_driver = VirtualCortexState(self.model_name, self.temperature)
+        if not getattr(self._state_driver, "client", None) and self.provider_key != "virtual":
+            logger.warning(f"[Cortex-Engine] Enlace físico fallido para '{self.provider_key}'. Conmutando a VirtualCortexState con inyección.")
+            self._state_driver = VirtualCortexState(self.model_name, self.temperature, blueprint_string)
 
     def _sanitizar_texto_ascii(self, texto: str) -> str:
         """Algoritmo de descomposición canónica para normalizar bytes de red."""
@@ -147,11 +154,11 @@ class CortexLLMEngine:
         ]
         
         try:
-            # El motor principal delega sin saber si golpea un clúster local, la nube o RAM
             veredicto = self._state_driver.invoke_llm(messages)
             return veredicto
         except Exception as e:
             logger.error(f"[{agent_role}-Cortex-Failure] Interrupción en Driver State '{self.provider_key}': {str(e)}")
-            # Cortocircuito defensivo automático hacia el Null Object local en caso de interrupción en red
-            fallback_driver = VirtualCortexState(self.model_name, self.temperature)
+            # Inyección de contingencia defensiva conservando el blueprint mandado por la factoría
+            blueprint_backup = self._state_driver.external_factory_blueprint if hasattr(self._state_driver, 'external_factory_blueprint') else "{}"
+            fallback_driver = VirtualCortexState(self.model_name, self.temperature, blueprint_backup)
             return fallback_driver.invoke_llm(messages)
