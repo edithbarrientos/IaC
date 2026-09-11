@@ -81,6 +81,9 @@ governance_risk_threshold = 70
 
 [persistence]
 lance_db_uri = "data/lancedb"
+# Parámetros de asignación elástica para colecciones vectoriales
+[persistence.tables]
+forensics_table_name = "incident_forensics"
 
 # ==============================================================================
 # 🚀 ENJAMBRE DE AGENTES COGNITIVOS MIXTURE-OF-AGENTS (METADATA PARAMETERS)
@@ -101,12 +104,13 @@ default_rationale = "CORTEX_VERDICT: Sandbox Zero-Trust auditado."
 provider = "ollama"
 
 [ai_engines.ollama]
-host_url = "http://cluster.local"
+# 🚀 ZERO IF INTERCONNECTION: Se pasa la URL del endpoint asíncrono completa desde el TOML
+api_endpoint_url = "http://cluster.local"
 timeout_limit = 8
 request_body_template = { model = "qwen2.5:1.5b", prompt = "$PROMPT", stream = false, format = "json" }
 
 [ai_engines.vllm]
-host_url = "http://cluster.local"
+api_endpoint_url = "http://cluster.local"
 timeout_limit = 10
 request_body_template = { model = "qwen2.5-7b-instruct", messages = [{ role = "user", content = "$PROMPT" }], max_tokens = 512 }
 

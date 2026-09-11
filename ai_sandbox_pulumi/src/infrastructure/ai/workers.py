@@ -2,13 +2,15 @@
 👥 MÓDULO DE AGENTES ESPECIALISTAS COGNITIVOS (TEMPORAL DISTRIBUTED ACTIVITIES)
 ========================================================================================
 Cada worker expone sus capacidades analíticas como actividades distribuidas.
+NON-BLOCKING ASYNC: Implementa despacho polimórfico en O(1)
+utilizando aiohttp. Destruye permanentemente el cuello de botella de red.
 ========================================================================================
 """
 
 import os
 import time
 import json
-import urllib.request
+import aiohttp
 from typing import Any, Dict
 from temporalio import activity
 from loguru import logger
@@ -16,8 +18,6 @@ from src.core.config import ProjectConfigurationRegistry
 from src.infrastructure.pulumi.cloud_factory import CloudProviderFactory
 
 # DECLARACIÓN DE MÉTRICAS OFICIALES DE PROMETHEUS (CNCF STANDARD)
-from prometheus_client import Counter, Histogram
-
 AIOPS_HTTP_REQUESTS_TOTAL = Counter(
     "aiops_http_requests_total",
     "Volumen total de incidentes ingeridos y aceptados por el plano de control",
@@ -37,7 +37,7 @@ AIOPS_TOOLBELT_FAILURES_TOTAL = Counter(
 )
 
 # =====================================================================================
-# ⚙️ ESTRATEGIAS ALGORÍTMICAS VORACES EN O(1) (ELIMINACIÓN DE IFS)
+# ⚙️ ESTRATEGIAS ALGORÍTMICAS POLIMÓRFICAS EN O(1) (ELIMINACIÓN RADICAL DE IFS)
 # =====================================================================================
 
 def _inyectar_prompt_recursivo(data: Any, prompt_str: str) -> Any:
@@ -50,7 +50,7 @@ def _inyectar_prompt_recursivo(data: Any, prompt_str: str) -> Any:
         return prompt_str
     return data
 
-# 🧠 TABLA 1: Despacho de Endpoints y Extracción de Respuestas de IA según el Proveedor
+# 🧠 TABLA HASH 1: Extractores polimórficos de tokens de respuesta del LLM (Sin condicionales)
 def _parsear_respuesta_ollama(res_data: Dict[str, Any]) -> str:
     return res_data["response"].strip()
 
@@ -58,23 +58,23 @@ def _parsear_respuesta_vllm(res_data: Dict[str, Any]) -> str:
     return res_data["choices"]["message"]["content"].strip()
 
 AI_PARSE_STRATEGY: Dict[str, Any] = {
-    "ollama": {"suffix": "/api/generate", "extractor": _parsear_respuesta_ollama},
-    "vllm": {"suffix": "/v1/chat/completions", "extractor": _parsear_respuesta_vllm}
+    "ollama": _parsear_respuesta_ollama,
+    "vllm": _parsear_respuesta_vllm
 }
 
-# ☁️ TABLA 2: Mutación Dinámica de Variables de Infraestructura según la Nube Activa
+# ☁️ TABLA HASH 2: Mutadores elásticos de topologías según el proveedor activo
 def _mutar_variables_aws(variables: Dict[str, Any], parsed_ai: Dict[str, Any]):
-    if "instance_type" in parsed_ai: variables["instance_type"] = parsed_ai["instance_type"]
-    if "desired_capacity" in parsed_ai: variables["desired_capacity"] = int(parsed_ai["desired_capacity"])
-    if "max_size" in parsed_ai: variables["max_size"] = int(parsed_ai["max_size"])
-    if "cidr_block" in parsed_ai: variables["cidr_block"] = parsed_ai["cidr_block"]
+    variables["instance_type"] = parsed_ai.get("instance_type", variables["instance_type"])
+    variables["desired_capacity"] = int(parsed_ai.get("desired_capacity", variables["desired_capacity"]))
+    variables["max_size"] = int(parsed_ai.get("max_size", variables["max_size"]))
+    variables["cidr_block"] = parsed_ai.get("cidr_block", variables["cidr_block"])
 
 def _mutar_variables_azure(variables: Dict[str, Any], parsed_ai: Dict[str, Any]):
-    if "vm_size" in parsed_ai: variables["vm_size"] = parsed_ai["vm_size"]
-    if "node_count" in parsed_ai: variables["node_count"] = int(parsed_ai["node_count"])
+    variables["vm_size"] = parsed_ai.get("vm_size", variables["vm_size"])
+    variables["node_count"] = int(parsed_ai.get("node_count", variables["node_count"]))
 
 def _mutar_variables_gcp(variables: Dict[str, Any], parsed_ai: Dict[str, Any]):
-    if "machine_type" in parsed_ai: variables["machine_type"] = parsed_ai["machine_type"]
+    variables["machine_type"] = parsed_ai.get("machine_type", variables["machine_type"])
 
 CLOUD_MUTATION_STRATEGY: Dict[str, Any] = {
     "aws": _mutar_variables_aws,
@@ -83,12 +83,12 @@ CLOUD_MUTATION_STRATEGY: Dict[str, Any] = {
 }
 
 # =====================================================================================
-# --- ACTIVIDAD DISTRIBUIDA 1: AGENTE DE RED (100% PARAMETRIZADO) ---
+# --- ACTIVIDAD DISTRIBUIDA 1: AGENTE DE RED (ZERO IFS LINEAR RUNTIME) ---
 # =====================================================================================
 
 @activity.defn(name="execute_network_worker_activity")
 async def execute_network_worker_activity(incident_logs: str) -> dict:
-    """Actividad distribuida parametrizada al 100% libre de strings fijos o diccionarios quemados."""
+    """Actividad distribuida parametrizada al 100% libre de bloques IF de control."""
     logger.info("[Project-ODIN] Agente de Red de producción despertando. Despacho voraz...")
     inicio_agente = time.perf_counter()
 
@@ -111,31 +111,27 @@ async def execute_network_worker_activity(incident_logs: str) -> dict:
     )
 
     ai_provider = ai_settings["provider"]
-    strategy = AI_PARSE_STRATEGY.get(ai_provider, AI_PARSE_STRATEGY["ollama"])
+    extractor_func = AI_PARSE_STRATEGY[ai_provider]
     
-    ollama_base_url = os.getenv("OLLAMA_HOST_URL") or ai_settings["host_url"]
-    ollama_url = f"{ollama_base_url}{strategy['suffix']}"
+    # Inyección elástica anti-error de resolución DNS local de tu Mac
+    ollama_url = os.getenv("OLLAMA_HOST_URL") or ai_settings["endpoint_url"]
 
     try:
         final_payload_dict = _inyectar_prompt_recursivo(ai_settings["body_template"], ollama_prompt)
-        payload_bytes = json.dumps(final_payload_dict).encode("utf-8")
-
-        req = urllib.request.Request(
-            ollama_url, data=payload_bytes, headers={"Content-Type": "application/json"}, method="POST"
-        )
         
-        with urllib.request.urlopen(req, timeout=int(ai_settings["timeout_limit"])) as response:
-            res_data = json.loads(response.read().decode("utf-8"))
-            ai_response = strategy["extractor"](res_data)
-            parsed_ai = json.loads(ai_response)
-            logger.success(f"[Project-ODIN] Inferencia procesada en O(1) para el motor: {ai_provider}")
-            
-            cloud_provider = custom_params["cloud_provider"]
-            mutator = CLOUD_MUTATION_STRATEGY.get(cloud_provider)
-            if mutator:
+        timeout_limit = aiohttp.ClientTimeout(total=int(ai_settings["timeout_limit"]))
+        async with aiohttp.ClientSession(timeout=timeout_limit) as session:
+            async with session.post(ollama_url, json=final_payload_dict) as response:
+                res_data = await response.json()
+                
+                ai_response = extractor_func(res_data)
+                parsed_ai = json.loads(ai_response)
+                logger.success(f"[Project-ODIN] Inferencia completada asíncronamente en O(1) vía {ai_provider}")
+                
+                mutator = CLOUD_MUTATION_STRATEGY[custom_params["cloud_provider"]]
                 mutator(custom_params["variables"], parsed_ai)
-            
-            brain_rationale = f"AI_VERDICT: Recursos calculados de forma dinámica. Respuesta: {ai_response}"
+                
+                brain_rationale = f"AI_VERDICT: Recursos calculados por la IA. Respuesta: {ai_response}"
 
     except Exception as e:
         logger.error(f"[Project-ODIN] Inferencia fallida ({str(e)}). Aplicando Cortocircuito Inmutable.")
@@ -166,28 +162,21 @@ async def execute_network_worker_activity(incident_logs: str) -> dict:
     }
 
 # =====================================================================================
-# --- ACTIVIDAD DISTRIBUIDA 2: AUDITORÍA ZERO-TRUST (100% PARAMETRIZADO) ---
+# --- ACTIVIDAD DISTRIBUIDA 2, 3 & 4 (COMPONENTE INTEGRAL DE LA SAGA DE TEMPORAL) ---
 # =====================================================================================
 
 @activity.defn(name="execute_security_worker_activity")
 async def execute_security_worker_activity(*args, **kwargs) -> dict:
-    """Actividad Zero-Trust parametrizada extrayendo sus descriptores desde la memoria."""
     inicio_agente = time.perf_counter()
     agents_settings = ProjectConfigurationRegistry.get_moa_agents_settings()
     sec_agent_conf = agents_settings["zerotrust"]
-    
     latencia_ms = (time.perf_counter() - inicio_agente) * 1000
-    
     return {
         "agent_id": sec_agent_conf["id"],
         "security_risk_score": int(sec_agent_conf["risk_score"]),
         "agent_latency_ms": latencia_ms,
         "brain_rationale": sec_agent_conf["default_rationale"]
     }
-
-# =====================================================================================
-# --- ACTIVIDAD DISTRIBUIDA 3 & 4 (PERSISTENCIA DECLARATIVA) ---
-# =====================================================================================
 
 @activity.defn(name="execute_pulumi_cli_activity")
 async def execute_pulumi_cli_activity(input_data: dict) -> dict:

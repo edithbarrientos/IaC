@@ -42,8 +42,8 @@
         ],
         "privateSubnetIds": "${aws-eks-enterprise-vpc.privateSubnetIds}",
         "publicAccessCidrs": [
-          "192.0.2.0/24",
-          "198.51.100.0/22"
+          "192.168.1.0/24",
+          "10.50.0.0/16"
         ],
         "publicSubnetIds": "${aws-eks-enterprise-vpc.publicSubnetIds}",
         "vpcId": "${aws-eks-enterprise-vpc.vpcId}"

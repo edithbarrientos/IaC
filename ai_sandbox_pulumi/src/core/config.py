@@ -4,7 +4,7 @@
 ========================================================================================
 Mapeador estático de bajo nivel encargado de volcar, parsear y exponer en la RAM
 del clúster todas las llaves, firmas y diccionarios elásticos del plano perimetral.
-CERO HARDCODE: Absolutamente ningún metatipo, ID, score o tabla se fija en Python.
+CERO HARDCODE / CERO IFS: Despacha la configuración limpia directo a los hilos de red.
 ========================================================================================
 """
 
@@ -57,7 +57,7 @@ class ProjectConfigurationRegistry:
 
     @classmethod
     def get_ai_settings(cls) -> Dict[str, Any]:
-        """🚀 PARAMETRIZACIÓN TOTAL IA: Transporta el payload crudo y el template del cuerpo HTTP."""
+        """🚀 PARAMETRIZACIÓN TOTAL IA: Transporta el payload crudo y el endpoint unificado sin evaluar."""
         if not cls._CONFIG_DATA:
             cls.load_registry()
         ai_root = cls._CONFIG_DATA["ai"]
@@ -65,14 +65,14 @@ class ProjectConfigurationRegistry:
         engine_params = cls._CONFIG_DATA["ai_engines"][ai_provider]
         return {
             "provider": ai_provider,
-            "host_url": engine_params["host_url"],
+            "endpoint_url": engine_params["api_endpoint_url"], # Inyección de ruta asíncrona directa
             "timeout_limit": int(engine_params["timeout_limit"]),
             "body_template": engine_params["request_body_template"]
         }
 
     @classmethod
     def get_persistence_settings(cls) -> Dict[str, Any]:
-        """🚀 ZERO HARDCODE PERSISTENCE: Extrae la URI y las tablas vectoriales dinámicamente."""
+        """Extrae la URI y las tablas vectoriales dinámicamente."""
         if not cls._CONFIG_DATA:
             cls.load_registry()
         p_section = cls._CONFIG_DATA["persistence"]
