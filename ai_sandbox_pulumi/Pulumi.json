@@ -29,21 +29,21 @@
         "endpointPublicAccess": true,
         "managedNodeGroups": [
           {
-            "desiredCapacity": 3,
-            "instanceType": "m5.large",
+            "desiredCapacity": 6,
+            "instanceType": "c5.xlarge",
             "labels": {
               "environment": "production",
               "tier": "application"
             },
-            "maxSize": 10,
+            "maxSize": 25,
             "minSize": 3,
             "name": "aws-eks-enterprise-apps-pool"
           }
         ],
         "privateSubnetIds": "${aws-eks-enterprise-vpc.privateSubnetIds}",
         "publicAccessCidrs": [
-          "192.168.1.0/24",
-          "10.50.0.0/16"
+          "192.0.2.0/24",
+          "198.51.100.0/22"
         ],
         "publicSubnetIds": "${aws-eks-enterprise-vpc.publicSubnetIds}",
         "vpcId": "${aws-eks-enterprise-vpc.vpcId}"

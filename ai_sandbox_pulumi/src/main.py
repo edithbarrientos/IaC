@@ -22,10 +22,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-# =====================================================================================
-# 🔌 ESTRATEGIAS DE CONEXIÓN DISTRIBUIDA (PATRÓN STATE EN TIEMPO CONSTANTE O(1))
-# =====================================================================================
-
 class BaseTemporalConnector:
     def __init__(self) -> None:
         self.client: Optional[Client] = None
@@ -56,10 +52,6 @@ class EnterpriseTemporalConnector(BaseTemporalConnector):
         return self.client
 
 
-# =====================================================================================
-# 🧠 COMPONENTE MAESTRO REFACTORIZADO CON DESPACHO VORAZ SIN IFS
-# =====================================================================================
-
 ACTIVE_CONNECTOR: Optional[BaseTemporalConnector] = None
 
 async def main():
@@ -87,7 +79,6 @@ async def main():
             logger.critical("💥 [ENTORNO_GLOBAL] Imposible inicializar el cliente del clúster distributed.")
             sys.exit(1)
 
-        # 🚀 CABLEADO DE IMPORTACIÓN COMPLETO DE ACTIVIDADES DISTRIBUIDAS
         from src.infrastructure.ai.supervisor import IncidentMitigationWorkflow
         from src.infrastructure.ai.workers import (
             execute_network_worker_activity, 
@@ -96,7 +87,11 @@ async def main():
             execute_toolbelt_mitigation_activity
         )
 
-        # Registro del Worker amarrando las cuatro actividades a la cola sin exclusiones
+        # 🚀 FORMA NATIVA CNCF: Levantar el servidor de métricas oficial de Prometheus
+        # Corre de forma independiente sin interferir con el loop de eventos asíncrono
+        from prometheus_client import start_http_server
+        start_http_server(8000, addr="0.0.0.0")
+
         worker = Worker(
             client,
             task_queue="aiops-incident-task-queue",
@@ -111,7 +106,7 @@ async def main():
         )
         
         logger.success(f"🌐 [ENTORNO_GLOBAL] Plano de control distribuido real sellado con éxito.")
-        logger.info("🦾 [QUEUE_DAEMON] Escuchando activamente 'aiops-incident-task-queue'...")
+        logger.info("🦾 [QUEUE_DAEMON] Escuchando activamente 'aiops-incident-task-queue' y Métricas nativas en http://0.0.0...")
         await worker.run()
 
     except Exception as e:

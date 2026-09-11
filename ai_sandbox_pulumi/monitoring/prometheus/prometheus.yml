@@ -1,0 +1,62 @@
+# ====================================================================================
+# 🪐 CNCF COMPLIANT PROMETHEUS ENTERPRISE MANIFEST (BRIDGED ENVIRONMENT FOR MACOS)
+# ====================================================================================
+global:
+  scrape_interval:     15s # 🚀 CALIBRACIÓN CNCF: Relajado a 15s para dar margen al sandbox
+  evaluation_interval: 15s
+  scrape_timeout:      10s # 🚀 FIX: Aumentado a 10s para erradicar el context deadline exceeded
+
+  # Etiquetas globales inmutables para federación multi-clúster y Grafana Cortex
+  external_labels:
+    infrastructure_layer: 'cognitive-control-plane'
+    orchestrator:          'temporal-io-distributed'
+    cell_zone:             'aws-us-east-1-production'
+
+# ====================================================================================
+# 🔌 ENTERPRISE SCRAPE CONFIGURATIONS (ZERO-TRUST & RESILIENT BRIDGE TARGETS)
+# ====================================================================================
+scrape_configs:
+
+  # ----------------------------------------------------------------------------------
+  # TARGET 1: MOTOR DE ORQUESTACIÓN COGNITIVO (FASTAPI / PROMETHEUS_CLIENT NATIVO)
+  # ----------------------------------------------------------------------------------
+  - job_name: 'aiops-cognitive-engine'
+    metrics_path: '/metrics'
+    scheme: 'http'
+
+    # CNCF Core Practice: Forzar protocolo nativo OpenMetrics de alta densidad
+    scrape_protocols:
+      - OpenMetricsText1.0.0
+      - OpenMetricsText0.0.1
+      - PrometheusText0.0.4
+
+    # CNCF Security & RAM Protection: Límites estrictos para mitigar ataques DoS a la TSDB
+    body_size_limit: 15MB
+    sample_limit:    10000
+    target_limit:    5
+
+    static_configs:
+      # 🚀 NETWORKING PUENTE: host.docker.internal es el puente elástico que Docker
+      # Desktop expone de forma nativa para alcanzar el puerto 8000 de tu Mac.
+      - targets: ['host.docker.internal:8000']
+        labels:
+          deployment_mode: 'development-sandbox'
+          tier:            'control-plane'
+          security_level:  'zero-trust-perimeter'
+
+    # CNCF Cardinality Protection: Remueve el puerto visual para simplificar consultas PromQL
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        regex: '([^:]+)(:\d+)?'
+        replacement: '${1}'
+
+  # ----------------------------------------------------------------------------------
+  # TARGET 2: CORE TELEMETRY (PROMETHEUS ENGINE SELF-SCRAPE)
+  # ----------------------------------------------------------------------------------
+  - job_name: 'prometheus-self-telemetry'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          tier: 'telemetry-core'
