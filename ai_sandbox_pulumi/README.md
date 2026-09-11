@@ -715,6 +715,7 @@ El pipeline transaccional autónomo se valida localmente mediante el SDK distrib
 Sigue este orden secuencial para ejecutar y auditar el ciclo forense:
 
 ### 1. Preparación del Entorno
+
 Inyecta las variables de entorno centralizadas y limpia las cachés de compilación obsoletas de tu Mac:
 ```bash
 find . -type d -name "__pycache__" -exec rm -r {} + 2>/dev/null
@@ -723,6 +724,7 @@ source .env
 ```
 
 ### 2. Inicialización del Daemon de Orquestación (Terminal Principal)
+
 Arranca el motor perimetral polimórfico. Este proceso levantará el servidor distribuido y comenzará la escucha voraz de la cola de tareas:
 ```bash
 poetry run python -m src.main
@@ -731,12 +733,14 @@ poetry run python -m src.main
 `🦾 [QUEUE_DAEMON] Escuchando activamente 'aiops-incident-task-queue'...`
 
 ### 3. Disparo de la Transaction SAGA (Terminal Secundaria)
+
 Lanza el cliente de ráfagas elásticas para simular una alerta de telemetría en Runtime. El script inyectará un UUID v4 único para evadir el bloqueo por duplicados e idempotencia de la base de datos distribuida:
 ```bash
 PYTHONPATH=.:src poetry run python scripts/trigger_saga.py
 ```
 
 ### 4. Flujo Interno Ejecutado por Temporal en Runtime
+
 Al ingresar la señal gRPC, el plano de control ejecuta los siguientes pasos encadenados de forma autónoma:
 *   **Fase 1 (Concurrency):** `execute_network_worker_activity` despierta invocando a la `CloudProviderFactory` en tiempo constante $\mathcal{O}(1)$.
 *   **Fase 2 (Data-Driven Generator):** El adaptador de AWS calcula e inyecta la topología elástica empresarial. El Worker escribe de forma atómica el artefacto en la raíz del proyecto.
@@ -744,11 +748,47 @@ Al ingresar la señal gRPC, el plano de control ejecuta los siguientes pasos enc
 *   **Fase 4 (Mitigation):** `execute_toolbelt_mitigation_activity` importa reflexivamente el catálogo corporativo ejecutando contramedidas perimetrales (`AWS_ISOLATE_EC2` y `SSH_FORENSIC_DUMP`).
 
 ### 5. Auditoría del Artefacto Consolidado
+
 Comprueba en tu terminal secundaria que el manifiesto fue volcado físicamente en disco con el salto de línea perfecto y la estructura parametrizada:
 ```bash
 cat Pulumi.json
 ```
 
+## 📊 Suite de Observabilidad CNCF (Prometheus Core)
+
+Para monitorear el comportamiento de las latencias asíncronas y el volumen de incidentes mitigados, la pila cuenta con un contenedor Docker de Prometheus integrado mediante red de puente elástica.
+
+### 1. Desplegar el Servidor de Prometheus (Terminal Secundaria)
+
+Destruye cualquier rastro zombi y levanta el monitor amarrado al puente inyectando el gateway elástico de la Mac para erradicar el error de *timeout*:
+```bash
+docker stop aiops-prometheus 2>/dev/null && docker rm -f aiops-prometheus 2>/dev/null
+
+docker run -d \
+  --name aiops-prometheus \
+  -p 9090:9090 \
+  -v "\$(pwd)/monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml" \
+  --add-host=host.docker.internal:host-gateway \
+  prom/prometheus:latest \
+  --config.file=/etc/prometheus/prometheus.yml
+```
+
+### 2. Romper el Bug de Aislamiento del Puente del host
+
+Fuerza mecánicamente el acoplamiento del contenedor al bridge real del sistema operativo para abrir la compuerta de telemetría:
+```bash
+docker network connect bridge aiops-prometheus
+docker restart aiops-prometheus
+```
+
+### 3. Mapeo de Consultas Maestras PromQL
+
+Ingresa a `http://localhost:9090/graph`, selecciona la pestaña **`Graph`** y ejecuta cualquiera de las expresiones estandarizadas:
+
+*   **Tasa de Ingesta del API Gateway:** `aiops_http_requests_total`
+*   **Histograma de Microsegundos de la IA:** `aiops_agent_latency_ms_bucket`
+*   **Uso de Memoria Física del Proceso de Python:** `process_resident_memory_bytes`
+EOF
 
 > ⚠️ **ESTADO DEL PROYECTO: Proof of Concept (PoC) / Human-Centric AIOps**
 > Este repositorio es una PoC tecnica diseñada para validar la viabilidad de la autoreparacion de infraestructura mediante sistemas agenticos avanzados. El plano de control opera bajo un enfoque centrado en el ser humano, requiriendo obligatoriamente la intervencion tactica del operador SRE para autorizar desbordes multi-cloud (Firma HITL) o ejecutar planes de contingencia (Rollback Seguro). Ademas, se requiere auditoria corporativa de las politicas de aislamiento de red.
