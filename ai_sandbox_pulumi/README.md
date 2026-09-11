@@ -302,39 +302,61 @@ Para garantizar la compatibilidad zero-trust en entornos contenerizados de alta 
 
 ## 📂 Estructura Limpia del Proyecto
 
-El código fuente se organiza siguiendo estrictamente principios **SOLID**, garantizando que el núcleo del negocio no dependa de frameworks externos:
+El código fuente se organiza siguiendo estrictamente principios de Arquitectura de Software, garantizando el desacoplamiento del núcleo del negocio:
+
 ```text
-ai_sandbox_pulumi/
-├── ⚙️ config.toml                       # Parámetros estáticos y targets globales de Pulumi IaC.
-├── 📦 pyproject.toml / poetry.lock      # Gobernanza, restricciones y versionado de dependencias (Poetry). [INDEX]
-├── 📝 README.md                         # Manual de operaciones distribuido y bitácora de arquitectura.
-├── 📂 data/                             # 💾 CAPA DE PERSISTENCIA COLD-STORAGE (HARDWARE LOCAL)
-│   ├── 📊 lancedb/                      # Base de datos vectorial corporativa purificada de producción. [INDEX]
-│   └── 🧪 test_lancedb/                 # Tablas fragmentadas .lance para telemetría aislada de pruebas de estrés. [INDEX]
-├── 📂 images/                           # 🖼️ Almacén central de capturas de pantalla forenses y diagramas. [INDEX]
-├── 📂 scripts/                          # 🛠️ UTILITARIOS AUTOMATIZADOS DE ORQUESTACIÓN PERIMETRAL
-│   ├── 🧹 clearPruebasDesarrollo.sh     # Purga forense de DNS local, sockets zombis y restauración de pfctl de Apple. [INDEX]
-│   ├── 🚀 ejecutarPruebasDesarrollo.sh  # Inyector automatizado de ráfagas e inyecciones humanas gRPC a la queue. [INDEX]
-│   └── 🔍 test_vector_query.py          # Script de validación heurística para queries de similitud en LanceDB. [INDEX]
-└── 📂 src/                              # 🧠 NÚCLEO OPERATIVO DE LA PLATAFORMA COGNITIVA
-    ├── 🎛️ main.py                      # Daemon principal. Contiene la Fábrica de Driver Elástica O(1) libre de ifs. [INDEX]
-    ├── 📂 core/                         # 💎 CAPA DE DOMINIO INMUTABLE (ENTERPRISE BUSINESS RULES)
-    │   ├── 🧬 entities.py               # DTOs y tipado estricto inmutable del negocio (IncidentContext).
-    │   ├── ⚖️ governance.py               # Motor de políticas y validación de cumplimiento zero-trust.
-    │   └── 📜 interfaces.py             # Contratos abstractos y firmas de aislamiento de los componentes core.
-    ├── 📂 use_cases/                    # 🕸️ CAPA DE APLICACIÓN (APPLICATION BUSINESS RULES)
-    │   └── 🩹 self_healing.py           # Orquestador del flujo lógico de auto-recuperación cognitiva autónoma.
-    └── 📂 infrastructure/               # 🔌 CAPA DE ADAPTADORES FÍSICOS Y ACOPLAMIENTOS EXTERNOS
-        ├── 📂 tools/                    # 🛠️ CATÁLOGO DE COMANDOS PERIMETRALES (TOOLBELT)
-        │   └── ⚙️ mitigationToolbelt.py  # Comandos AWS CLI/SSH polimórficos de alta velocidad controlados por Drivers. [INDEX]
-        ├── 📂 persistence/              # 🗄️ ADAPTADORES DE PERSISTENCIA VECTORIAL
-        │   └── 🗃️ vector_repo.py        # Implementación de queries y repositorios de datos indexados en LanceDB. [INDEX]
-        └── 📂 ai/                       # 🤖 INTELIGENCIA ARTIFICIAL DISTRIBUIDA (TEMPORAL CLUSTER)
-            ├── 🔀 supervisor.py         # Workflow inmutable determinista de la Saga de Temporal (HITL / Checkpoints). [INDEX]
-            ├── 👥 workers.py            # Actividades distributed Mixture of Agents (MoA) aisladas de la red. [INDEX]
-            └── 📂 brains/               # 🧠 ENJAMBRE DE PROCESAMIENTO COGNITIVO PROFUNDO
-                ├── 💬 cortexLlm.py      # Motor de inferencia acoplado a Ollama/Qwen 2.5 local sin colisiones. [INDEX]
-                └── 💾 hipocampoMemory.py# Gestor de memoria semántica y embebidos para LanceDB. [INDEX]
+
+📁 ai_sandbox_pulumi/                       # 🌌 CARPETA RAÍZ DE PROJECT ODIN (WORKSPACE MASTER)
+├── 📄 Pulumi.json                          # ──► [IaC Artifact] Manifiesto avanzado mutado elásticamente en Runtime.
+├── 📘 README.md                            # ──► [Documentation] Manual SRE con diagramas al 100% y 10 expresiones PromQL.
+├── ⚙️ config.toml                          # ──► [System Config] Propiedades e inicializadores estáticos globales del plano.
+├── 💾 data/                                # ──► CAPA DE PERSISTENCIA LOCAL VOLÁTIL
+│   └── 📊 lancedb/                       
+│       └── 🗄️ incident_forensics.lance     # ──► Tablas vectoriales elásticas (Reseteadas mediante comando global).
+├── 🖼️ images/                              # ──► CAPA DE TELEMETRÍA Y EVIDENCIA VISUAL
+│   └── 📐 diagrams/                      
+│       
+├── 🛡️ monitoring/                          # ──► CAPA DE OBSERVABILIDAD ENTERPRISE (CNCF INFRASTRUCTURE)
+│   └── 🪐 prometheus/                    
+│       ├── 📝 dashboard_queries.txt        # ──► Catálogo de fórmulas PromQL (Percentil 95, Ingesta 202 y Fallos).
+│       └── 🛠️ prometheus.yml               # ──► Scrape Manifest con Timeout de 10s y puente host.docker.internal.
+├── 📦 pyproject.toml                       # ──► [Package Manifest] Gestión de dependencias inmutables mediante Poetry.
+├── 🔐 poetry.lock                          # ──► [Lockfile] Candado criptográfico de versiones de librerías.
+├── 💻 scripts/                             # ──► ORQUESTADORES DE PRUEBAS Y DISPARADORES DE RÁFAGAS
+│   ├── 🐚 clearPruebasDesarrollo.sh      
+│   ├── 🐚 ejecutarPruebasDesarrollo.sh   
+│   └── 🚀 trigger_saga.py                  # ──► [SAGA Client] Inyecta incidentes por gRPC con UUIDs v4 dinámicos.
+└── 🗃️ src/                                 # ──► NÚCLEO DE LA PLATAFORMA (DOMAIN-DRIVEN DESIGN PATTERN)
+    ├── 🌌 main.py                          # ──► [Control Plane Gateway] Arranque maestro: Worker Temporal + Metrics Server.
+    ├── 🏛️ core/                            # ──► 1. CAPA DE DOMINIO (PURE ENGINE CORE)
+    │   ├── ⚙️ config.py                    # ──► Carga elástica de variables .env hacia la memoria RAM.
+    │   ├── 👤 entities.py                  # ──► Modelos de datos puros e inmutables del ciclo de incidentes.
+    │   ├── 📜 governance.py                # ──► Reglas de cumplimiento normativo y políticas Zero-Trust.
+    │   └── 🔌 interfaces.py                # ──► Contratos y clases abstractas (Abstract Factory & Mutation Policies).
+    ├── 🔌 infrastructure/                  # ──► 2. CAPA DE INFRAESTRUCTURA (ADAPTADORES PERIMETRALES)
+    │   ├── 🧠 ai/                          # ──► ENJAMBRE COGNITIVO (MIXTURE-OF-AGENTS CORPS)
+    │   │   ├── 🕸️ supervisor.py            # ──► Temporal Workflow: Orquestador determinista inmortal de la SAGA.
+    │   │   ├── 👥 workers.py               # ──► Temporal Activities: Agentes analíticos con Cognitive Scaling.
+    │   │   ├── 🤖 agents.py                 # ──► Catálogo de prompts de orquestación para Ollama.
+    │   │   ├── 📝 memory.py                # ──► Gestión de buffers de contexto a corto plazo.
+    │   │   └── 🧠 brains/                  # ──► MODELOS DE INFERENCIA Y PROCESAMIENTO VECTORIAL
+    │   │       ├── 🧬 cortexLlm.py         # ──► Interfaz de comunicación contra el LLM local (Qwen2.5).
+    │   │       └── 🧬 hipocampoMemory.py   # ──► Conector de alta densidad hacia el almacenamiento de LanceDB.
+    │   ├── 💬 api_slack.py                 # ──► Adaptador de salida para alertas de Auto-Healing en canales SRE.
+    │   ├── ☸️ k8s_runtime/                 # ──► Orquestador elástico de pods de contingencia.
+    │   ├── 📊 monitoring/                
+    │   │   └── 📈 metrics.py               # ──► Registry central: Declaración de contadores e histogramas CNCF.
+    │   ├── 🗄️ persistence/               
+    │   │   └── 🗃️ vector_repo.py           # ──► Repositorio de bajo nivel encargado del CRUD de embeddings.
+    │   ├── ☁️ pulumi/                      # ──► MOTOR IAC (DATA-DRIVEN INFRASTRUCTURE FACTORY)
+    │   │   ├── 🏭 cloud_factory.py         # ──► Abstract Factory O(1): Genera topologías (AWS, GCP, Azure).
+    │   │   ├── 🛣️ apisix_gateway.py        # ──► Aprovisionamiento dinámico de políticas de ruteo perimetral.
+    │   │   └── 🏗️ stack.py                 # ──► Control y tracking de estados de pilas de Pulumi.
+    │   └── 🧰 tools/                       # ──► HERRAMIENTAS DE MITIGACIÓN FÍSICA
+    │       └── 🔧 mitigationToolbelt.py    # ──► Catálogo de contramedidas (AWS_ISOLATE_EC2 / SSH_FORENSIC_DUMP).
+    └── 🎯 use_cases/                       # ──► 3. CAPA DE APLICACIÓN (APPLICATION LOGIC LAYER)
+        └── ⚡ self_healing.py              # ──► Flujo de valor: Casos de uso de mitigación autónoma de infraestructura.
+
 ```
 ---
 
@@ -348,11 +370,12 @@ ai_sandbox_pulumi/
     </p>
   </div>
   
+  
 ### 📦 Descripción Técnica Detallada de la Vista Lógica (Diagrama de Clases Python)
 
 Esta vista representa el mapa estructural de bajo nivel del código fuente de ai_sandbox_pulumi, desarrollado en Python 3.12+ utilizando tipado estático estricto (mypy --strict) y validación de tipos en tiempo de ejecución. El diseño implementa una separación rígida de responsabilidades en 5 capas. Este desacoplamiento blinda el núcleo de las reglas de negocio frente a las librerías de infraestructura y los proveedores de nube, una práctica esencial ante una actualización en el SDK de Pulumi no rompa la lógica del sistema. Así, el negocio se mantiene agnóstico, testeable en aislamiento y protegido contra el acoplamiento. 
 
-Las razones de peso por las cuales el diseño se plantea así:
+Las razones de peso por las cuales del planteamiento del diseño:
 
 Facilidad de Pruebas (Mocking y Unit Testing): Al estar blindado el negocio, puedes hacer pruebas unitarias de tus reglas de IA y de tus flujos de sandbox en milisegundos usando datos simulados (mocks), sin necesidad de conectarte a Pulumi ni levantar recursos reales en la nube que cuesten dinero.
 
@@ -596,7 +619,7 @@ ruff check src --fix
 
 ### 3. Lanzar la Plataforma Autónoma (Temporal Daemon Server)
 
-Antes de encender el servidor, asegúrate de iniciar el motor distribuido físico de fondo de tu Mac y arranca el plano de control cognitivo inyectando la ruta de namespaces de la Clean Architecture:
+Antes de encender el servidor, asegúrate de iniciar el motor distribuido físico de fondo del host y arranca el plano de control cognitivo inyectando la ruta de namespaces de la Clean Architecture:
 
 ```bash
 # Pestaña Terminal 3: Arrancar el servidor de desarrollo local real de Temporal
@@ -672,31 +695,31 @@ Para certificar la resiliencia y el *throughput* del plano cognitivo ante tormen
 
 *   **Throughput de Carga:** 10 Ingestas de Incidentes Simultáneas Directas al Córtex.
 *   **Patrón Algorítmico:** *Scatter-Gather* multi-hilo mediante *Eager Task Spawning*.
-*   **Motor de Inferencia:** Inferencia local real sobre la GPU de la Mac con `nomic-embed-text` (768d).
+*   **Motor de Inferencia:** Inferencia local real sobre la GPU de la host con `nomic-embed-text` (768d).
 
 ### 📉 Métricas de Rendimiento Extraídas (Entorno `REAL` en local)
 
 ```text
-tests/integration/test_self_healing.py::test_ejecucion_voraz_ingesta_incidentes 
-2026-09-10 22:14:53 | INFO     | 🚀 [CONCURRENCIA] Disparando ráfaga paralela de 10 ingestas...
-2026-09-10 22:14:55 | SUCCESS  | ✨ [INGESTA] Alerta consolidada de forma concurrente exitosa x10.
-2026-09-10 22:14:57 | SUCCESS  | ✨ [TEST-SUITE] Perfilamiento por Componente Concluido.
+    tests/integration/test_self_healing.py::test_ejecucion_voraz_ingesta_incidentes 
+    2026-09-10 22:14:53 | INFO     | 🚀 [CONCURRENCIA] Disparando ráfaga paralela de 10 ingestas...
+    2026-09-10 22:14:55 | SUCCESS  | ✨ [INGESTA] Alerta consolidada de forma concurrente exitosa x10.
+    2026-09-10 22:14:57 | SUCCESS  | ✨ [TEST-SUITE] Perfilamiento por Componente Concluido.
 
-========================================================================================
-🦾 [COMPONENTE_CORE]     Latencia media Core Ingesta:        2130.3827 ms
-🧠 [INGESTA_OLLAMA]      Embedding Ingesta (Fase 1):         2094.0736 ms
-🗃️ [INGESTA_LANCEDB]     Escritura Física .lance Disco:        26.5011 ms
-========================================================================================
-🧠 [QUERY_OLLAMA]        Inferencia Embedding Query:         2094.0736 ms
-🗃️ [QUERY_LANCEDB]       Consulta de Vecinos Cercanos Rust:    26.5011 ms
-========================================================================================
-👥 [AGENTE_NET-WORKER]   Latencia Procesamiento Red MoA:     142.1524 ms
-👥 [AGENTE_SEC-WORKER]   Latencia Procesamiento ZeroTrust:   118.3412 ms
-========================================================================================
-⏱️ [MÉTRICA_MAESTRA]     Throughput Ráfaga Global Real:     2633.3782 ms
-📉 [PROMEDIO_NATIVO]     Tiempo medio neto por hilo de CPU:   263.3378 ms
-========================================================================================
-PASSED [100%]
+    ========================================================================================
+    🦾 [COMPONENTE_CORE]     Latencia media Core Ingesta:        2130.3827 ms
+    🧠 [INGESTA_OLLAMA]      Embedding Ingesta (Fase 1):         2094.0736 ms
+    🗃️ [INGESTA_LANCEDB]     Escritura Física .lance Disco:        26.5011 ms
+    ========================================================================================
+    🧠 [QUERY_OLLAMA]        Inferencia Embedding Query:         2094.0736 ms
+    🗃️ [QUERY_LANCEDB]       Consulta de Vecinos Cercanos Rust:    26.5011 ms
+    ========================================================================================
+    👥 [AGENTE_NET-WORKER]   Latencia Procesamiento Red MoA:     142.1524 ms
+    👥 [AGENTE_SEC-WORKER]   Latencia Procesamiento ZeroTrust:   118.3412 ms
+    ========================================================================================
+    ⏱️ [MÉTRICA_MAESTRA]     Throughput Ráfaga Global Real:     2633.3782 ms
+    📉 [PROMEDIO_NATIVO]     Tiempo medio neto por hilo de CPU:   263.3378 ms
+    ========================================================================================
+    PASSED [100%]
 ```
 
 ### 🧠 Análisis de la Arquitectura de Micro-Latencia
@@ -716,7 +739,7 @@ Sigue este orden secuencial para ejecutar y auditar el ciclo forense:
 
 ### 1. Preparación del Entorno
 
-Inyecta las variables de entorno centralizadas y limpia las cachés de compilación obsoletas de tu Mac:
+Inyecta las variables de entorno centralizadas y limpia las cachés de compilación obsoletas de tu terminal:
 ```bash
 find . -type d -name "__pycache__" -exec rm -r {} + 2>/dev/null
 rm -f Pulumi.json
@@ -760,7 +783,7 @@ Para monitorear el comportamiento de las latencias asíncronas y el volumen de i
 
 ### 1. Desplegar el Servidor de Prometheus (Terminal Secundaria)
 
-Destruye cualquier rastro zombi y levanta el monitor amarrado al puente inyectando el gateway elástico de la Mac para erradicar el error de *timeout*:
+Destruye cualquier rastro zombi y levanta el monitor amarrado al puente inyectando el gateway elástico del host para erradicar el error de *timeout*:
 ```bash
 docker stop aiops-prometheus 2>/dev/null && docker rm -f aiops-prometheus 2>/dev/null
 
@@ -781,14 +804,62 @@ docker network connect bridge aiops-prometheus
 docker restart aiops-prometheus
 ```
 
-### 3. Mapeo de Consultas Maestras PromQL
+## 📊 Vademécum Completo de Expresiones PromQL (CNCF Standard)
 
-Ingresa a `http://localhost:9090/graph`, selecciona la pestaña **`Graph`** y ejecuta cualquiera de las expresiones estandarizadas:
+A continuación se listan **todas las expresiones e histogramas** generados en caliente por el plano de control. Cópialas y ejecútalas directamente en la barra de búsqueda de `http://localhost:9090/graph` con la pestaña **`Graph`** activa:
 
-*   **Tasa de Ingesta del API Gateway:** `aiops_http_requests_total`
-*   **Histograma de Microsegundos de la IA:** `aiops_agent_latency_ms_bucket`
-*   **Uso de Memoria Física del Proceso de Python:** `process_resident_memory_bytes`
-EOF
+### 🧠 1. Métricas de Negocio & Resiliencia AIOps (Custom)
+
+*   **Volumen de Ingesta General (Contador):** Mide cuántas alertas han ingresado de forma acumulada.
+    ```promql
+    aiops_http_requests_total
+    ```
+*   **Velocidad de Ingesta por Minuto (Tasa de Cambio):** Muestra el flujo de tráfico en tiempo real.
+    ```promql
+    rate(aiops_http_requests_total[1m])
+    ```
+*   **Histograma de Latencia de la IA:** Desglosa el tiempo de resolución en microsegundos del enjambre MoA.
+    ```promql
+    aiops_agent_latency_ms_bucket
+    ```
+*   **Percentil 95 del Rendimiento Cognitivo:** Calcula el tope de lentitud tolerado de los agentes.
+    ```promql
+    histogram_quantile(0.95, sum(rate(aiops_agent_latency_ms_bucket[5m])) by (le, agent_id))
+    ```
+*   **Frecuencia de Fallos Mitigados en el Toolbelt:** Alerta ante excepciones de scripts perimetrales.
+    ```promql
+    aiops_toolbelt_failures_total
+    ```
+
+### ⚙️ 2. Métricas del Sistema del Host (Python Engine Runtime)
+
+*   **Consumo de Memoria RAM (Resident Set Size):** Monitorea la estabilidad de la huella de memoria del script.
+    ```promql
+    process_resident_memory_bytes
+    ```
+*   **Hilos de Ejecución del Daemon (Threads):** Cuenta los hilos concurrentes que procesan las colas gRPC.
+    ```promql
+    process_threads
+    ```
+*   **Colecciones del Garbage Collector:** Mide la frecuencia de purga de variables en la memoria RAM.
+    ```promql
+    python_gc_collections_total
+    ```
+
+### 🐋 3. Métricas de Autotelemetría de la Red Puente (Prometheus Core)
+
+*   **Duración del Raspado de Datos (Scrape Duration):** Monitorea la velocidad del puente de Docker.
+    ```promql
+    scrape_duration_seconds
+    ```
+*   **Muestras Guardadas por Segundo en la TSDB:** Ingesta total de registros en la base de datos temporal.
+    ```promql
+    prometheus_tsdb_head_samples_appended_total
+    ```
+*   **Peticiones HTTP Exitosas al Endpoint /metrics:** Handshakes consolidados entre el contenedor y tu terminal.
+    ```promql
+    prometheus_http_requests_total{handler="/metrics"}
+    ```
 
 > ⚠️ **ESTADO DEL PROYECTO: Proof of Concept (PoC) / Human-Centric AIOps**
 > Este repositorio es una PoC tecnica diseñada para validar la viabilidad de la autoreparacion de infraestructura mediante sistemas agenticos avanzados. El plano de control opera bajo un enfoque centrado en el ser humano, requiriendo obligatoriamente la intervencion tactica del operador SRE para autorizar desbordes multi-cloud (Firma HITL) o ejecutar planes de contingencia (Rollback Seguro). Ademas, se requiere auditoria corporativa de las politicas de aislamiento de red.

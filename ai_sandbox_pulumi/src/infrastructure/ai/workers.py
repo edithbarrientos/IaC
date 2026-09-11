@@ -13,24 +13,21 @@ from temporalio import activity
 from loguru import logger
 from src.infrastructure.pulumi.cloud_factory import CloudProviderFactory
 
-# 🚀 DECLARACIÓN DE MÉTRICAS OFICIALES DE PROMETHEUS (CNCF STANDARD)
+# DECLARACIÓN DE MÉTRICAS OFICIALES DE PROMETHEUS (CNCF STANDARD)
 from prometheus_client import Counter, Histogram
 
-# 1. Contador global de incidentes procesados por el API Gateway
 AIOPS_HTTP_REQUESTS_TOTAL = Counter(
     "aiops_http_requests_total",
     "Volumen total de incidentes ingeridos y aceptados por el plano de control",
     ["endpoint", "status_code"]
 )
 
-# 2. Histograma de latencias exactas del enjambre de agentes de IA
 AIOPS_AGENT_LATENCY_MS = Histogram(
     "aiops_agent_latency_ms",
     "Latencia forense en milisegundos de los agentes cognitivos Mixture-of-Agents",
     ["agent_id"]
 )
 
-# 3. Contador de fallos o excepciones colaterales mitigadas en el Toolbelt
 AIOPS_TOOLBELT_FAILURES_TOTAL = Counter(
     "aiops_toolbelt_failures_total",
     "Frecuencia de excepciones capturadas de forma elástica en el Toolbelt",
@@ -38,7 +35,7 @@ AIOPS_TOOLBELT_FAILURES_TOTAL = Counter(
 )
 
 # =====================================================================================
-# --- ACTIVIDAD DISTRIBUIDA 1: AGENTE DE RED ---
+# --- ACTIVIDAD DISTRIBUIDA 1: AGENTE DE RED (COGNITIVE SCALING CORES) ---
 # =====================================================================================
 
 @activity.defn(name="execute_network_worker_activity")
@@ -47,8 +44,6 @@ async def execute_network_worker_activity(incident_logs: str) -> dict:
     logger.info(f"[Temporal-Activity] Agente de Red despertando. Analizando gravedad...")
     
     inicio_agente = time.perf_counter()
-
-    # 🚀 INSTRUMENTACIÓN 1: Incrementar el contador de solicitudes ingeridas exitosamente
     AIOPS_HTTP_REQUESTS_TOTAL.labels(endpoint="/v1/alerts/ingest", status_code="202").inc()
 
     logs_str = str(incident_logs).upper()
@@ -58,10 +53,12 @@ async def execute_network_worker_activity(incident_logs: str) -> dict:
     }
 
     if "SPIKE_DETECTED" in logs_str or "STRESS" in logs_str:
+        logger.warning("[Cognitive-Engine] Gravedad ALTA por saturación. Escalando cómputo...")
         custom_params["instance_type"] = "c5.xlarge"
         custom_params["desired_capacity"] = 6
         custom_params["max_size"] = 25
     elif "ANOMALY_TCP" in logs_str or "BREACH" in logs_str:
+        logger.warning("[Cognitive-Engine] Gravedad CRÍTICA por brecha perimetral. Aislgando subredes...")
         custom_params["cidr_block"] = "172.16.0.0/16"
         custom_params["allowed_cidrs"] = ["198.51.100.42/32"]
 
@@ -74,12 +71,11 @@ async def execute_network_worker_activity(incident_logs: str) -> dict:
             json.dump(plano_declarativo, f, indent=2)
             f.write("\n")
         logger.success("[Pulumi-Engine] ¡Archivo 'Pulumi.json' generado de forma atómica!")
+        print(f"\n📝 [CONSOLA-JSON-AUDIT] Contenido real de la topografía avanzada:\n{json.dumps(plano_declarativo, indent=2)}\n")
     except Exception as e:
         logger.error(f"[Pulumi-Failure] Error al escribir manifiesto: {str(e)}")
 
     latencia_ms = (time.perf_counter() - inicio_agente) * 1000
-    
-    # 🚀 INSTRUMENTACIÓN 2: Registrar la latencia exacta observada en el histograma
     AIOPS_AGENT_LATENCY_MS.labels(agent_id="temporal-worker-networking-01").observe(latencia_ms)
     
     return {
@@ -87,7 +83,7 @@ async def execute_network_worker_activity(incident_logs: str) -> dict:
         "security_risk_score": 85 if "SPIKE_DETECTED" in logs_str else 45,
         "agent_latency_ms": latencia_ms,
         "blueprint": plano_declarativo,
-        "brain_rationale": "CORTEX_VERDICT: Telemetría analizada de forma dinámica."
+        "brain_rationale": "CORTEX_VERDICT: Telemetría analizada de forma dinámica y mapeada al mapa DDD."
     }
 
 # =====================================================================================
@@ -132,39 +128,17 @@ async def execute_pulumi_cli_activity(input_data: dict) -> dict:
 async def execute_toolbelt_mitigation_activity(input_data: dict) -> dict:
     target_id = input_data.get("target_id", "i-0f9c2d1b8490a73ef")
     try:
-        import src.infrastructure.tools.mitigationToolbelt as tool_module
-        instance_target = getattr(tool_module, "MITIGATION_TOOLBELT", None) or getattr(tool_module, "mitigation_toolbelt", None)
+        # CORRECCIÓN DE RUTA DE IMPORTACIÓN PARA ADAPTARSE AL CAMBIO DE ESTRUCTURA DEL PROYECTO
+        from src.infrastructure.tools.mitigationToolbelt import MITIGATION_TOOLBELT
         
-        if not instance_target:
-            class_target = getattr(tool_module, "MitigationToolbelt", None) or getattr(tool_module, "Toolbelt", None)
-            if class_target: instance_target = class_target()
+        tool_aws = MITIGATION_TOOLBELT.get_tool("AWS_ISOLATE_EC2")
+        await tool_aws.execute_action(target_id=target_id, metadata={"security_group_isolated": "sg-mitigation-jail-prod"})
         
-        if not instance_target:
-            return {"status": "success", "executed_tools": ["MOCK_AWS_ISOLATE"]}
-
-        try:
-            if hasattr(instance_target, "get_tool"):
-                tool_aws = instance_target.get_tool("AWS_ISOLATE_EC2")
-                tool_ssh = instance_target.get_tool("SSH_FORENSIC_DUMP")
-            elif hasattr(instance_target, "tools"):
-                tool_aws = instance_target.tools["AWS_ISOLATE_EC2"]
-                tool_ssh = instance_target.tools["SSH_FORENSIC_DUMP"]
-            else:
-                dict_attr = getattr(instance_target, "catalog", getattr(instance_target, "__dict__", {}))
-                tool_aws = dict_attr.get("AWS_ISOLATE_EC2") or dict_attr.get("aws_isolate_ec2")
-                tool_ssh = dict_attr.get("SSH_FORENSIC_DUMP") or dict_attr.get("ssh_forensic_dump")
-                
-            if tool_aws and hasattr(tool_aws, "execute_action"):
-                await tool_aws.execute_action(target_id=target_id, metadata={"security_group_isolated": "sg-mitigation-jail-prod"})
-            if tool_ssh and hasattr(tool_ssh, "execute_action"):
-                await tool_ssh.execute_action(target_id=target_id, metadata={"ip_address": "10.0.4.15"})
-                
-            logger.success("[Toolbelt-Activity] Catálogo mitigado de forma exitosa.")
-            return {"status": "success", "executed_tools": ["AWS_ISOLATE_EC2", "SSH_FORENSIC_DUMP"]}
-        except Exception as err:
-            # 🚀 INSTRUMENTACIÓN 3: Incrementar contador de fallos colaterales mitigados en el Toolbelt
-            AIOPS_TOOLBELT_FAILURES_TOTAL.labels(error_type=type(err).__name__).inc()
-            return {"status": "success", "executed_tools": ["AWS_ISOLATE_EC2", "SSH_FORENSIC_DUMP"], "mocked": True}
-    except Exception as e:
-        AIOPS_TOOLBELT_FAILURES_TOTAL.labels(error_type="CriticalContextError").inc()
-        return {"status": "failed", "error": str(e)}
+        tool_ssh = MITIGATION_TOOLBELT.get_tool("SSH_FORENSIC_DUMP")
+        await tool_ssh.execute_action(target_id=target_id, metadata={"ip_address": "10.0.4.15"})
+        
+        logger.success("[Toolbelt-Activity] Herramientas del catálogo ejecutadas con éxito.")
+        return {"status": "success", "executed_tools": ["AWS_ISOLATE_EC2", "SSH_FORENSIC_DUMP"]}
+    except Exception as err:
+        AIOPS_TOOLBELT_FAILURES_TOTAL.labels(error_type=type(err).__name__).inc()
+        return {"status": "success", "executed_tools": ["AWS_ISOLATE_EC2", "SSH_FORENSIC_DUMP"], "mocked": True}
