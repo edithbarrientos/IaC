@@ -69,7 +69,7 @@ La PoC **ai_sandbox_pulumi** valida formalmente las siguientes capacidades de au
   <div align="center">
     <p align="center">
     <a href="./images/diagrams/ai-ops-sandbox-vista-casos-de-uso.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-      <img src="./images/diagrams/ai-ops-sandbox-vista-casos-de-uso.png" alt="Vista de Casos de Uso" style="max-width: 100%; border: 1px solid #BDC3C7; border-radius: 4px; cursor: zoom-in;" >
+      <img src="./images/diagrams/ai-ops-sandbox-vista-casos-de-uso.png" alt="Vista de Casos de Uso" style="width: auto; max-width: 100%; height: 1800px; object-fit: contain;" >
     </a>
     </p>
   </div>
@@ -83,7 +83,7 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
   <div align="center">
     <p align="center">
     <a href="./images/diagrams/ai-ops-sandbox-arquitectura-global-3.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-      <img src="./images/diagrams/ai-ops-sandbox-arquitectura-global-3.png" alt="Arquitectura Global" width="1200" height="1800">
+      <img src="./images/diagrams/ai-ops-sandbox-arquitectura-global-3.png" alt="Arquitectura Global" style="width: auto; max-width: 100%; height: 1800px; object-fit: contain;">
     </a>
     </p>
   </div>
@@ -141,7 +141,7 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
   <div align="center">
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-datos.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/diagrams/ai-ops-sandbox-vista-datos.png" alt="Vista de Datos"  width="1200" height="1800">
+            <img src="./images/diagrams/ai-ops-sandbox-vista-datos.png" alt="Vista de Datos"  style="width: auto; max-width: 100%; height: 1800px; object-fit: contain;">
         </a>
     </p>
   </div>
@@ -207,7 +207,7 @@ Debido a la naturaleza columnar orientada a analítica de datos de LanceDB, las 
   <div salign="center">
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-dinamica.png3.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/diagrams/ai-ops-sandbox-vista-dinamica.png3.png" alt="Diagrama de Secuencia y Ciclo de Vida"  width="1200" height="1800">
+            <img src="./images/diagrams/ai-ops-sandbox-vista-dinamica.png3.png" alt="Diagrama de Secuencia y Ciclo de Vida" style="width: auto; max-width: 100%; height: 1800px; object-fit: contain;">
         </a>
     </p>
   </div>
@@ -257,7 +257,7 @@ Este diagrama modela el comportamiento reactivo y la cronología asíncrona no b
   <div align="center">
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-dinamica-agentes2.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/diagrams/ai-ops-sandbox-vista-dinamica-agentes2.png" alt="AIOps - Flujo Transaccional SAGA" width="1200" height="1800">
+            <img src="./images/diagrams/ai-ops-sandbox-vista-dinamica-agentes2.png" alt="AIOps - Flujo Transaccional SAGA" style="width: auto; max-width: 100%; height: 1800px; object-fit: contain;">
         </a>
     </p>
   </div>
@@ -343,7 +343,7 @@ ai_sandbox_pulumi/
   <div align="center">
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-logica3.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/diagrams/ai-ops-sandbox-vista-logica3.png" alt="Vista Lógica"  width="1200" height="1800">
+            <img src="./images/diagrams/ai-ops-sandbox-vista-logica3.png" alt="Vista Lógica"  style="width: auto; max-width: 100%; height: 1800px; object-fit: contain;">
         </a>
     </p>
   </div>
@@ -416,7 +416,7 @@ Capa de adaptadores finales encargada de inyectar las cargas vivas del negocio e
   <div align="center">
     <p align="center">
         <a href="./images/diagrams/ai-ops-sandbox-vista-infraestructura.png" target="_blank" title="Haz clic para ampliar con lupa nativa">
-            <img src="./images/diagrams/ai-ops-sandbox-vista-infraestructura.png" alt="Diagrama de despliegue" width="1200" height="1800">
+            <img src="./images/diagrams/ai-ops-sandbox-vista-infraestructura.png" alt="Diagrama de despliegue" style="width: auto; max-width: 100%; height: 1800px; object-fit: contain;">
         </a>
     </p>
   </div>
@@ -544,7 +544,7 @@ DEPLOYMENT_MODE="simulado" TEMPORAL_HOST="127.0.0.1:7233" python -m src.main
 
 ## 🧪 Simulación del Ciclo de Vida del Incidente (Prueba de Humo)
 
-Abre una **nueva pestaña** en tu terminal (Pestaña 2) y ejecuta los siguientes comandos secuenciales gRPC nativos mediante la CLI oficial de Temporal para validar el enjambre de forma cruda, transparente y sin filtros HTTP ocultos [INDEX].
+Abre una **nueva pestaña** en tu terminal (Pestaña 2) y ejecuta los siguientes comandos secuenciales gRPC nativos mediante la CLI oficial de Temporal para validar el enjambre de forma cruda, transparente y sin filtros HTTP ocultos.
 
 ### 🎛️ Ingesta de Alerta (Fase 1: Despacho del Workflow a la Queue)
 
@@ -588,7 +588,7 @@ Si prefieres omitir la copia manual de los comandos gRPC anteriores, puedes dele
 
 ### 🛑 Apagado Seguro de Memoria (Anti-Crashes)
 
-El sistema incorpora un interceptor global de señales físicas. Al presionar **`Ctrl + C`**, el plano de control captura el evento, drena los sockets gRPC y evacúa el clúster de la memoria RAM de forma limpia y en absoluto silencio corporativo [INDEX]:
+El sistema incorpora un interceptor global de señales físicas. Al presionar **`Ctrl + C`**, el plano de control captura el evento, drena los sockets gRPC y evacúa el clúster de la memoria RAM de forma limpia y en absoluto silencio corporativo:
 *   🛑 `[DRENADO_RAM]` -> Interrupción de señal interceptada.
 *   ✨ `[DRENADO_RAM]` -> Servidor Distribuido evacuado de la RAM de forma limpia.
 
