@@ -29,13 +29,13 @@
         "endpointPublicAccess": true,
         "managedNodeGroups": [
           {
-            "desiredCapacity": 6,
-            "instanceType": "c5.xlarge",
+            "desiredCapacity": 3,
+            "instanceType": "m5.large",
             "labels": {
               "environment": "production",
               "tier": "application"
             },
-            "maxSize": 25,
+            "maxSize": 10,
             "minSize": 3,
             "name": "aws-eks-enterprise-apps-pool"
           }

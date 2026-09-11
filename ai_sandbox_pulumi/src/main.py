@@ -57,6 +57,9 @@ ACTIVE_CONNECTOR: Optional[BaseTemporalConnector] = None
 async def main():
     global ACTIVE_CONNECTOR
     
+    from src.core.config import ProjectConfigurationRegistry
+    orch_settings = ProjectConfigurationRegistry.get_orchestration_settings()
+    
     mode_key = (os.getenv("DEPLOYMENT_MODE") or "simulado").lower().strip()
     env_host = os.getenv("TEMPORAL_HOST") or "localhost:7233"
     
@@ -87,14 +90,13 @@ async def main():
             execute_toolbelt_mitigation_activity
         )
 
-        # 🚀 FORMA NATIVA CNCF: Levantar el servidor de métricas oficial de Prometheus
-        # Corre de forma independiente sin interferir con el loop de eventos asíncrono
         from prometheus_client import start_http_server
         start_http_server(8000, addr="0.0.0.0")
 
+        # 🚀 ZERO HARDCODE: La task_queue se inyecta elásticamente desde el archivo TOML
         worker = Worker(
             client,
-            task_queue="aiops-incident-task-queue",
+            task_queue=orch_settings["task_queue"],
             workflows=[IncidentMitigationWorkflow],
             activities=[
                 execute_network_worker_activity, 
@@ -106,7 +108,7 @@ async def main():
         )
         
         logger.success(f"🌐 [ENTORNO_GLOBAL] Plano de control distribuido real sellado con éxito.")
-        logger.info("🦾 [QUEUE_DAEMON] Escuchando activamente 'aiops-incident-task-queue' y Métricas nativas en http://0.0.0...")
+        logger.info(f"🦾 [QUEUE_DAEMON] Escuchando activamente la cola '{orch_settings['task_queue']}'...")
         await worker.run()
 
     except Exception as e:

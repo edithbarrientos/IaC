@@ -1,46 +1,130 @@
+# ====================================================================================
+# 🪐 PROJECT ODIN: MANIFIESTO CENTRALIZADO DE CONFIGURACIÓN DECLARATIVA ENTERPRISE
+# ====================================================================================
+# Sigue las directrices estrictas de la CNCF para el aislamiento de entornos.
+# Elimina el 100% del hardcode y cadenas fijas del código fuente de Python.
+# ====================================================================================
+
 [global]
-# Entorno operativo y nombre del stack de Infraestructura como Código (IaC)
 environment = "sandbox"
 pulumi_project_name = "ai_sandbox_pulumi"
 
 [networking]
-# Direccionamiento CIDR restrictivo para el plano de control y producción
 network_control_cidr = "10.240.0.0/16"
 network_production_cidr = "10.0.0.0/8"
 network_vpc_name = "aiops-sandbox-vpc"
 
 [infrastructure]
-# Proveedor de nube orquestado por Pulumi y metadatos del orquestador de contenedores
+# Switch maestro Multi-Cloud: Cambia a "aws", "azure" o "gcp" para conmutar la RAM
 cloud_provider = "aws"
-cloud_region = "us-east-1"
 cluster_name = "aiops-sandbox-cluster"
 
+# ==============================================================================
+# 🚀 PARÁMETROS ESPECÍFICOS DE INFRAESTRUCTURA POR PROVEEDOR (DYNAMIC PARAMS)
+# ==============================================================================
+[providers.aws]
+cidr_block = "10.0.0.0/16"
+az_count = 3
+instance_type = "m5.large"
+desired_capacity = 3
+min_size = 3
+max_size = 10
+allowed_cidrs = ["192.0.2.0/24", "198.51.100.0/22"]
+
+[providers.azure]
+vnet_address_space = "172.16.0.0/12"
+vm_size = "Standard_D4s_v5"
+node_count = 4
+max_pods_per_node = 110
+resource_group_name = "odin-rg-prod"
+authorized_ip_ranges = ["192.0.2.0/24"]
+
+[providers.gcp]
+network_ip_range = "192.168.0.0/16"
+machine_type = "e2-standard-4"
+initial_node_count = 3
+region_zone = "us-central1-a"
+master_ipv4_cidr_block = "172.16.0.0/28"
+
+# ==============================================================================
+# 🚀 SIGNATURAS Y ESQUEMAS DE RECURSOS CLOUD MASTRADOS (BLUEPRINTS)
+# ==============================================================================
+[blueprints.aws]
+kms_type = "aws:kms:Key"
+vpc_type = "awsx:ec2:Vpc"
+cluster_type = "eks:Cluster"
+node_group_key = "managedNodeGroups"
+firewall_property = "publicAccessCidrs"
+
+[blueprints.azure]
+kms_type = "azure-native:keyvault:Key"
+vpc_type = "azure-native:network:VirtualNetwork"
+cluster_type = "azure-native:containerservice:ManagedCluster"
+node_group_key = "agentPoolProfiles"
+firewall_property = "authorizedIPRanges"
+
+[blueprints.gcp]
+kms_type = "gcp:kms:CryptoKey"
+vpc_type = "gcp:compute:Network"
+cluster_type = "gcp:container:Cluster"
+node_group_key = "nodePools"
+firewall_property = "masterAuthorizedNetworksConfig"
+
 [security]
-# Plano de control y puente de red unificado mediante el API Gateway corporativo
-apisix_gateway_host = "http://apisix-gateway.local"
+apisix_gateway_host = "http://cluster.local"
 apisix_admin_token = "mock-admin-secret-token-value-12345"
 enable_mtls = false
 
 [governance]
-# Umbrales analíticos y límites para la mitigación del enjambre de agentes (HITL)
 max_self_healing_attempts = 3
 governance_risk_threshold = 70
 
 [persistence]
-# Ruta de almacenamiento inmutable para LanceDB (Base de datos vectorial)
 lance_db_uri = "data/lancedb"
 
-[ai]
-[ai.ollama]
-host = "http://localhost:11434"
-model = "qwen2.5:1.5b"
+# ==============================================================================
+# 🚀 ENJAMBRE DE AGENTES COGNITIVOS MIXTURE-OF-AGENTS (METADATA PARAMETERS)
+# ==============================================================================
+[moa.agents.networking]
+id = "temporal-worker-networking-01"
+risk_score = 90
+
+[moa.agents.zerotrust]
+id = "temporal-worker-zerotrust-01"
+risk_score = 55
+default_rationale = "CORTEX_VERDICT: Sandbox Zero-Trust auditado."
 
 # ==============================================================================
-# NUEVA SECCIÓN PARAMETRIZADA: Motor de Mutación Física e Infraestructura
+# 🚀 MOTOR DE INTELIGENCIA COGNITIVA 100% PARAMÉTRICO Y DINÁMICO
 # ==============================================================================
+[ai]
+provider = "ollama"
+
+[ai_engines.ollama]
+host_url = "http://cluster.local"
+timeout_limit = 8
+request_body_template = { model = "qwen2.5:1.5b", prompt = "$PROMPT", stream = false, format = "json" }
+
+[ai_engines.vllm]
+host_url = "http://cluster.local"
+timeout_limit = 10
+request_body_template = { model = "qwen2.5-7b-instruct", messages = [{ role = "user", content = "$PROMPT" }], max_tokens = 512 }
+
+[orchestration]
+task_queue = "aiops-incident-task-queue"
+workflow_id = "aiops-mitigation-workflow-instance"
+
+[tools]
+[tools.aws_isolate]
+security_group_isolated = "sg-mitigation-jail-prod"
+default_target_id = "i-0f9c2d1b8490a73ef"
+
+[tools.ssh_forensic]
+ip_address = "10.0.4.15"
+
 [iac]
 [iac.pulumi]
 stack = "sandbox"
-# Modos soportados: "simulado" (Offline, local state, dry-run) o "real" (Aplica cambios en AWS)
-mode = "simulado" 
-backend_url = "file://~"
+mode = "simulado"
+backend_url = "s3://aiops-pulumi-state-prod"
+topology_name = "aws-eks-enterprise"

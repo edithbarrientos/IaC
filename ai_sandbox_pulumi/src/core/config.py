@@ -1,78 +1,107 @@
-"""Módulo de Ingestión de Configuración Maestra Externa.
-
-Carga y parsea en caliente el archivo físico 'config.toml' de la raíz en cada
-ciclo operativo de despliegue, garantizando que el operario pueda reescribir
-el proveedor cloud o los segmentos de red tras fallos catastróficos.
-
-Información del Módulo:
-    * Autor: Edith Barrientos 💻
-    * Año: 2026 🚀
+"""
+========================================================================================
+⚙️ CAPA DE GOBERNANZA CENTRAL: SISTEMA ELÁSTICO DE CONFIGURACIÓN CONFIG.TOML
+========================================================================================
+Mapeador estático de bajo nivel encargado de volcar, parsear y exponer en la RAM
+del clúster todas las llaves, firmas y diccionarios elásticos del plano perimetral.
+CERO HARDCODE: Absolutamente ningún metatipo, ID, score o tabla se fija en Python.
+========================================================================================
 """
 
 import os
-import sys
 import tomllib
-from typing import Any, Dict
+from typing import Dict, Any
 
-from loguru import logger
+class ProjectConfigurationRegistry:
+    """Mapeador estático de la RAM encargado de centralizar los parámetros globales."""
+    _CONFIG_DATA: Dict[str, Any] = {}
 
-
-def load_master_config(config_path: str = "config.toml") -> Dict[str, Any]:
-    """Lee y parsea el archivo TOML externo de la raíz en tiempo de ejecución.
-
-    [PATTERN: CONFIGURATION REGISTRY]
-    Garantiza que la fuente de verdad sea externa. Si el archivo no existe,
-    genera un pánico controlado para forzar la existencia del manifiesto corporativo.
-
-    Args:
-        config_path (str): Ruta del archivo físico.
-
-    Returns:
-        Dict[str, Any]: Diccionario aplanado con las variables en memoria RAM.
-    """
-    absolute_path = os.path.abspath(config_path)
-
-    if not os.path.exists(config_path):
-        logger.critical(
-            f"🔥 [Config] Archivo crítico no encontrado. "
-            f"Ruta intentada: {absolute_path} | Abortando plano de control."
-        )
-        sys.exit(1)
-
-    try:
-        with open(config_path, "rb") as f:
-            raw_data = tomllib.load(f)
+    @classmethod
+    def load_registry(cls):
+        """Carga de forma atómica el archivo config.toml. Lanza error si no existe."""
+        config_path = "config.toml"
+        if not os.path.exists(config_path):
+            raise FileNotFoundError(f"💥 [CRÍTICO] Falta el manifiesto global de configuración: {config_path}")
             
-        flat_config = {
-            "environment": raw_data["global"]["environment"],
-            "project_name": raw_data["global"]["pulumi_project_name"],
-            "cloud_provider": raw_data["infrastructure"]["cloud_provider"].lower(),
-            "cloud_region": raw_data["infrastructure"]["cloud_region"],
-            "cluster_name": raw_data["infrastructure"]["cluster_name"],
-            "network_control_cidr": raw_data["networking"]["network_control_cidr"],
-            "network_production_cidr": raw_data["networking"]["network_production_cidr"],
-            "network_vpc_name": raw_data["networking"]["network_vpc_name"],
-            "apisix_gateway_host": raw_data["security"]["apisix_gateway_host"],
-            "apisix_admin_token": raw_data["security"]["apisix_admin_token"],
-            "enable_mtls": raw_data["security"]["enable_mtls"],
-            "max_self_healing_attempts": raw_data["governance"]["max_self_healing_attempts"],
-            "governance_risk_threshold": raw_data["governance"]["governance_risk_threshold"],
-            "lance_db_uri": raw_data["persistence"]["lance_db_uri"],
+        with open(config_path, "rb") as f:
+            cls._CONFIG_DATA = tomllib.load(f)
+
+    @classmethod
+    def get_infra_defaults(cls) -> Dict[str, Any]:
+        """Recupera el diccionario completo del proveedor activo."""
+        if not cls._CONFIG_DATA:
+            cls.load_registry()
+        infra_section = cls._CONFIG_DATA["infrastructure"]
+        provider_activo = infra_section["cloud_provider"].lower().strip()
+        provider_params = cls._CONFIG_DATA["providers"][provider_activo]
+        return {
+            "cloud_provider": provider_activo,
+            "cluster_name": infra_section["cluster_name"],
+            "variables": provider_params
         }
-        
-        # Log de alta visibilidad exponiendo la ruta física absoluta leída
-        logger.info("ℹ️ [Config] Configuración cargada con éxito.")
-        logger.info(f"📂 [Config] Archivo de origen: {absolute_path}")
-        logger.info(
-            f"🌐 [Config] Nube activa para el despliegue: "
-            f"{flat_config['cloud_provider'].upper()}"
-        )
-        
-        return flat_config
 
-    except Exception as e:
-        logger.critical(f"🚨 [Config] Error estructural parseando el archivo TOML: {str(e)}")
-        sys.exit(1)
+    @classmethod
+    def get_moa_agents_settings(cls) -> Dict[str, Any]:
+        """Recupera el catálogo entero de identidades del enjambre de IA desde el TOML."""
+        if not cls._CONFIG_DATA:
+            cls.load_registry()
+        return cls._CONFIG_DATA["moa"]["agents"]
 
-# Invocación inicial para el arranque del plano de control
-runtime_settings = load_master_config()
+    @classmethod
+    def get_provider_blueprint(cls, provider: str) -> Dict[str, str]:
+        """Recupera las firmas de tipos de recursos e identificadores directo desde el TOML."""
+        if not cls._CONFIG_DATA:
+            cls.load_registry()
+        blueprints_section = cls._CONFIG_DATA["blueprints"]
+        return blueprints_section[provider.lower().strip()]
+
+    @classmethod
+    def get_ai_settings(cls) -> Dict[str, Any]:
+        """🚀 PARAMETRIZACIÓN TOTAL IA: Transporta el payload crudo y el template del cuerpo HTTP."""
+        if not cls._CONFIG_DATA:
+            cls.load_registry()
+        ai_root = cls._CONFIG_DATA["ai"]
+        ai_provider = ai_root["provider"].lower().strip()
+        engine_params = cls._CONFIG_DATA["ai_engines"][ai_provider]
+        return {
+            "provider": ai_provider,
+            "host_url": engine_params["host_url"],
+            "timeout_limit": int(engine_params["timeout_limit"]),
+            "body_template": engine_params["request_body_template"]
+        }
+
+    @classmethod
+    def get_persistence_settings(cls) -> Dict[str, Any]:
+        """🚀 ZERO HARDCODE PERSISTENCE: Extrae la URI y las tablas vectoriales dinámicamente."""
+        if not cls._CONFIG_DATA:
+            cls.load_registry()
+        p_section = cls._CONFIG_DATA["persistence"]
+        return {
+            "uri": p_section["lance_db_uri"],
+            "forensics_table": p_section["tables"]["forensics_table_name"]
+        }
+
+    @classmethod
+    def get_orchestration_settings(cls) -> Dict[str, Any]:
+        """Recupera las colas y nombres de tareas de Temporal IO."""
+        if not cls._CONFIG_DATA:
+            cls.load_registry()
+        return cls._CONFIG_DATA["orchestration"]
+
+    @classmethod
+    def get_tools_settings(cls) -> Dict[str, Any]:
+        """Recupera los metadatos de aislamiento del Toolbelt."""
+        if not cls._CONFIG_DATA:
+            cls.load_registry()
+        return cls._CONFIG_DATA["tools"]
+
+    @classmethod
+    def get_iac_settings(cls) -> Dict[str, Any]:
+        """Recupera las propiedades de ejecución de la CLI de Pulumi."""
+        if not cls._CONFIG_DATA:
+            cls.load_registry()
+        iac_root = cls._CONFIG_DATA["iac"]
+        return iac_root["pulumi"]
+
+# Inicialización forzada estricta en el Runtime
+ProjectConfigurationRegistry.load_registry()
