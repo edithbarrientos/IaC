@@ -1,11 +1,6 @@
 # ====================================================================================
-# 🪐 PROJECT ODIN: ULTRA-SECURE & RESILIENT MULTI-CLOUD ENTERPRISE MANIFEST
+# 🪐 PROJECT ODIN: HARDENED MULTI-CLOUD PRODUCTION MANIFEST WITH SAGA ROLLBACK
 # ====================================================================================
-# Estándar de Referencia de Grado Bancario avalado por la CNCF (Cloud Native Computing).
-# Implementa el Patrón Strategy en O(1) y aislamiento perimetral estricto Zero-Trust.
-# CERO HARDCODE: Absolutamente ningún host, IP, tabla o constante vive en Python.
-# ====================================================================================
-
 [global]
 environment = "production-secure"
 pulumi_project_name = "ai_sandbox_pulumi"
@@ -16,21 +11,15 @@ network_production_cidr = "10.0.0.0/8"
 network_vpc_name = "odin-enterprise-secure-vpc"
 
 [infrastructure]
-# Switch maestro Multi-Cloud: Cambia a "aws", "azure" o "gcp" para conmutar la RAM en caliente
 cloud_provider = "aws"
 cluster_name = "odin-enterprise-hardened-cluster"
 
-# ==============================================================================
-# 🚀 PARÁMETROS ESPECÍFICOS DE INFRAESTRUCTURA POR PROVEEDOR (DYNAMIC PARAMS)
-# ==============================================================================
 [providers.aws]
 cidr_block = "10.100.0.0/16"
 az_count = 3
 private_subnet_mask = 22
 public_subnet_mask = 24
 kms_deletion_days = 7
-
-# Segregación de Cómputo Súper Resiliente (Evita ráfagas DoS sobre CoreDNS)
 system_node_instance = "m5.xlarge"
 system_node_desired = 3
 system_node_max = 5
@@ -38,83 +27,34 @@ apps_node_instance = "c5.2xlarge"
 apps_node_desired = 5
 apps_node_min = 3
 apps_node_max = 50
-
-# Súper Seguridad: API oculta de Internet (Aislada perimetralmente vía VPN / DirectConnect)
 endpoint_private_access = true
 endpoint_public_access = false  
 allowed_management_cidrs = ["10.240.0.0/16"]
 enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
-[providers.azure]
-vnet_address_space = "172.16.0.0/12"
-resource_group_name = "odin-enterprise-secure-rg"
-system_vm_size = "Standard_D4s_v5"
-system_node_count = 3
-apps_vm_size = "Standard_F8s_v2"
-apps_min_nodes = 5
-apps_max_nodes = 100
-enable_private_cluster = true
-enable_rbac_azure = true
-sku_tier = "Standard" # SLA de alta disponibilidad financiera (99.95%)
-
-[providers.gcp]
-network_ip_range = "192.168.0.0/16"
-region_zone = "us-central1"
-system_machine_type = "e2-standard-4"
-system_nodes = 3
-apps_machine_type = "c2-standard-8"
-apps_min_nodes = 3
-apps_max_nodes = 80
-enable_private_nodes = true
-enable_private_endpoint = true
-master_ipv4_cidr_block = "172.16.0.0/28"
-
-# ==============================================================================
-# 🚀 PARÁMETROS AVANZADOS DE SIGNATURAS DE LLAVES INTERNAS (BLUEPRINTS DE SEGURIDAD)
-# ==============================================================================
 [blueprints.aws]
 kms_type = "aws:kms:Key"
 vpc_type = "awsx:ec2:Vpc"
 cluster_type = "eks:Cluster"
 node_group_key = "managedNodeGroups"
 firewall_property = "publicAccessCidrs"
-secrets_encryption_resources = ["secrets"] # Cifra la base etcd mediante Hardware HSM
-
-[blueprints.azure]
-kms_type = "azure-native:keyvault:Key"
-vpc_type = "azure-native:network:VirtualNetwork"
-cluster_type = "azure-native:containerservice:ManagedCluster"
-node_group_key = "agentPoolProfiles"
-firewall_property = "authorizedIPRanges"
-secrets_encryption_resources = ["vault"]
-
-[blueprints.gcp]
-kms_type = "gcp:kms:CryptoKey"
-vpc_type = "gcp:compute:Network"
-cluster_type = "gcp:container:Cluster"
-node_group_key = "nodePools"
-firewall_property = "masterAuthorizedNetworksConfig"
-secrets_encryption_resources = ["all"]
+secrets_encryption_resources = ["secrets"]
 
 [security]
-# Plano de control y puente de red unificado mediante el API Gateway corporativo mTLS
 apisix_gateway_host = "http://cluster.local"
 apisix_admin_token = "mock-admin-secret-token-value-12345"
 enable_mtls = true
 
 [governance]
-# Umbrales analíticos de riesgo corporativo para la mitigación autónoma (HITL)
 max_self_healing_attempts = 3
 governance_risk_threshold = 85 
 
 [persistence]
-# Ruta de almacenamiento inmutable para la base de datos vectorial de forense
 lance_db_uri = "data/lancedb"
 [persistence.tables]
 forensics_table_name = "incident_forensics"
 
 [moa.agents.networking]
-# Identificadores Globales Únicos e Índices de Criticidad del Enjambre MoA
 id = "temporal-worker-networking-01"
 risk_score = 95
 
@@ -124,30 +64,22 @@ risk_score = 90
 default_rationale = "CORTEX_VERDICT: Sandbox Zero-Trust auditado y endurecido de nivel bancario."
 
 [ai]
-# Conmutador maestro del motor cognitivo distributed
 provider = "ollama"
 
 [ai_engines.ollama]
-# FIX ENDPOINT LOCALHOST: Asegura conectividad directa no bloqueante
 api_endpoint_url = "http://localhost:11434/api/generate"
-# RESOLUCIÓN DE TIMEOUT: Ampliado a 30s para dar tiempo legal de inferencia sin congelar hilos distribuidos
 timeout_limit = 30
 request_body_template = { model = "qwen2.5:1.5b", prompt = "$PROMPT", stream = false, format = "json" }
 
-[ai_engines.vllm]
-api_endpoint_url = "http://cluster.local"
-timeout_limit = 30
-request_body_template = { model = "qwen2.5-7b-instruct", messages = [{ role = "user", content = "$PROMPT" }], max_tokens = 512 }
-
 [orchestration]
-# 🚀 PARAMETRIZACIÓN DE RETORNOS DISTRIBUIDOS: Se eliminan las constantes del código
 task_queue = "aiops-incident-task-queue"
 workflow_id = "aiops-mitigation-workflow-instance"
 activity_schedule_to_close_seconds = 45  
 success_status_message = "Saga y Toolbelt completados con éxito distribuido en O(1)"
+# 🚀 PARAMETRIZACIÓN DEL ROLLBACK DISTRIBUIDO
+rollback_status_message = "CRITICAL_SAGA_FAILURE: Transacción de compensación elástica ejecutada exitosamente"
 
 [tools]
-# Catálogo de contramedidas tácticas del Toolbelt perimetral
 [tools.aws_isolate]
 security_group_isolated = "sg-mitigation-jail-prod"
 default_target_id = "i-0f9c2d1b8490a73ef"
@@ -156,7 +88,6 @@ default_target_id = "i-0f9c2d1b8490a73ef"
 ip_address = "10.0.4.15"
 
 [iac]
-# Propiedades operativas del motor de inyección física de Pulumi
 [iac.pulumi]
 stack = "production"
 mode = "simulado"

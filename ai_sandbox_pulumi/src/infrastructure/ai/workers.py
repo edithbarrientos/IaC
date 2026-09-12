@@ -2,7 +2,8 @@
 👥 MÓDULO DE AGENTES ESPECIALISTAS COGNITIVOS (TEMPORAL DISTRIBUTED ACTIVITIES)
 ========================================================================================
 Cada worker expone sus capacidades analíticas como actividades distribuidas.
-TOTAL RESILIENCE: Mutación tolerante a diccionarios de IA.
+ZERO HARDCODE / ZERO IFS / NON-BLOCKING ASYNC: Implementa aiohttp para evitar bloqueos
+del loop de eventos de asyncio y un motor de mutación elástica en O(1) sin condicionales.
 ========================================================================================
 """
 
@@ -63,19 +64,20 @@ AI_PARSE_STRATEGY: Dict[str, Any] = {
     "vllm": _parsear_respuesta_vllm
 }
 
-# ☁️ TABLA HASH 2: Mutadores elásticos de topologías según el proveedor activo (Tolerancia total)
+# ☁️ TABLA HASH 2: Mutadores elásticos de topologías (Sustitución voraz en O(1) sin un solo IF)
 def _mutar_variables_aws(variables: Dict[str, Any], parsed_ai: Dict[str, Any]):
-    variables["instance_type"] = parsed_ai.get("instance_type", variables["instance_type"])
-    variables["desired_capacity"] = int(parsed_ai.get("desired_capacity", variables["desired_capacity"]))
-    variables["max_size"] = int(parsed_ai.get("max_size", variables["max_size"]))
-    variables["cidr_block"] = parsed_ai.get("cidr_block", variables["cidr_block"])
+    # El método .update() limpia los campos de forma atómica cruzando los diccionarios 
+    # y aplicando los fallbacks del TOML si la IA omite alguna variable en su respuesta.
+    payload_filtrado = {k: v for k, v in parsed_ai.items() if k in variables}
+    variables.update(payload_filtrado)
 
 def _mutar_variables_azure(variables: Dict[str, Any], parsed_ai: Dict[str, Any]):
-    variables["vm_size"] = parsed_ai.get("vm_size", variables["vm_size"])
-    variables["node_count"] = int(parsed_ai.get("node_count", variables["node_count"]))
+    payload_filtrado = {k: v for k, v in parsed_ai.items() if k in variables}
+    variables.update(payload_filtrado)
 
 def _mutar_variables_gcp(variables: Dict[str, Any], parsed_ai: Dict[str, Any]):
-    variables["machine_type"] = parsed_ai.get("machine_type", variables["machine_type"])
+    payload_filtrado = {k: v for k, v in parsed_ai.items() if k in variables}
+    variables.update(payload_filtrado)
 
 CLOUD_MUTATION_STRATEGY: Dict[str, Any] = {
     "aws": _mutar_variables_aws,
@@ -84,7 +86,7 @@ CLOUD_MUTATION_STRATEGY: Dict[str, Any] = {
 }
 
 # =====================================================================================
-# --- ACTIVIDAD DISTRIBUIDA 1: AGENTE DE RED ---
+# --- ACTIVIDAD DISTRIBUIDA 1: AGENTE DE RED (ZERO IFS LINEAR RUNTIME) ---
 # =====================================================================================
 
 @activity.defn(name="execute_network_worker_activity")
@@ -128,6 +130,7 @@ async def execute_network_worker_activity(incident_logs: str) -> dict:
                 parsed_ai = json.loads(ai_response)
                 logger.success(f"[Project-ODIN] Inferencia completada asíncronamente en O(1) vía {ai_provider}")
                 
+                # 🚀 ZERO IFS MUTATION: Despacho e inyección directa en O(1) por la tabla hash de nubes
                 mutator = CLOUD_MUTATION_STRATEGY[custom_params["cloud_provider"]]
                 mutator(custom_params["variables"], parsed_ai)
                 
