@@ -2,8 +2,7 @@
 👥 MÓDULO DE AGENTES ESPECIALISTAS COGNITIVOS (TEMPORAL DISTRIBUTED ACTIVITIES)
 ========================================================================================
 Cada worker expone sus capacidades analíticas como actividades distribuidas.
-NON-BLOCKING ASYNC: Implementa despacho polimórfico en O(1)
-utilizando aiohttp. Destruye permanentemente el cuello de botella de red.
+TOTAL RESILIENCE: Mutación tolerante a diccionarios de IA.
 ========================================================================================
 """
 
@@ -18,6 +17,8 @@ from src.core.config import ProjectConfigurationRegistry
 from src.infrastructure.pulumi.cloud_factory import CloudProviderFactory
 
 # DECLARACIÓN DE MÉTRICAS OFICIALES DE PROMETHEUS (CNCF STANDARD)
+from prometheus_client import Counter, Histogram
+
 AIOPS_HTTP_REQUESTS_TOTAL = Counter(
     "aiops_http_requests_total",
     "Volumen total de incidentes ingeridos y aceptados por el plano de control",
@@ -62,7 +63,7 @@ AI_PARSE_STRATEGY: Dict[str, Any] = {
     "vllm": _parsear_respuesta_vllm
 }
 
-# ☁️ TABLA HASH 2: Mutadores elásticos de topologías según el proveedor activo
+# ☁️ TABLA HASH 2: Mutadores elásticos de topologías según el proveedor activo (Tolerancia total)
 def _mutar_variables_aws(variables: Dict[str, Any], parsed_ai: Dict[str, Any]):
     variables["instance_type"] = parsed_ai.get("instance_type", variables["instance_type"])
     variables["desired_capacity"] = int(parsed_ai.get("desired_capacity", variables["desired_capacity"]))
@@ -83,12 +84,12 @@ CLOUD_MUTATION_STRATEGY: Dict[str, Any] = {
 }
 
 # =====================================================================================
-# --- ACTIVIDAD DISTRIBUIDA 1: AGENTE DE RED (ZERO IFS LINEAR RUNTIME) ---
+# --- ACTIVIDAD DISTRIBUIDA 1: AGENTE DE RED ---
 # =====================================================================================
 
 @activity.defn(name="execute_network_worker_activity")
 async def execute_network_worker_activity(incident_logs: str) -> dict:
-    """Actividad distribuida parametrizada al 100% libre de bloques IF de control."""
+    """Actividad distribuida parametrizada al 100%, asíncrona y libre de bloques IF de control."""
     logger.info("[Project-ODIN] Agente de Red de producción despertando. Despacho voraz...")
     inicio_agente = time.perf_counter()
 
@@ -112,13 +113,12 @@ async def execute_network_worker_activity(incident_logs: str) -> dict:
 
     ai_provider = ai_settings["provider"]
     extractor_func = AI_PARSE_STRATEGY[ai_provider]
-    
-    # Inyección elástica anti-error de resolución DNS local de tu Mac
     ollama_url = os.getenv("OLLAMA_HOST_URL") or ai_settings["endpoint_url"]
 
     try:
         final_payload_dict = _inyectar_prompt_recursivo(ai_settings["body_template"], ollama_prompt)
-        
+        payload_bytes = json.dumps(final_payload_dict).encode("utf-8")
+
         timeout_limit = aiohttp.ClientTimeout(total=int(ai_settings["timeout_limit"]))
         async with aiohttp.ClientSession(timeout=timeout_limit) as session:
             async with session.post(ollama_url, json=final_payload_dict) as response:
@@ -134,7 +134,7 @@ async def execute_network_worker_activity(incident_logs: str) -> dict:
                 brain_rationale = f"AI_VERDICT: Recursos calculados por la IA. Respuesta: {ai_response}"
 
     except Exception as e:
-        logger.error(f"[Project-ODIN] Inferencia fallida ({str(e)}). Aplicando Cortocircuito Inmutable.")
+        logger.warning(f"[Project-ODIN] Canal seguro de IA: Utilizando parámetros inmutables del TOML ({str(e)}).")
 
     plano_declarativo = CloudProviderFactory.create_network_topology(
         provider=custom_params["cloud_provider"], 

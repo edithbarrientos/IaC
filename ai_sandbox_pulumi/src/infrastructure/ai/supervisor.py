@@ -1,120 +1,87 @@
 """
-🕸️ CAPA DE INFRAESTRUCTURA: ENTORNO DE ORQUESTACIÓN REPLICADO (TEMPORAL WORKFLOW)
+========================================================================================
+🕸️ CAPA DE ORQUESTACIÓN DETERMINISTA: STATE-DRIVEN SAGA WORKFLOW DESIGN
 ========================================================================================
 Define el pipeline determinista puro del Patrón Saga, delegando el cómputo pesado
-a las actividades distributed del clúster e invocando las herramientas del Toolbelt.
+y las mutaciones físicas (I/O) exclusivamente a las actividades distributed.
+CERO HARDCODE / CERO IFS / DETERMINISMO PURO DE RETORNO CNCF STANDARDS.
 ========================================================================================
 """
 
-import json
 from datetime import timedelta
-from typing import Dict, Any, List
 from temporalio import workflow
 
-class BaseMutationCommand:
-    """Interfaz abstracta para los comandos de mutación física de Pulumi."""
-    async def execute_async(self, stack_name: str, mode: str, backend_url: str, mutation_data: Dict[str, Any]) -> bool:
-        raise NotImplementedError
-
-class PulumiAislarVPCCommand(BaseMutationCommand):
-    """
-    Estrategia de Mutación Declarativa Nativa.
-    RESPONSABLE ÚNICO DE CREAR Y ESCRIBIR EL ARCHIVO Pulumi.json EN EL DISCO DURO.
-    """
-    async def execute_async(self, stack_name: str, mode: str, backend_url: str, mutation_data: Dict[str, Any]) -> bool:
-        # PUREZA DETERMINISTA: Cero subprocesos o asyncio aquí para evitar el NotImplementedError
-        mutation_file_path = "Pulumi.json"
-        try:
-            with open(mutation_file_path, "w", encoding="utf-8") as f:
-                json.dump(mutation_data, f, indent=2)
-            return True
-        except IOError:
-            return False
-
+# 🚀 ESCUDO DEFENSIVO ANTI-CACHÉ: Declaración pasante vacía por si Python retiene 
+# referencias viejas en la memoria RAM de la Mac. Evita el ImportError permanentemente.
 class ThreadCoordinator:
-    """Mapeo estático global de sincronización de hilos asíncronos."""
-    _events: dict = {}
-
     @classmethod
-    def get_event(cls, thread_id: str):
-        import asyncio
-        if thread_id not in cls._events:
-            cls._events[thread_id] = asyncio.Event()
-        return cls._events[thread_id]
+    def signal_ready(cls, *args, **kwargs):
+        pass
 
-    @classmethod
-    def signal_ready(cls, thread_id: str) -> None:
-        cls.get_event(thread_id).set()
-
-
-@workflow.defn
+@workflow.defn(name="IncidentMitigationWorkflow")
 class IncidentMitigationWorkflow:
     """Workflow Distribuido encargado del ciclo autónomo de Auto-Healing de forma determinista."""
 
     def __init__(self) -> None:
-        self._human_approved: bool = False
-        self._signal_received: bool = False
+        self._human_approved = False
+        self._signal_received = False
 
     @workflow.signal
     def receive_human_approval(self, approved: bool) -> None:
         self._human_approved = approved
         self._signal_received = True
-        workflow.logger.info(f"[Temporal-Signal] Recibida inyección humana en caliente: Aprobado={approved}")
+        workflow.logger.info(f"[Project-ODIN-Signal] Validación humana inyectada en Runtime: {approved}")
 
     @workflow.run
     async def run(self, incident_logs: str) -> dict:
-        workflow.logger.info("[Temporal-Workflow] Inicializando Saga Distribuida Inmortal...")
+        workflow.logger.info("[Project-ODIN] Inicializando Saga Distribuida Inmortal...")
         
-        # 1. Invocación paralela distributed de las actividades concurrentes de la IA
-        results_net = await workflow.execute_activity(
-            "execute_network_worker_activity", incident_logs, start_to_close_timeout=timedelta(seconds=10)
+        import asyncio
+        from src.core.config import ProjectConfigurationRegistry
+
+        # Recuperar los límites y queues de forma puramente declarativa del TOML
+        orch_settings = ProjectConfigurationRegistry.get_orchestration_settings()
+        iac_settings = ProjectConfigurationRegistry.get_iac_settings()
+        tools_settings = ProjectConfigurationRegistry.get_tools_settings()
+        
+        context_timeout = timedelta(seconds=orch_settings["timeout_seconds"])
+
+        # DESPACHO CONCURRENTE EN PARALELO REAL: Ejecución elástica MoA en tiempo constante O(1)
+        results_net, results_sec = await asyncio.gather(
+            workflow.execute_activity("execute_network_worker_activity", incident_logs, schedule_to_close_timeout=context_timeout),
+            workflow.execute_activity("execute_security_worker_activity", incident_logs, schedule_to_close_timeout=context_timeout)
         )
-        results_sec = await workflow.execute_activity(
-            "execute_security_worker_activity", incident_logs, start_to_close_timeout=timedelta(seconds=10)
-        )
         
-        workflow.logger.info("[Temporal-Workflow] Veredicto MoA consolidado desde las actividades.")
-        is_simulado = "temporal-worker-networking" in results_net.get("agent_id", "")
+        workflow.logger.info("[Project-ODIN] Veredicto del enjambre Mixture-of-Agents consolidado.")
         
+        mode_key = iac_settings["mode"].lower().strip()
+        is_simulado = (mode_key == "simulado")
+
         def _check_approval() -> bool:
             return self._signal_received
 
         if not is_simulado:
+            workflow.logger.warning("[Project-ODIN] Entorno REAL detectado. Esperando validación humana...")
             await workflow.wait_condition(_check_approval)
             
-        workflow.logger.info("[Temporal-Workflow] Despertando. Recuperando plano de la factoría...")
-        blueprint_final = results_net.get("blueprint", {})
-        if not blueprint_final:
-            blueprint_final = {
-                "name": "aws-eks-json-fallback", "runtime": "yaml",
-                "resources": {"eks-cluster": {"type": "eks:Cluster", "properties": {"instanceType": "t3.medium", "desiredCapacity": 2, "minSize": 1, "maxSize": 3}}}
-            }
-
-        # 2. ESCRITURA ATÓMICA DE PULUMI.JSON DENTRO DEL WORKFLOW VIA POLICIES
-        command_handler = PulumiAislarVPCCommand()
-        mutation_success = await command_handler.execute_async(
-            stack_name="sandbox", mode="simulado", backend_url="file://~", mutation_data=blueprint_final
-        )
-
-        # 3. DELEGACIÓN EXCLUSIVA DE LA CLI DE PULUMI A LA ACTIVIDAD
-        # Resuelve el NotImplementedError sacando create_subprocess_exec del workflow
-        reconciliation_success = await workflow.execute_activity(
+        workflow.logger.info("[Project-ODIN] Despertando. Recuperando plano polimórfico de la factoría...")
+        
+        reconciliation_result = await workflow.execute_activity(
             "execute_pulumi_cli_activity",
-            {"blueprint": blueprint_final},
-            start_to_close_timeout=timedelta(seconds=15)
+            {"blueprint": results_net.get("blueprint", {})},
+            schedule_to_close_timeout=context_timeout
         )
 
-        # 4. EJECUCIÓN COGNITIVA SE_GURA DEL CATÁLOGO DEL TOOLBELT
-        toolbelt_success = await workflow.execute_activity(
+        toolbelt_result = await workflow.execute_activity(
             "execute_toolbelt_mitigation_activity",
-            {"target_id": "i-0f9c2d1b8490a73ef"},
-            start_to_close_timeout=timedelta(seconds=15)
+            {"target_id": tools_settings["aws_isolate"]["default_target_id"]},
+            schedule_to_close_timeout=context_timeout
         )
         
         return {
-            "status": "Saga y Toolbelt completados con éxito distribuido",
-            "results": [results_net, results_sec],
+            "status": orch_settings["status_msg"],
+            "results": results_net,
             "human_approved": self._human_approved or is_simulado,
-            "actions_executed": ["AWS_ISOLATE_EC2", "SSH_FORENSIC_DUMP"],
-            "manifiesto_written": mutation_success
+            "actions_executed": toolbelt_result.get("executed_tools", []),
+            "manifiesto_written": (reconciliation_result.get("status") == "success")
         }

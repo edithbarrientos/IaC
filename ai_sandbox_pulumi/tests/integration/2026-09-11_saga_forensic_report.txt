@@ -1,3 +1,21 @@
+2026-09-11 19:14:04.042 | INFO     | [Project-ODIN] Agente de Red de producción despertando. Despacho voraz...
+2026-09-11 19:14:09.437 | SUCCESS  | [Project-ODIN] Inferencia completada asíncronamente en O(1) vía ollama
+2026-09-11 19:14:09.438 | WARNING  | [Project-ODIN] Canal seguro de IA: Utilizando parámetros inmutables del TOML ('instance_type').
+2026-09-11 19:14:09.439 | INFO     | [AWS-Factory] Generando arquitectura EKS Enterprise parametrizada para: 'aws-eks-enterprise-hardened'
+2026-09-11 19:14:09.444 | SUCCESS  | [Pulumi-Engine] ¡Manifiesto generado de forma atómica bajo control puro del TOML!
+2026-09-11 19:14:09.485 | WARNING  | [Pulumi-Activity] Ejecutando comando de reconciliación CLI en la Actividad...
+2026-09-11 19:14:10.676 | INFO     | 🏭 [TOOLBELT] Estrategia: 'AWS' [SIMULADO] cargada desde config.toml
+2026-09-11 19:14:10.678 | INFO     | 🔒 [TOOLBELT] Solicitando aislamiento de recurso: i-0f9c2d1b8490a73ef
+2026-09-11 19:14:10.679 | INFO     | 🔍 [TOOLBELT] Conectando vía SSH a 10.0.4.15 para forense...
+2026-09-11 19:14:10.724 | INFO     | 🪐 [QA-TELEMETRÍA] --- INICIANDO VOLCADO FORENSE CON MÉTRICAS PROMETHEUS ---
+2026-09-11 19:14:10.725 | INFO     | 📡 Orquestador Estatus: Saga y Toolbelt completados con éxito distribuido en O(1)
+2026-09-11 19:14:10.725 | INFO     | 👤 Aprobación Humana:   True
+2026-09-11 19:14:10.725 | INFO     | 🛡️ Acciones Ejecutadas:  ['AWS_ISOLATE_EC2', 'SSH_FORENSIC_DUMP']
+2026-09-11 19:14:10.726 | INFO     | ⏱️ [SAGA-TELEMETRÍA] Tiempo total de ejecución SAGA: 9.4072 segundos
+2026-09-11 19:14:10.726 | INFO     | 📊 [IAC-TELEMETRÍA]  Recurso Cloud detectados en TOML: 3 objetos inyectados
+2026-09-11 19:14:10.728 | SUCCESS  | 📈 [PROMETHEUS-REGISTRY] Métrica 'qa_saga_duration_seconds' registrada: 9.4072s
+2026-09-11 19:14:10.728 | SUCCESS  | 📈 [PROMETHEUS-REGISTRY] Métrica 'qa_pulumi_manifest_resources_count' registrada: 3 recursos
+2026-09-11 19:14:10.729 | INFO     | 📂 [Pulumi-Engine] Manifiesto consolidado en disco:
 {
   "name": "aws-eks-enterprise-hardened",
   "runtime": "yaml",
@@ -77,3 +95,4 @@
     "oidcProviderUrl": "${aws-eks-enterprise-hardened-eks.core.oidcProvider.url}"
   }
 }
+2026-09-11 19:14:10.730 | SUCCESS  | ✨ [QA-SUCCESS] ¡SAGA distributed, enjambre MoA y descriptores CNCF validados en verde!

@@ -82,7 +82,10 @@ async def main():
             logger.critical("💥 [ENTORNO_GLOBAL] Imposible inicializar el cliente del clúster distributed.")
             sys.exit(1)
 
+        # 🚀 PURIFICACIÓN ABSOLUTA EN IMPORTACIONES: Importamos únicamente la clase Workflow
+        # Queda completamente erradicado cualquier rastro de ThreadCoordinator del main.py
         from src.infrastructure.ai.supervisor import IncidentMitigationWorkflow
+        
         from src.infrastructure.ai.workers import (
             execute_network_worker_activity, 
             execute_security_worker_activity,
@@ -93,7 +96,6 @@ async def main():
         from prometheus_client import start_http_server
         start_http_server(8000, addr="0.0.0.0")
 
-        # 🚀 ZERO HARDCODE: La task_queue se inyecta elásticamente desde el archivo TOML
         worker = Worker(
             client,
             task_queue=orch_settings["task_queue"],
@@ -108,7 +110,7 @@ async def main():
         )
         
         logger.success(f"🌐 [ENTORNO_GLOBAL] Plano de control distribuido real sellado con éxito.")
-        logger.info(f"🦾 [QUEUE_DAEMON] Escuchando activamente la cola '{orch_settings['task_queue']}'...")
+        logger.info(f"🦾 [QUEUE_DAEMON] Escuchando activamente la queue '{orch_settings['task_queue']}'...")
         await worker.run()
 
     except Exception as e:

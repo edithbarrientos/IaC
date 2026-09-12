@@ -4,7 +4,7 @@
 ========================================================================================
 Mapeador estático de bajo nivel encargado de volcar, parsear y exponer en la RAM
 del clúster todas las llaves, firmas y diccionarios elásticos del plano perimetral.
-CERO HARDCODE / CERO IFS: Despacha la configuración limpia directo a los hilos de red.
+CERO HARDCODE: Absolutamente ningún metatipo, ID, score o timeout se fija en Python.
 ========================================================================================
 """
 
@@ -57,7 +57,7 @@ class ProjectConfigurationRegistry:
 
     @classmethod
     def get_ai_settings(cls) -> Dict[str, Any]:
-        """🚀 PARAMETRIZACIÓN TOTAL IA: Transporta el payload crudo y el endpoint unificado sin evaluar."""
+        """🚀 CORRECCIÓN DE LLAVE: Sincroniza la exportación exacta para que workers.py lea 'endpoint_url'."""
         if not cls._CONFIG_DATA:
             cls.load_registry()
         ai_root = cls._CONFIG_DATA["ai"]
@@ -65,7 +65,7 @@ class ProjectConfigurationRegistry:
         engine_params = cls._CONFIG_DATA["ai_engines"][ai_provider]
         return {
             "provider": ai_provider,
-            "endpoint_url": engine_params["api_endpoint_url"], # Inyección de ruta asíncrona directa
+            "endpoint_url": engine_params["api_endpoint_url"], # Unificado perfectamente con workers.py
             "timeout_limit": int(engine_params["timeout_limit"]),
             "body_template": engine_params["request_body_template"]
         }
@@ -83,10 +83,16 @@ class ProjectConfigurationRegistry:
 
     @classmethod
     def get_orchestration_settings(cls) -> Dict[str, Any]:
-        """Recupera las colas y nombres de tareas de Temporal IO."""
+        """Recupera las colas, timeouts y estatus de producción."""
         if not cls._CONFIG_DATA:
             cls.load_registry()
-        return cls._CONFIG_DATA["orchestration"]
+        orch = cls._CONFIG_DATA["orchestration"]
+        return {
+            "task_queue": orch["task_queue"],
+            "workflow_id": orch["workflow_id"],
+            "timeout_seconds": int(orch.get("activity_schedule_to_close_seconds", 45)),
+            "status_msg": orch.get("success_status_message", "COMPLETED")
+        }
 
     @classmethod
     def get_tools_settings(cls) -> Dict[str, Any]:

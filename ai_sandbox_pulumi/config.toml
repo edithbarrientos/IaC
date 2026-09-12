@@ -1,5 +1,5 @@
 # ====================================================================================
-# 🪐 PROJECT ODIN: MANIFIESTO CENTRALIZADO DE CONFIGURACIÓN DECLARATIVA ENTERPRISE
+# 🪐 PROJECT ODIN: ULTRA-SECURE & RESILIENT MULTI-CLOUD ENTERPRISE MANIFEST
 # ====================================================================================
 # Estándar de Referencia de Grado Bancario avalado por la CNCF (Cloud Native Computing).
 # Implementa el Patrón Strategy en O(1) y aislamiento perimetral estricto Zero-Trust.
@@ -7,12 +7,10 @@
 # ====================================================================================
 
 [global]
-# Entorno operativo y nombre del stack inmutable de Infraestructura como Código (IaC)
 environment = "production-secure"
 pulumi_project_name = "ai_sandbox_pulumi"
 
 [networking]
-# Direccionamiento CIDR restrictivo para el aislamiento de subredes del plano de control
 network_control_cidr = "10.240.0.0/16"
 network_production_cidr = "10.0.0.0/8"
 network_vpc_name = "odin-enterprise-secure-vpc"
@@ -23,7 +21,7 @@ cloud_provider = "aws"
 cluster_name = "odin-enterprise-hardened-cluster"
 
 # ==============================================================================
-# 🚀 PARÁMETROS AVANZADOS DE TOPOLOGÍA POR PROVEEDOR (SUPER RESILIENCE & METADATA)
+# 🚀 PARÁMETROS ESPECÍFICOS DE INFRAESTRUCTURA POR PROVEEDOR (DYNAMIC PARAMS)
 # ==============================================================================
 [providers.aws]
 cidr_block = "10.100.0.0/16"
@@ -130,20 +128,23 @@ default_rationale = "CORTEX_VERDICT: Sandbox Zero-Trust auditado y endurecido de
 provider = "ollama"
 
 [ai_engines.ollama]
-# ZERO LOCALHOST: Mapeado mediante DNS elástica de infraestructura de producción
-api_endpoint_url = "http://cluster.local"
-timeout_limit = 10
+# FIX ENDPOINT LOCALHOST: Asegura conectividad directa no bloqueante
+api_endpoint_url = "http://localhost:11434/api/generate"
+# RESOLUCIÓN DE TIMEOUT: Ampliado a 30s para dar tiempo legal de inferencia sin congelar hilos distribuidos
+timeout_limit = 30
 request_body_template = { model = "qwen2.5:1.5b", prompt = "$PROMPT", stream = false, format = "json" }
 
 [ai_engines.vllm]
 api_endpoint_url = "http://cluster.local"
-timeout_limit = 10
+timeout_limit = 30
 request_body_template = { model = "qwen2.5-7b-instruct", messages = [{ role = "user", content = "$PROMPT" }], max_tokens = 512 }
 
 [orchestration]
-# Cableado de colas asíncronas para el motor de daemons inmortales de Temporal IO
+# 🚀 PARAMETRIZACIÓN DE RETORNOS DISTRIBUIDOS: Se eliminan las constantes del código
 task_queue = "aiops-incident-task-queue"
 workflow_id = "aiops-mitigation-workflow-instance"
+activity_schedule_to_close_seconds = 45  
+success_status_message = "Saga y Toolbelt completados con éxito distribuido en O(1)"
 
 [tools]
 # Catálogo de contramedidas tácticas del Toolbelt perimetral
