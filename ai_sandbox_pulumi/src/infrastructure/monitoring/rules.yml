@@ -1,0 +1,33 @@
+# ========================================================================================
+# 🪐 MANIFIESTO DE RECORDING RULES: AUTOMATIZACIÓN DE COMPÓSITOS PROMQL MULTI-TIER
+# ========================================================================================
+# Ruta Física Unificación: src/infrastructure/monitoring/rules.yml
+# Pre-calcula percentiles P99/P95, anomalías del Kernel y resiliencia de la SAGA en RAM.
+
+groups:
+  - name: odin_infrastructure_observability_rules
+    interval: 5s  # Frecuencia agresiva de pre-calculado para soporte reactivo MoA
+    rules:
+      
+      # ─── PERÍMETRO EXTERIOR (APISIX & KERNEL RUST) ───
+      - record: apisix:http_requests:rate1m
+        expr: sum(rate(apisix_http_requests_total{status_code="200"}[1m]))
+
+      - record: apisix:upstream_latency:p99_5m
+        expr: histogram_quantile(0.99, sum(rate(apisix_upstream_latency_routing_seconds_bucket[5m])) by (le, cloud_provider))
+
+      - record: security:network_anomalies:bytes_rate1m
+        expr: sum(rate(network_anomaly_bytes_total[1m])) by (anomaly_type, gateway_host)
+
+      - record: kernel:ebpf_probes:syscalls_rate1m
+        expr: sum(rate(ebpf_kernel_panics_intercepted_total[1m])) by (syscall_target)
+
+      # ─── NÚCLEO INTERIOR COGNITIVO (PLANO DE CONTROL AI) ───
+      - record: moa:agent_processing_latency:p95_5m
+        expr: histogram_quantile(0.95, sum(rate(aiops_agent_latency_ms_bucket[5m])) by (le, agent_id))
+
+      - record: rag:alerts_ingest:success_rate1m
+        expr: sum(rate(aiops_http_requests_total{endpoint="/v1/alerts/ingest", status_code="202"}[1m]))
+
+      - record: saga:toolbelt_failures:rate5m
+        expr: sum(rate(aiops_toolbelt_failures_total[5m])) by (error_type)
