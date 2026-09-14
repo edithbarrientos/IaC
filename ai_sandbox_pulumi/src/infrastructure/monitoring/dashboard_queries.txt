@@ -1,0 +1,18 @@
+====================================================================================
+🌌 AIOPS CONTROL PLANE: CATALOGO DE CONSULTAS PROMQL PARA GRAFANA DASHBOARD
+====================================================================================
+
+[PANEL 1: PERFORMANCE COGNITIVO]
+• Descripción: Latencia de procesamiento del enjambre MoA en el percentil 95.
+• Consulta:
+  histogram_quantile(0.95, sum(rate(aiops_agent_latency_ms_bucket[5m])) by (le, agent_id))
+
+[PANEL 2: RENDIMIENTO DE INGESTA]
+• Descripción: Volumen de incidentes ingeridos exitosamente por segundo (HTTP 202).
+• Consulta:
+  sum(rate(aiops_http_requests_total{endpoint="/v1/alerts/ingest", status_code="202"}[1m]))
+
+[PANEL 3: RESILIENCIA DE LA SAGA]
+• Descripción: Tasa de fallos mitigados en las actividades perimetrales del Toolbelt.
+• Consulta:
+  sum(rate(aiops_toolbelt_failures_total[5m])) by (error_type)
