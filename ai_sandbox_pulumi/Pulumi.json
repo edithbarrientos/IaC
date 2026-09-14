@@ -13,7 +13,7 @@
     "aws-eks-enterprise-hardened-vpc": {
       "type": "awsx:ec2:Vpc",
       "properties": {
-        "cidrBlock": "10.0.0.0/16",
+        "cidrBlock": "10.100.0.0/16",
         "numberOfAvailabilityZones": 3,
         "subnetSpecs": [
           {

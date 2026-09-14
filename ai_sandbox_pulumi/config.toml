@@ -1,6 +1,7 @@
 # ====================================================================================
-# 🪐 PROJECT ODIN: HARDENED MULTI-CLOUD PRODUCTION MANIFEST WITH SAGA ROLLBACK
+# 🪐 PROJECT ODIN: HARDENED HYPER-HYBRID MULTI-CLOUD MANIFEST (ALL CLOUDS PARAMETRIC)
 # ====================================================================================
+
 [global]
 environment = "production-secure"
 pulumi_project_name = "ai_sandbox_pulumi"
@@ -28,9 +29,37 @@ apps_node_desired = 5
 apps_node_min = 3
 apps_node_max = 50
 endpoint_private_access = true
-endpoint_public_access = false  
-allowed_management_cidrs = ["10.240.0.0/16"]
+endpoint_public_access = false
+allowed_cidrs = ["10.240.0.0/16"]
 enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+
+[providers.azure]
+cidr_block = "172.16.0.0/12"
+resource_group_name = "odin-enterprise-secure-rg"
+kms_deletion_days = 14
+system_vm_size = "Standard_D4s_v5"
+system_node_count = 3
+apps_vm_size = "Standard_F8s_v2"
+apps_min_nodes = 5
+apps_max_nodes = 100
+endpoint_private_access = true
+endpoint_public_access = false
+allowed_cidrs = ["10.240.0.0/16"]
+enabled_cluster_log_types = ["kube-apiserver", "kube-audit"]
+
+[providers.gcp]
+cidr_block = "192.168.0.0/16"
+region_zone = "us-central1"
+kms_deletion_days = 30
+system_machine_type = "e2-standard-4"
+system_nodes = 3
+apps_machine_type = "c2-standard-8"
+apps_min_nodes = 3
+apps_max_nodes = 80
+endpoint_private_access = true
+endpoint_public_access = false
+allowed_cidrs = ["10.240.0.0/16"]
+enabled_cluster_log_types = ["api", "audit"]
 
 [blueprints.aws]
 kms_type = "aws:kms:Key"
@@ -40,17 +69,49 @@ node_group_key = "managedNodeGroups"
 firewall_property = "publicAccessCidrs"
 secrets_encryption_resources = ["secrets"]
 
+[blueprints.azure]
+kms_type = "azure-native:keyvault:Key"
+vpc_type = "azure-native:network:VirtualNetwork"
+cluster_type = "azure-native:containerservice:ManagedCluster"
+node_group_key = "agentPoolProfiles"
+firewall_property = "authorizedIPRanges"
+secrets_encryption_resources = ["vault"]
+
+[blueprints.gcp]
+kms_type = "gcp:kms:CryptoKey"
+vpc_type = "gcp:compute:Network"
+cluster_type = "gcp:container:Cluster"
+node_group_key = "nodePools"
+firewall_property = "masterAuthorizedNetworksConfig"
+secrets_encryption_resources = ["all"]
+
 [security]
 apisix_gateway_host = "http://cluster.local"
 apisix_admin_token = "mock-admin-secret-token-value-12345"
 enable_mtls = true
 
+# 🚀 PROMPT EXPRESIONES LIMPIAS: Estructura unificada para inyección del HardeningShield perimetral
+[security.hardening]
+hmac_signature_key = "odin-super-secret-hmac-authentication-token-99999"
+regex_patterns = [
+    "password",
+    "secret_key",
+    "bearer"
+]
+redaction_replacement_string = "[REDACTED_ODIN_SECURITY_SHIELD]"
+client_cert_path = "certs/client.crt"
+client_key_path = "certs/client.key"
+
 [governance]
 max_self_healing_attempts = 3
-governance_risk_threshold = 85 
+governance_risk_threshold = 85
 
 [persistence]
+# 🚀 ALINEACIÓN DE RETROCOMPATIBILIDAD: Claves elásticas para no romper el vector_repo actual
+uri = "data/lancedb"
+forensics_table = "incident_forensics"
 lance_db_uri = "data/lancedb"
+
 [persistence.tables]
 forensics_table_name = "incident_forensics"
 
@@ -61,7 +122,7 @@ risk_score = 95
 [moa.agents.zerotrust]
 id = "temporal-worker-zerotrust-01"
 risk_score = 90
-default_rationale = "CORTEX_VERDICT: Sandbox Zero-Trust auditado y endurecido de nivel bancario."
+default_rationale = "CORTEX_VERDICT: Sandbox Zero-Trust auditado y hardened de nivel bancario."
 
 [ai]
 provider = "ollama"
@@ -69,26 +130,49 @@ provider = "ollama"
 [ai_engines.ollama]
 api_endpoint_url = "http://localhost:11434/api/generate"
 timeout_limit = 30
-request_body_template = { model = "qwen2.5:1.5b", prompt = "$PROMPT", stream = false, format = "json" }
+
+[ai_engines.bedrock]
+api_endpoint_url = "https://amazonaws.com"
+timeout_limit = 15
+api_key_token = "aws-secure-gateway-token-secret-value-xyz-999"
+
+[ai_engines.gcp_vertex]
+api_endpoint_url = "https://gateway.dev"
+timeout_limit = 15
+api_key_token = "gcp-secure-vertex-token-secret-value-abc-111"
+
+[ai_engines.azure_openai]
+api_endpoint_url = "https://azure-api.net"
+timeout_limit = 15
+api_key_token = "azure-secure-apim-token-secret-value-777-fff"
 
 [orchestration]
 task_queue = "aiops-incident-task-queue"
 workflow_id = "aiops-mitigation-workflow-instance"
-activity_schedule_to_close_seconds = 45  
+activity_schedule_to_close_seconds = 45
 success_status_message = "Saga y Toolbelt completados con éxito distribuido en O(1)"
-# 🚀 PARAMETRIZACIÓN DEL ROLLBACK DISTRIBUIDO
-rollback_status_message = "CRITICAL_SAGA_FAILURE: Transacción de compensación elástica ejecutada exitosamente"
+rollback_status_message = "ROLLBACK_TRIGGERED"
 
-[tools]
-[tools.aws_isolate]
-security_group_isolated = "sg-mitigation-jail-prod"
+[tools_aws]
+mitigation_tool_name = "AWS_ISOLATE_EC2"
 default_target_id = "i-0f9c2d1b8490a73ef"
+security_group_isolated = "sg-mitigation-jail-prod"
 
-[tools.ssh_forensic]
+[tools_azure]
+mitigation_tool_name = "AZURE_ISOLATE_VM"
+default_target_id = "odin-enterprise-vm-id-123"
+security_group_isolated = "nsg-mitigation-jail-prod"
+
+[tools_gcp]
+mitigation_tool_name = "GCP_ISOLATE_COMPUTE"
+default_target_id = "odin-gcp-instance-555"
+security_group_isolated = "fw-mitigation-jail-prod"
+
+[tools_ssh_forensic]
+mitigation_tool_name = "SSH_FORENSIC_DUMP"
 ip_address = "10.0.4.15"
 
-[iac]
-[iac.pulumi]
+[iac_pulumi]
 stack = "production"
 mode = "simulado"
 backend_url = "s3://aiops-pulumi-state-prod"

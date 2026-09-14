@@ -1,0 +1,59 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/edithbg/PoC/IaC/ai_sandbox_pulumi/venv/bin/python3.12
+cachedir: .pytest_cache
+rootdir: /Users/edithbg/PoC/IaC/ai_sandbox_pulumi
+configfile: pyproject.toml
+plugins: asyncio-1.4.0, langsmith-0.12.4, anyio-4.15.1
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/integration/test_self_healing.py::test_ejecucion_voraz_ingesta_incidentes 2026-09-13 12:40:41.653 | INFO     | test_self_healing:test_ejecucion_voraz_ingesta_incidentes:24 - 🧪 [TEST-SUITE] Inicializando validador de autocurado dinámico sin hardcode...
+2026-09-13 12:40:41.787 | WARNING  | test_self_healing:test_ejecucion_voraz_ingesta_incidentes:46 - [Sanitizer] Detectada tabla residual con dimensiones incompatibles en 'data/lancedb'. Ejecutando purga elástica...
+2026-09-13 12:40:41.820 | INFO     | src.infrastructure.persistence.vector_repo:__init__:36 - [VECTOR-REPO] Instanciado de forma paramétrica. DB: 'data/lancedb' | Tabla: 'incident_forensics'
+2026-09-13 12:40:41.820 | INFO     | src.infrastructure.ai.brains.cortexLlm:__init__:138 - [Cortex-Engine] 🚀 Despachando estado en fábrica O(1) hacia: 'OLLAMA' | Modelo: 'odin-cortex-v1'
+2026-09-13 12:40:41.821 | WARNING  | src.infrastructure.ai.brains.cortexLlm:__init__:142 - [Cortex-Engine] Enlace físico fallido para 'ollama'. Conmutando a VirtualCortexState.
+2026-09-13 12:40:41.821 | INFO     | test_self_healing:test_ejecucion_voraz_ingesta_incidentes:56 - 🚀 [CONCURRENCIA] Disparando ráfaga paralela de 10 ingestas simultáneas. DB: 'data/lancedb' | Tabla: 'incident_forensics'...
+2026-09-13 12:40:41.824 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:40:41.986 | SUCCESS  | src.infrastructure.persistence.vector_repo:store_incident_embedding:106 - [VECTOR-REPO] Vector e historial cifrado 'incident-concurrent-777-0' indexados exitosamente.
+2026-09-13 12:40:41.989 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:40:42.031 | SUCCESS  | src.infrastructure.persistence.vector_repo:store_incident_embedding:106 - [VECTOR-REPO] Vector e historial cifrado 'incident-concurrent-777-1' indexados exitosamente.
+2026-09-13 12:40:42.036 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:40:42.060 | SUCCESS  | src.infrastructure.persistence.vector_repo:store_incident_embedding:106 - [VECTOR-REPO] Vector e historial cifrado 'incident-concurrent-777-2' indexados exitosamente.
+2026-09-13 12:40:42.062 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:40:42.079 | SUCCESS  | src.infrastructure.persistence.vector_repo:store_incident_embedding:106 - [VECTOR-REPO] Vector e historial cifrado 'incident-concurrent-777-3' indexados exitosamente.
+2026-09-13 12:40:42.081 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:40:42.099 | SUCCESS  | src.infrastructure.persistence.vector_repo:store_incident_embedding:106 - [VECTOR-REPO] Vector e historial cifrado 'incident-concurrent-777-4' indexados exitosamente.
+2026-09-13 12:40:42.101 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:40:42.120 | SUCCESS  | src.infrastructure.persistence.vector_repo:store_incident_embedding:106 - [VECTOR-REPO] Vector e historial cifrado 'incident-concurrent-777-5' indexados exitosamente.
+2026-09-13 12:40:42.122 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:40:42.143 | SUCCESS  | src.infrastructure.persistence.vector_repo:store_incident_embedding:106 - [VECTOR-REPO] Vector e historial cifrado 'incident-concurrent-777-6' indexados exitosamente.
+2026-09-13 12:40:42.145 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:40:42.163 | SUCCESS  | src.infrastructure.persistence.vector_repo:store_incident_embedding:106 - [VECTOR-REPO] Vector e historial cifrado 'incident-concurrent-777-7' indexados exitosamente.
+2026-09-13 12:40:42.166 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:40:42.185 | SUCCESS  | src.infrastructure.persistence.vector_repo:store_incident_embedding:106 - [VECTOR-REPO] Vector e historial cifrado 'incident-concurrent-777-8' indexados exitosamente.
+2026-09-13 12:40:42.187 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:40:42.206 | SUCCESS  | src.infrastructure.persistence.vector_repo:store_incident_embedding:106 - [VECTOR-REPO] Vector e historial cifrado 'incident-concurrent-777-9' indexados exitosamente.
+2026-09-13 12:40:42.468 | INFO     | src.infrastructure.ai.brains.cortexLlm:reason_incident_telemetry:153 - [net-worker-Cortex] Canalizando inferencia asíncrona hacia driver State...
+2026-09-13 12:40:42.469 | INFO     | src.infrastructure.ai.brains.cortexLlm:invoke_llm:93 - [Cortex-Virtual] Despachando artefacto emitido por la factoría externa en microsegundos.
+2026-09-13 12:40:42.469 | INFO     | src.infrastructure.ai.brains.cortexLlm:reason_incident_telemetry:153 - [sec-worker-Cortex] Canalizando inferencia asíncrona hacia driver State...
+2026-09-13 12:40:42.469 | INFO     | src.infrastructure.ai.brains.cortexLlm:invoke_llm:93 - [Cortex-Virtual] Despachando artefacto emitido por la factoría externa en microsegundos.
+2026-09-13 12:40:42.470 | SUCCESS  | test_self_healing:test_ejecucion_voraz_ingesta_incidentes:96 - ✨ [INGESTA] Alerta consolidada de forma concurrente exitosa x10.
+2026-09-13 12:40:42.471 | SUCCESS  | test_self_healing:test_ejecucion_voraz_ingesta_incidentes:97 - ✨ [TEST-SUITE] Perfilamiento por Componente Concluido.
+2026-09-13 12:40:42.472 | SUCCESS  | test_self_healing:test_ejecucion_voraz_ingesta_incidentes:116 - 
+========================================================================================
+🦾 [COMPONENTE_CORE]     Latencia media Core Ingesta:        2132.5758 ms
+🧠 [INGESTA_OLLAMA]      Embedding Ingesta (Fase 1):         2094.0736 ms
+🗃️ [INGESTA_LANCEDB]     Escritura Física .lance Disco:        38.5022 ms
+========================================================================================
+🧠 [QUERY_OLLAMA]        Inferencia Embedding Query:         2094.0736 ms
+🗃️ [QUERY_LANCEDB]       Consulta de Vecinos Cercanos Rust:    261.9982 ms
+========================================================================================
+👥 [AGENTE_NET-WORKER]   Latencia Procesamiento Red MoA:     0.6681 ms
+👥 [AGENTE_SEC-WORKER]   Latencia Procesamiento ZeroTrust:   0.5545 ms
+========================================================================================
+⏱️ [MÉTRICA_MAESTRA]     Throughput Ráfaga Global Real:     648.1492 ms
+📉 [PROMEDIO_NATIVO]     Tiempo medio neto por hilo de CPU:   64.8149 ms
+========================================================================================
+PASSED
+
+============================== 1 passed in 15.31s ==============================

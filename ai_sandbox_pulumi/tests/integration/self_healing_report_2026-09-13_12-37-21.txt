@@ -1,0 +1,155 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/edithbg/PoC/IaC/ai_sandbox_pulumi/venv/bin/python3.12
+cachedir: .pytest_cache
+rootdir: /Users/edithbg/PoC/IaC/ai_sandbox_pulumi
+configfile: pyproject.toml
+plugins: asyncio-1.4.0, langsmith-0.12.4, anyio-4.15.1
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
+
+tests/integration/test_self_healing.py::test_ejecucion_voraz_ingesta_incidentes 2026-09-13 12:37:30.620 | INFO     | test_self_healing:test_ejecucion_voraz_ingesta_incidentes:21 - 🧪 [TEST-SUITE] Inicializando validador de autocurado y memoria semántica real con Hardening...
+2026-09-13 12:37:30.624 | INFO     | src.infrastructure.persistence.vector_repo:__init__:36 - [VECTOR-REPO] Instanciado de forma paramétrica. DB: 'data/lancedb' | Tabla: 'incident_forensics'
+2026-09-13 12:37:30.624 | INFO     | src.infrastructure.ai.brains.cortexLlm:__init__:138 - [Cortex-Engine] 🚀 Despachando estado en fábrica O(1) hacia: 'OLLAMA' | Modelo: 'odin-cortex-v1'
+2026-09-13 12:37:30.624 | WARNING  | src.infrastructure.ai.brains.cortexLlm:__init__:142 - [Cortex-Engine] Enlace físico fallido para 'ollama'. Conmutando a VirtualCortexState.
+2026-09-13 12:37:30.624 | INFO     | test_self_healing:test_ejecucion_voraz_ingesta_incidentes:45 - 🚀 [CONCURRENCIA] Disparando ráfaga paralela de 10 ingestas simultáneas por el Event Loop...
+2026-09-13 12:37:30.640 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:37:30.759 | ERROR    | src.infrastructure.persistence.vector_repo:store_incident_embedding:108 - [VECTOR-REPO-Failure] Colapso en persistencia elástica en tabla 'incident_forensics': Table 'incident_forensics' already exists
+2026-09-13 12:37:30.762 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:37:30.771 | ERROR    | src.infrastructure.persistence.vector_repo:store_incident_embedding:108 - [VECTOR-REPO-Failure] Colapso en persistencia elástica en tabla 'incident_forensics': Table 'incident_forensics' already exists
+2026-09-13 12:37:30.772 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:37:30.780 | ERROR    | src.infrastructure.persistence.vector_repo:store_incident_embedding:108 - [VECTOR-REPO-Failure] Colapso en persistencia elástica en tabla 'incident_forensics': Table 'incident_forensics' already exists
+2026-09-13 12:37:30.781 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:37:30.790 | ERROR    | src.infrastructure.persistence.vector_repo:store_incident_embedding:108 - [VECTOR-REPO-Failure] Colapso en persistencia elástica en tabla 'incident_forensics': Table 'incident_forensics' already exists
+2026-09-13 12:37:30.791 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:37:30.799 | ERROR    | src.infrastructure.persistence.vector_repo:store_incident_embedding:108 - [VECTOR-REPO-Failure] Colapso en persistencia elástica en tabla 'incident_forensics': Table 'incident_forensics' already exists
+2026-09-13 12:37:30.800 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:37:30.807 | ERROR    | src.infrastructure.persistence.vector_repo:store_incident_embedding:108 - [VECTOR-REPO-Failure] Colapso en persistencia elástica en tabla 'incident_forensics': Table 'incident_forensics' already exists
+2026-09-13 12:37:30.807 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:37:30.815 | ERROR    | src.infrastructure.persistence.vector_repo:store_incident_embedding:108 - [VECTOR-REPO-Failure] Colapso en persistencia elástica en tabla 'incident_forensics': Table 'incident_forensics' already exists
+2026-09-13 12:37:30.817 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:37:30.826 | ERROR    | src.infrastructure.persistence.vector_repo:store_incident_embedding:108 - [VECTOR-REPO-Failure] Colapso en persistencia elástica en tabla 'incident_forensics': Table 'incident_forensics' already exists
+2026-09-13 12:37:30.827 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:37:30.835 | ERROR    | src.infrastructure.persistence.vector_repo:store_incident_embedding:108 - [VECTOR-REPO-Failure] Colapso en persistencia elástica en tabla 'incident_forensics': Table 'incident_forensics' already exists
+2026-09-13 12:37:30.835 | INFO     | src.infrastructure.persistence.vector_repo:store_incident_embedding:88 - 📊 [VECTOR-REPO] Escribiendo embedding en la tabla unificada: 'incident_forensics'
+2026-09-13 12:37:30.842 | ERROR    | src.infrastructure.persistence.vector_repo:store_incident_embedding:108 - [VECTOR-REPO-Failure] Colapso en persistencia elástica en tabla 'incident_forensics': Table 'incident_forensics' already exists
+FAILED
+
+=================================== FAILURES ===================================
+___________________ test_ejecucion_voraz_ingesta_incidentes ____________________
+
+    @pytest.mark.asyncio
+    async def test_ejecucion_voraz_ingesta_incidentes():
+        """Valida la consistencia de la ingesta concurrente masiva bajo el nuevo escudo criptográfico."""
+        logger.info("🧪 [TEST-SUITE] Inicializando validador de autocurado y memoria semántica real con Hardening...")
+    
+        # Sincronización estricta del Catálogo TOML multi-cloud real en RAM
+        ProjectConfigurationRegistry._CONFIG_DATA = {
+            "persistence": {
+                "uri": "data/test_lancedb",
+                "forensics_table": "incident_forensics"
+            },
+            "security": {
+                "hmac_signature_key": "odin-super-secret-hmac-authentication-token-99999"
+            },
+            "ai": {
+                "provider": "virtual",
+                "model_name": "odin-cortex-v1",
+                "api_endpoint_url": "http://localhost:11434"
+            }
+        }
+        ProjectConfigurationRegistry.load_registry()
+    
+        # Inicializamos los adaptadores de infraestructura endurecidos
+        repo = ForensicVectorRepository()
+        mock_blueprint = {"verdict": "VPC_ISOLATION_RECOMMENDED", "risk_score": 95.0}
+        engine = CortexLLMEngine(factory_blueprint=mock_blueprint)
+    
+        logger.info("🚀 [CONCURRENCIA] Disparando ráfaga paralela de 10 ingestas simultáneas por el Event Loop...")
+    
+        inicio_global = time.perf_counter()
+    
+        # --- PASO 1: SIMULACIÓN DE INGESTA Y ESCRITURA FÍSICA CIFRADA EN DISCO ---
+        t_write_start = time.perf_counter()
+        mock_vector = [0.15] * 1536
+        mock_meta = {"raw_logs": "[Handshake-Failure] TLS version mismatch on perimeter gateway.", "risk": "critical"}
+    
+        for i in range(10):
+            repo.store_incident_embedding(
+                incident_id=f"incident-concurrent-777-{i}",
+                vector_data=mock_vector,
+                metadata=mock_meta
+            )
+        latencia_lancedb_write_ms = ((time.perf_counter() - t_write_start) / 10) * 1000
+        latencia_ollama_ingesta_ms = 2094.0736
+        latencia_media_core_ms = latencia_ollama_ingesta_ms + latencia_lancedb_write_ms
+    
+        # --- PASO 2: SIMULACIÓN DE CONSULTA SEMÁNTICA Y LOGS DE AGENTES MoA VIA RAY ---
+        t_read_start = time.perf_counter()
+        db = repo._get_connection()
+        table = db.open_table(repo.table_name)
+>       _ = table.search(mock_vector).limit(1).to_list()
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/integration/test_self_healing.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+venv/lib/python3.12/site-packages/lancedb/query.py:770: in to_list
+    return self.to_arrow(timeout=timeout).to_pylist()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/lancedb/query.py:1283: in to_arrow
+    return self.to_batches(timeout=timeout).read_all()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+venv/lib/python3.12/site-packages/lancedb/query.py:1340: in to_batches
+    result_set = self._table._execute_query(
+venv/lib/python3.12/site-packages/lancedb/table.py:2748: in _execute_query
+    async_iter = LOOP.run(
+venv/lib/python3.12/site-packages/lancedb/background_loop.py:25: in run
+    return asyncio.run_coroutine_threadsafe(future, self.loop).result()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/Cellar/python@3.12/3.12.14/Frameworks/Python.framework/Versions/3.12/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/usr/local/Cellar/python@3.12/3.12.14/Frameworks/Python.framework/Versions/3.12/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+venv/lib/python3.12/site-packages/lancedb/table.py:3913: in _execute_query
+    return await async_query.to_batches(
+venv/lib/python3.12/site-packages/lancedb/query.py:3025: in to_batches
+    reader = await super().to_batches(timeout=timeout)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <lancedb.query.AsyncVectorQuery object at 0x12523d670>
+max_batch_length = None, timeout = None
+
+    async def to_batches(
+        self,
+        *,
+        max_batch_length: Optional[int] = None,
+        timeout: Optional[timedelta] = None,
+    ) -> AsyncRecordBatchReader:
+        """
+        Execute the query and return the results as an Apache Arrow RecordBatchReader.
+    
+        Parameters
+        ----------
+    
+        max_batch_length: Optional[int]
+            The maximum number of selected records in a single RecordBatch object.
+            If not specified, a default batch length is used.
+            It is possible for batches to be smaller than the provided length if the
+            underlying data is stored in smaller chunks.
+        timeout: Optional[timedelta]
+            The maximum time to wait for the query to complete.
+            If not specified, no timeout is applied. If the query does not
+            complete within the specified time, an error will be raised.
+        """
+        return AsyncRecordBatchReader(
+>           await self._inner.execute(
+                max_batch_length=max_batch_length, timeout=timeout
+            )
+        )
+E       RuntimeError: lance error: Invalid user input: query dim(1536) doesn't match the column vector vector dim(4), /Users/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-0.39.0/src/dataset/scanner.rs:1018:25
+
+venv/lib/python3.12/site-packages/lancedb/query.py:2276: RuntimeError
+=========================== short test summary info ============================
+FAILED tests/integration/test_self_healing.py::test_ejecucion_voraz_ingesta_incidentes
+============================== 1 failed in 7.34s ===============================

@@ -1,0 +1,25 @@
+[package]
+name = "cortex_ebpf_probe"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "cortex_ebpf_probe"
+crate-type = ["cdylib"]
+
+[dependencies]
+# Bindeos máster para interoperabilidad con Python 3.12 sin overhead
+pyo3 = { version = "0.20.0", features = ["extension-module", "abi3-py312"] }
+log = "0.4.20"
+pyo3-log = "0.8.3"
+serde_json = "1.0.111"
+anyhow = "1.0.79"
+
+# 🚀 DEPENDENCIAS OPCIONALES EXCLUSIVAS DE PRODUCCIÓN
+aya = { version = "0.12.0", features = ["async_tokio"], optional = true }
+tokio = { version = "1.35.0", features = ["full"], optional = true }
+
+[features]
+default = []
+# 🚀 LA COMPUERTA REVOLUCIONARIA: Solo se activa en tus servidores o pods de Linux en producción
+linux-ebpf = ["dep:aya", "dep:tokio"]

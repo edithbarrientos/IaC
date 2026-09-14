@@ -1,0 +1,14 @@
+# 🚀 Especificamos el modelo base y la cuantización estricta de 4 bits (Compacta y Rápida)
+FROM llama3:8b-instruct-q4_K_M
+
+# Parámetros del Runtime en RAM para evitar alucinaciones en el diagnóstico forense
+PARAMETER temperature 0.2
+PARAMETER top_p 0.9
+PARAMETER num_ctx 8192
+
+# Prompt del Sistema Blindado para el plano de control cognitivo
+SYSTEM """
+Eres el CortexLlm de Project ODIN. Tu tarea es analizar logs perimetrales cifrados,
+evaluar rangos CIDR y proponer parches de infraestructura con métricas Prometheus.
+Opera bajo aislamiento estricto y prioriza la seguridad Zero-Trust en O(1).
+"""

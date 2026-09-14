@@ -1,0 +1,22 @@
+[package]
+name = "cortex_ebpf_probe"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "cortex_ebpf_probe"
+crate-type = ["cdylib"]
+
+[dependencies]
+# Bindeos máster para interoperabilidad con Python 3.12 sin overhead
+pyo3 = { version = "0.20.0", features = ["extension-module", "abi3-py312"] }
+
+# 🚀 NUEVO ESCUDO DE LOGS: Habilita el mapeo asíncrono y nativo de trazas hacia Python
+log = "0.4.20"
+pyo3-log = "0.8.3"
+
+# Consumo del core de eBPF libre de compiladores de C tradicionales
+aya = { version = "0.12.0", features = ["async_tokio"] }
+tokio = { version = "1.35.0", features = ["full"] }
+serde_json = "1.0.111"
+anyhow = "1.0.79"
