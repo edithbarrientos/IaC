@@ -1080,7 +1080,7 @@ La plataforma no transmite texto en claro ni acepta payloads huérfanos en su pe
 2.  **HMAC-SHA256 Token Signer:** Firma criptográfica simétrica inmutable estampada en cada payload de salida para certificar la autenticidad del veredicto ante el orquestador.
 
 
-> ⚠️ **ESTADO DEL PROYECTO: Proof of Concept (PoC) / Human-Centric AIOps**
+> 🧠 **FILOSOFÍA OPERATIVA: Human-Centric AIOps / Soberanía del Ingeniero Experto SRE**
 > Este repositorio es una PoC tecnica diseñada para validar la viabilidad de la autoreparacion de infraestructura mediante sistemas agenticos avanzados. El plano de control opera bajo un enfoque centrado en el ser humano, requiriendo obligatoriamente la intervencion tactica del operador SRE para autorizar desbordes multi-cloud (Firma HITL) o ejecutar planes de contingencia (Rollback Seguro). Ademas, se requiere auditoria corporativa de las politicas de aislamiento de red.
 
 <p align="center">

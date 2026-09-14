@@ -93,11 +93,7 @@ enable_mtls = true
 # 🚀 PROMPT EXPRESIONES LIMPIAS: Estructura unificada para inyección del HardeningShield perimetral
 [security.hardening]
 hmac_signature_key = "odin-super-secret-hmac-authentication-token-99999"
-regex_patterns = [
-    "password",
-    "secret_key",
-    "bearer"
-]
+regex_patterns = [ "password", "secret_key", "bearer"]
 redaction_replacement_string = "[REDACTED_ODIN_SECURITY_SHIELD]"
 client_cert_path = "certs/client.crt"
 client_key_path = "certs/client.key"
@@ -177,3 +173,26 @@ stack = "production"
 mode = "simulado"
 backend_url = "s3://aiops-pulumi-state-prod"
 topology_name = "aws-eks-enterprise-hardened"
+
+# ====================================================================================
+# ⚙️ DOCUMENTACIÓN DE PARÁMETROS NUMÉRICOS INYECTADOS EN EL ENTORNO (EXPLICACIÓN CORE)
+# ====================================================================================
+# [Networking / CIDR]
+# /16 (10.240.0.0/16) -> Máscara que habilita hasta 65,534 direcciones IP lógicas en el Control Plane.
+# /8  (10.0.0.0/8)    -> Rango global masivo que abarca más de 16 millones de IPs para producción.
+# /12 (172.16.0.0/12) -> Bloque continuo de red que asigna aproximadamente 1 millón de IPs para Azure.
+# private_subnet_mask = 22 -> Define subredes privadas admitiendo hasta 1,022 hosts por segmento.
+# public_subnet_mask  = 24 -> Segmentos orientados al exterior con capacidad fija para 254 hosts.
+#
+# [Capacity / Sizing]
+# az_count = 3 -> Despliegue distribuido de topologías en 3 zonas físicas contra fallos de hardware.
+# kms_deletion_days = 7 / 14 / 30 -> Días de gracia antes de destruir de forma definitiva una clave KMS.
+# system_node_desired = 3 / max = 5 -> Límites inicial y superior de escalado para nodos de control.
+# apps_node_min = 3 / max = 50 / 80 / 100 -> Umbrales horizontales para pools de aplicaciones vivas.
+#
+# [Governance / Timeouts / Risk]
+# max_self_healing_attempts = 3 -> Reintentos automatizados permitidos antes de escalar incidentes.
+# governance_risk_threshold = 85 -> Puntuación de riesgo máxima tolerada antes de bloquear Pulumi.
+# risk_score = 90 / 95 -> Índices analíticos para clasificar la severidad de los agentes MoA.
+# timeout_limit = 15 / 30 -> Segundos tolerados para llamadas remotas antes de forzar caídas.
+# activity_schedule_to_close_seconds = 45 -> Expiración de tareas antes de gatillar la SAGA inversa.
