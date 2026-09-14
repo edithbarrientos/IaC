@@ -30,8 +30,7 @@ class ProjectOdinMetricsRegistry:
         """
         logger.info("[METRICS-REGISTRY] 📊 Inicializando arneses de observabilidad CNCF parametrizados...")
 
-        # 🚀 EXTRACCIÓN PARAMÉTRICA: Recuperamos los buckets y etiquetas configurados en el TOML externo
-        # Si por alguna razón la clave no está en memoria, aplica un guardrail adaptativo por defecto
+        # EXTRACCIÓN PARAMÉTRICA: Recuperamos los buckets y etiquetas configurados en el TOML externo
         ebpf_settings = ProjectConfigurationRegistry._CONFIG_DATA.get("telemetry", {}).get("ebpf", {})
         ebpf_syscall = ebpf_settings.get("syscall_target") or "sys_enter_connect"
         
@@ -51,8 +50,8 @@ class ProjectOdinMetricsRegistry:
         cls._METRICS_MAP["apisix_latency"] = Histogram(
             "apisix_upstream_latency_routing_seconds",
             "Histograma elástico de latencia de red y despacho hacia Upstreams de producción.",
-            parametric_labels,   # Inyección de dimensiones dinámicas desde el TOML
-            buckets=tuple(parametric_buckets), # Inyección de baldes numéricos exponenciales
+            parametric_labels,   
+            buckets=tuple(parametric_buckets), 
             registry=cls._REGISTRY
         )
 
@@ -96,12 +95,9 @@ class ProjectOdinMetricsRegistry:
         cls.initialize_registry = lambda: None
         logger.success("[METRICS-REGISTRY] ✨ Arneses consolidados. Puntero mutado a No-Op e índices cargados desde TOML.")
 
-            @classmethod
+    @classmethod
     def _safe_dispatch(cls, metric_key: str, **kwargs) -> None:
-        """
-        Despachador central inmune a pánicos. 
-        Sustituye la cadena de bloques 'if/else' por un lookup directo en el diccionario en O(1).
-        """
+        """Sustituye la cadena de bloques 'if/else' por un lookup directo en el diccionario en O(1)."""
         cls._ROUTE_DISPATCHER.get(metric_key, lambda x: None)(kwargs)
 
     @classmethod

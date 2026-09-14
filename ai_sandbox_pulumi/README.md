@@ -997,7 +997,7 @@ A continuación se detallan las seis fronteras arquitectónicas implementadas, j
 
 ## 🧪 Pipeline Avanzado de QA Local y Failover por Terminal
 
-El pipeline transaccional e inmutable puede ser forzado a conmutar entre nubes y motores de Inteligencia Artificial al vuelo directamente desde la consola de comandos de tu Mac, sin necesidad de alterar los archivos físicos de configuración. El entorno de Pytest levantará un servidor efímero automático en memoria RAM que se auto-destruye al finalizar la suite.
+El pipeline transaccional e inmutable puede ser forzado a conmutar entre nubes y motores de Inteligencia Artificial al vuelo directamente desde la consola de comandos de tu terminal, sin necesidad de alterar los archivos físicos de configuración. El entorno de Pytest levantará un servidor efímero automático en memoria RAM que se auto-destruye al finalizar la suite.
 
 ### 🚀 Secuencia de Comandos Máster locales (Aislamiento Restrictivo)
 
