@@ -1,1 +1,30 @@
-[Pega aquí el bloque completo del archivo YAML superior de forma idéntica]
+# ========================================================================================
+# 🪐 MANIFIESTO DE CONFIGURACIÓN CENTRALIZADA: CNCF PROMETHEUS SCRAPE MANIFEST
+# ========================================================================================
+# Ruta Física Unificada: src/infrastructure/monitoring/prometheus.yml
+# Gobierna la recolección periódica de métricas de APISIX Gateway y la sonda eBPF de Rust.
+
+global:
+  scrape_interval: 5s          # ⚡ INTERVALO AGRESIVO DE INFRAESTRUCTURA: Mide incidentes en tiempo real
+  evaluation_interval: 5s      # Evaluación elástica de alertas del plano cognitivo
+  scrape_timeout: 4s           # Evita congelar descriptores ante handshakes colapsados
+
+# --- ARNESES DE SCRAPING PARAMÉTRICOS (ZERO-HARDCODE) ---
+scrape_configs:
+  - job_name: "prometheus-self"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # 🚀 EL PUENTE CRÍTICO: Recolecta el endpoint expuesto por tu metrics.py y el AI Driver
+  - job_name: "odin-cortex-ai-control-plane"
+    metrics_path: "/metrics/custom-ai" # Endpoint unificado de gobierno forense
+    static_configs:
+      - targets: ["host.docker.internal:8000"] # Enlace elástico hacia la RAM de tu Mac vía Docker Mesh
+    headers:
+      Authorization: ["Bearer odin-super-secret-hmac-authentication-token-99999"]
+
+  # 🎛️ EL PERÍMETRO: Extrae los histogramas nativos del proxy Apache APISIX
+  - job_name: "apache-apisix-gateway"
+    metrics_path: "/apisix/prometheus/metrics"
+    static_configs:
+      - targets: ["host.docker.internal:9080"] # Instancia física del Edge balanceador en Capa 4/7
