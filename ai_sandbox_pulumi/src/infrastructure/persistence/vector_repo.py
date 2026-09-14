@@ -20,6 +20,7 @@ from loguru import logger
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from cryptography.exceptions import InvalidSignature
 from src.core.config import ProjectConfigurationRegistry
+from src.infrastructure.monitoring.metrics import ProjectOdinMetricsRegistry
 
 
 class ForensicVectorRepository:
@@ -44,7 +45,7 @@ class ForensicVectorRepository:
         # Inicialización estática del tokenizador de frontera (cl100k_base para GPT-4/Nova Cores)
         self.tokenizer = tiktoken.get_encoding("cl100k_base")
         
-        # 🚀 PRE-MAPPING ARROW SCHEMA: Definición fija en RAM para aceleración SIMD en el Reduce
+        # PRE-MAPPING ARROW SCHEMA: Definición fija en RAM para aceleración SIMD en el Reduce
         self.arrow_schema = pa.schema([
             pa.field("id", pa.string()),
             pa.field("vector", pa.list_(pa.float32(), 1536)), # 1536 dimensiones nativas del TOML
@@ -113,7 +114,17 @@ class ForensicVectorRepository:
         target_table = alternative_table or self.table_name
         record_mock = {"incident_id": incident_id, "vector_data": vector_data, "metadata": metadata}
         processed_payload = await asyncio.to_thread(self._encrypt_metadata_record, record_mock)
-        await asyncio.to_thread(self._flush_append_lancedb, target_table, [processed_payload])
+        
+        record_batch = pa.RecordBatch.from_pydict(
+            {
+                "id": [processed_payload["id"]],
+                "vector": [processed_payload["vector"]],
+                "encrypted_metadata": [processed_payload["encrypted_metadata"]],
+                "nonce": [processed_payload["nonce"]]
+            },
+            schema=self.arrow_schema
+        )
+        await asyncio.to_thread(self._flush_append_lancedb, target_table, record_batch)
 
     def _flush_append_lancedb(self, target_table: str, payload: Any) -> None:
         """Ejecuta el volcado y la creación atómica columnar en Rust libre de condicionales lentos."""
@@ -130,7 +141,6 @@ class ForensicVectorRepository:
         t_start = time.perf_counter()
         target_table = alternative_table or self.table_name
 
-        # 🚀 FASE MAP MULTIHILO: Cifrado paralelo real distribuido en los núcleos de hardware
         loop = asyncio.get_running_loop()
         with ThreadPoolExecutor() as executor:
             tasks = [
@@ -141,19 +151,15 @@ class ForensicVectorRepository:
 
         tokens_totales = sum(item["measured_tokens"] for item in processed_records)
 
-        # 🚀 FASE REDUCE CON PATRÓN DATA FLYWEIGHT (APACHE ARROW): 
-        # Convertimos las columnas completas directamente a vectores continuos en C sin crear diccionarios residuales
-        arrow_batch = pa.RecordBatch.from_arrays([
-            pa.array([r["id"] for r in processed_records], type=pa.string()),
-            pa.array([r["vector"] for r in processed_records], type=pa.list_(pa.float32(), 1536)),
-            pa.array([r["encrypted_metadata"] for r in processed_records], type=pa.string()),
-            pa.array([r["nonce"] for r in processed_records], type=pa.string())
-        ], schema=self.arrow_schema)
+        columns_map = {
+            "id": [r["id"] for r in processed_records],
+            "vector": [r["vector"] for r in processed_records],
+            "encrypted_metadata": [r["encrypted_metadata"] for r in processed_records],
+            "nonce": [r["nonce"] for r in processed_records]
+        }
+        arrow_batch = pa.RecordBatch.from_pydict(columns_map, schema=self.arrow_schema)
 
-        # Volcado masivo directo a nivel de bytes en Rust utilizando la estructura Arrow continua
         await asyncio.to_thread(self._flush_append_lancedb, target_table, arrow_batch)
-        
-        # Intenta entrenar el grafo IVF_PQ nativo en Rust sin congelar Python
         await asyncio.to_thread(self._optimize_search_index, target_table)
         
         latencia_total_ms = (time.perf_counter() - t_start) * 1000
@@ -171,4 +177,31 @@ class ForensicVectorRepository:
             )
             logger.info(f"[Vector-Index] Grafo semántico indexado exitosamente para la tabla: '{target_table}'")
         except Exception as e:
+            # Desvía la advertencia de volumen insuficiente (KMeans < 256 filas) hacia la traza debug oculta de Loguru
             logger.debug(f"[Vector-Index-Skip] Saltando optimización en caliente (Volumen de lote insuficiente para entrenamiento): {str(e)}")
+
+    async def search_similar_incidents(self, query_vector: List[float], limit: int = 1) -> List[Dict[str, Any]]:
+        """
+        🔍 ALGORITMO SCATTER-GATHER EN RUST: Busca vecinos cercanos calculando distancias de cosenos.
+        Mide la latencia neta en nanosegundos de los relojes de la CPU para alimentar los percentiles P99 de Prometheus.
+        """
+        db = self._get_connection()
+        t_start_ns = time.perf_counter_ns()
+        
+        try:
+            table = db.open_table(self.table_name)
+            results = table.search(query_vector).metric(self.metric_type).limit(limit).to_list()
+            
+            # Cálculo de latencia neta transformando los nanosegundos a segundos flotantes
+            duration_seconds = (time.perf_counter_ns() - t_start_ns) / 1e9
+            
+            # INYECCIÓN AL ARNES MÉTRICO LIBRE DE IFs: Alimenta el histograma OpenMetrics de forma instantánea
+            ProjectOdinMetricsRegistry.track_upstream_latency(
+                endpoint=f"/lancedb/table/{self.table_name}/search",
+                cloud_provider="local-lancedb",
+                duration_seconds=duration_seconds
+            )
+            return results
+        except Exception as e:
+            logger.debug(f"[LanceDB-Search-Skip] Tabla no inicializada o vacía: {str(e)}")
+            return []

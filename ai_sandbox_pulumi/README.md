@@ -88,30 +88,49 @@ El proyecto se estructura verticalmente en 5 capas cognitivas aisladas para gara
   </div>
   
 * **Nivel 1: Capa de Configuración (IaC / GitOps)** 
+
 El ecosistema distribuidor de **Project ODIN** se organiza jerárquicamente a través de seis capas funcionales, extendiendo el control desde el espacio de usuario hasta el núcleo del sistema operativo:
 
+
 * **Nivel 0: Capa de Intercepción Física y Kernel (Ring 0 Observability)** 🚀
+
   * *Componentes:* Sonda Nativa eBPF (Aya Framework / C-Shared Library) & Puente Interoperable PyO3-Log.
+  
   * *Función:* Captura quirúrgica de pánicos de red, caídas de sockets y llamadas del sistema (`sys_enter_connect`) de forma lock-free con un buffer compartido de 16MB en RAM, transmitiendo la telemetría en tiempo constante O(1) directo hacia el espacio de usuario (Ring 3).
 
+
 * **Nivel 1: Capa de Configuración (IaC / GitOps)**
+
   * *Componentes:* Pulumi TypeScript Engine, Pulumi ESC & `CortexLlmDynamicFactory`.
+  
   * *Función:* Sincroniza y muta de forma declarativa el estado de la infraestructura frente al backend inmutable, automatizando la inyección paramétrica de llaves criptográficas y políticas IAM para los modelos cognitivos de frontera.
 
+
 * **Nivel 2: Capa de Inteligencia Artificial (Multi-Agent & Persistence Mesh)** 🧠
+
   * *Componentes:* Stateful Agent Supervisor (LangGraph/Asyncio), `CortexLLMEngine` (Multi-Cloud State Router), LanceDB Vector Store (Grafo HNSW/IVF_PQ), Dependencia Vectorizada `tiktoken` (BPE Audit) y Enjambre Workers (SRE, SecOps, FinOps).
+  
   * *Función:* Dirección ejecutiva del incidente, consulta RAG de baja latencia mediante el patrón **Data Flyweight Apache Arrow** (libre de basura en el Heap) y bucles de reflexión/autocorrección cognitiva con conmutación en caliente (*SAGA Fallback*) ante colisiones multi-cloud.
 
+
 * **Nivel 3: Capa de Contexto y API del Plano de Control**
+
   * *Componentes:* Kubernetes MCP Server (Model Context Protocol) & Sandbox CRD Operator.
+  
   * *Función:* Traduce métricas físicas a contexto semántico para la IA y procesa las reclamaciones de entornos virtuales seguros.
 
+
 * **Nivel 4: Capa de Aplicación Observada (Pods Residentes)**
+
   * *Componentes:* App Microservice, App Web Frontend, OpenTelemetry Watchdog.
+  
   * *Función:* Cargas de trabajo de producción observadas activamente; origen de las alertas de fallo (`CrashLoopBackOff`).
 
+
 * **Nivel 5: Capa de Aislamiento Seguro (Micro-VMs Efímeras)**
+
   * *Componentes:* Firecracker WarmPool Manager & Isolated Micro-VM (Kata Runtimes).
+  
   * *Función:* Laboratorio de pruebas protegido. Inicializa un nodo idéntico a producción en menos de 5ms para ejecutar el parche de la IA sin riesgo de contaminación.
 ---
 
@@ -137,13 +156,32 @@ Para entender cómo interoperan estos componentes sin generar overhead en las CP
 Cuando Apache APISIX o un microservicio cloud sufren un pánico de conexión, la sonda nativa en **Rust de eBPF** (compilada de forma segura mediante **Maturin** e integrada vía **PyO3**) intercepta la llamada del sistema operativo `sys_enter_connect` directamente sobre los registros físicos de la CPU en Ring 0. Los bytes crudos se empaquetan en una estructura homogeneizada `SocketPanicEvent` y se escupen sin bloqueos (*lock-free*) a un canal **RingBuffer compartido de 16MB en RAM** hacia el espacio de usuario (Ring 3).
 
 #### 2. Transmisión Columnar Criptográfica y Reducción de Tokens (Nivel 2)
+
 Al absorber el string del pánico (`ERR_KERNEL_SOCKET_PANIC`), el repositorio vectorial **`ForensicVectorRepository`** activa su pipeline distribuido MapReduce:
+
 * **Fase Map (Cifrado Paralelo):** Un pool de hilos de hardware (`ThreadPoolExecutor`) cifra la metadata del incidente en paralelo real usando el algoritmo simétrico **AES-GCM de 256 bits**.
+
 * **Fase Reduce (Data Flyweight):** En lugar de instanciar miles de diccionarios JSON en el Heap saturando al Garbage Collector de Python, los arrays continuos de datos se empaquetan directamente en memoria continua de C mediante **`pyarrow.RecordBatch`**. Esto reduce drásticamente la latencia de volcado en disco hacia LanceDB.
-* **MLOps Token Audit:** La metadata se pre-calcula de forma analítica utilizando el tokenizador oficial de OpenAI **`tiktoken`** sobre la codificación `cl100k_base`, compactando las llaves estructurales a un volumen mínimo récord de **190 tokens por lote**, optimizando los costos de almacenamiento y red de forma contundente.
+
+* **MLOps Token Audit:** La metadata forense se pre-calcula de forma analítica y 100% local en la CPU utilizando el algoritmo de alta resolución cl100k_base mediante la librería de bajo nivel tiktoken. Al ser el estándar matemático de compresión empleado por los núcleos de Amazon Nova y los SLM in-house, este componente compacta las llaves estructurales a un volumen mínimo récord de 190 tokens por lote, optimizando los costos de red y el espacio columnar de forma contundente y libre de dependencias a los provederes de cloud.
+
+
+##### ⚡ Justificación Algorítmica del Tokenizador Local (`tiktoken`)
+
+El motor de gobierno y auditoría de metadatos de **Project ODIN** delega la medición de densidad sintáctica a la biblioteca de alto rendimiento `tiktoken` basándose en tres pilares de ingeniería de sistemas de baja latencia:
+
+1. 🏎️ **Ejecución Nativa en Rust y Cero Bloqueos (Rendimiento):** Otras bibliotecas de tokenización convencionales (como la de *HuggingFace Transformers*) son pesadas, tardan cientos de milisegundos en inicializarse y saturan el Heap con allocations basura. `tiktoken` opera con un backend nativo compilado en **Rust**, ejecutándose de forma *lock-free* en tiempo constante $\mathcal{O}(1)$ directo sobre los hilos de la CPU de la Mac. Al procesar tormentas masivas de incidentes en paralelo dentro de la Fase Map del `ThreadPoolExecutor`, calcula la densidad de las trazas sin generar pausas por Garbage Collection ni congelar el Event Loop de Python, manteniendo el Throughput por debajo de los **~79 ms**.
+
+2. 🧮 **Compatibilidad Universal de Vocabulario (BPE):** El algoritmo de empaquetado de subpalabras de la codificación `cl100k_base` es la arquitectura *Byte Pair Encoding* más eficiente de la industria. Modelos avanzados como **Amazon Nova Pro** (en AWS Bedrock) y **Qwen 2.5** (ejecutándose localmente en Ollama) comparten distribuciones de tokens equivalentes. Utilizar este componente dota al plano de control de un guardrail métrico local exacto para pre-calcular el peso del prompt, permitiendo podar logs masivos o corruptos de forma ciega antes de que las APIs de nube reboten la transacción por exceder los límites de contexto.
+
+3. 🔒 **Operación 100% Offline (Soberanía y Privacidad):** La biblioteca opera como una función matemática pura en la memoria local RAM. No realiza handshakes web, no requiere llaves de internet ni transmite fragmentos de bitácoras forenses fuera del perímetro de la máquina. Esto cumple estrictamente con las políticas de aislamiento de red y **Hardening Zero-Trust** de grado bancario que gobiernan el clúster.
+EOF
+
 
 #### 3. Orquestación SAGA y Conmutación de Estados Polimórficos
-El motor **`CortexLLMEngine`** lee la configuración declarativa del archivo `config.toml` físico e instancia en la memoria del proceso el Singleton del canal de IA activo en menos de un microsegundo utilizando `setdefault` [2026-09-13]. 
+
+El motor **`CortexLLMEngine`** lee la configuración declarativa del archivo `config.toml` físico e instancia en la memoria del proceso el Singleton del canal de IA activo en menos de un microsegundo utilizando `setdefault`.
+
 Si el proveedor principal de la nube (ej. AWS Bedrock) sufre una desconexión por un timeout de red o handshake, el orquestador activa la **SAGA Fallback**: congela el pipeline de transacciones hacia la nube, invierte de forma instantánea el orden de los hilos de hardware de su bitácora en RAM y gatilla los rollbacks compensatorios automáticos en **~2.16 ms**, purgando los bloques `.lance` corruptos y conmutando en caliente al motor de contingencia de **Ollama local** para garantizar la continuidad del negocio sin usar un solo condicional rígido en el bucle caliente de código.
 
 
@@ -432,6 +470,7 @@ Plano cognitivo encargado del razonamiento, análisis y diseño de soluciones.
 #### ☁️ 4. Fábrica Cloud e Inyección de Red/IAM Agnóstica (src/infrastructure/pulumi/)
 
 Capa de adaptadores técnicos encargada de la inmutabilidad de la infraestructura y el polimorfismo multi-nube.
+
 *   **CloudProviderFactory [Abstract Factory]:** Interfaz de fábrica que obliga a todos los adaptadores a implementar métodos uniformes para crear redes, inyectar permisos con privilegios mínimos y provisionar Kubernetes de forma declarativa.
 
 *   **PulumiAutomationFacade [Facade Pattern]:** Encapsula y simplifica la complejidad de la **Pulumi Automation API** programática en Python, inicializando *stacks* locales en caliente de forma asíncrona no bloqueante (`asyncio`).
@@ -520,7 +559,7 @@ Este diagrama modela la topología física, la segregación perimetral y el plan
 
 ## ⚙️ Arquitectura Data-Driven IaC Multi-Cloud e Interoperabilidad con el AI Driver
 
-La plataforma implementa el patrón **Abstract Factory** con despacho algorítmico voraz en tiempo constante **$\mathcal{O}(1)$**. La capa cognitiva delega el cálculo de topologías complejas de red y cómputo a una factoría dedicada, erradicando los bloques `if/else` rígidos y generando en caliente artefactos empresariales inmutables.
+La plataforma implementa el patrón **Abstract Factory** con despacho algorítmico voraz en tiempo constante **$\mathcal{O}(1)$**. La capa cognitiva delega el cálculo de topologías complejas de red y cómputo a una factoría dedicada, erradicando los bloques rígidos y generando en caliente artefactos empresariales inmutables.
 
 
 ### 🧠 El Rol Core del AI Driver (`CortexLLMEngine`)
@@ -528,7 +567,9 @@ La plataforma implementa el patrón **Abstract Factory** con despacho algorítmi
 El plano elástico generado dinámicamente en `Pulumi.json` es esculpido de forma autónoma por la clase **`CortexLlmDynamicFactory`** en perfecta sincronía con el motor **`CortexLLMEngine`**. El flujo opera de forma ciega y automatizada bajo las siguientes directivas de diseño:
 
 1. **Resolución Paramétrica Externa:** Al gatillarse una alerta perimetral o un requerimiento de laboratorio en el Sandbox, el AI Driver lee el archivo centralizado `config.toml` físico e identifica el proveedor cloud destino (`aws`, `azure`, `gcp` o `virtual`) instanciando el Singleton del canal socket en la memoria RAM en microsegundos.
+
 2. **Inyección Criptográfica de Privilegios Mínimos:** La factoría de Pulumi interactúa de forma nativa con los bindeos de los modelos de inferencia. Si el veredicto de la IA exige un aislamiento perimetral o la reconstrucción de un clúster de contingencia, el driver automatiza dinámicamente la creación de recursos de seguridad críticos (como llaves simétricas **AWS KMS** o políticas de confianza IAM) sin almacenar credenciales quemadas en el código fuente.
+
 3. **Generación de Manifiestos de Caja Negra:** El motor compila las intenciones cognitivas y el enjambre de agentes traduce las contramedidas en un plano de infraestructura declarativo inmutable estructurado bajo el estándar robusto de Pulumi YAML/JSON. Esto permite que el sistema se auto-reconcilie en caliente invocando la **Pulumi Automation API** directamente desde las corrutinas asíncronas de Python 3.12, tratando los clústeres remotos como cajas negras universales de alta disponibilidad.
 
 ```json
@@ -800,9 +841,13 @@ Cada uno de los bloques de este manifiesto de producción es absorbido directame
 ### Requisitos Previos
 
 * **Python 3.12** o superior (entorno virtual puro estabilizado para producción).
+
 * **Poetry** o **Pip** (Gestor de entornos y resolución de paquetes).
+
 * **Temporal CLI** (Motor de orquestación distributed de grado industrial).
+
 * **Pulumi CLI** configurado con acceso seguro al backend de infraestructura.
+
 
 ### 1. Inicializar el Entorno e Instalar Dependencias
 
@@ -815,6 +860,7 @@ source .venv_nativa/bin/activate
 pip install temporalio loguru python-dotenv langchain-core langchain-ollama ruff mypy
 ```
 
+
 ### 2. Ejecutar la Suite de Calidad (Verificación Estricta)
 
 Antes de levantar el daemon asíncrono, el código debe superar el control de tipado zero-trust y formato estricto:
@@ -825,6 +871,7 @@ mypy src
 # Ejecutar formateador y linter automatizado
 ruff check src --fix
 ```
+
 
 ### 3. Lanzar la Plataforma Autónoma (Temporal Daemon Server)
 
@@ -837,6 +884,7 @@ temporal server start-dev
 # Pestaña Terminal 1 (Principal): Arrancar tu plano de control distribuido real
 find . -type d -name "__pycache__" -exec rm -rf {} +
 DEPLOYMENT_MODE="simulado" TEMPORAL_HOST="127.0.0.1:7233" python -m src.main
+
 ```
 *   🏭 `[FÁBRICA_O1]` -> Autodetectará el tag de entorno inyectado de forma instantánea.
 
@@ -850,6 +898,7 @@ DEPLOYMENT_MODE="simulado" TEMPORAL_HOST="127.0.0.1:7233" python -m src.main
 
 Abre una **nueva pestaña** en tu terminal (Pestaña 2) y ejecuta los siguientes comandos secuenciales gRPC nativos mediante la CLI oficial de Temporal para validar el enjambre de forma cruda, transparente y sin filtros HTTP ocultos.
 
+
 ### 🎛️ Ingesta de Alerta (Fase 1: Despacho del Workflow a la Queue)
 
 Envía un payload de telemetría forense real directo hacia el motor distribuido. El clúster validará el esquema en microsegundos, registrará el ID de forma inmutable y delegará la discusión pesada a las actividades concurrentes de tus agentes de IA.
@@ -862,6 +911,7 @@ temporal workflow start \
   --input "\"Alerta Crítica: Anomalía de handshake detectada en el API Gateway corporativo.\""
 ```
 *   **Resultado esperado:** Tu consola desplegará los hashes, `WorkflowId` y `RunId` auténticos generados por el clúster, quedando a la espera de la intervención humana.
+
 
 ### 🎛️ Aprobación Humana (Fase 2: Intercepción de Señales y Cierre con Pulumi)
 

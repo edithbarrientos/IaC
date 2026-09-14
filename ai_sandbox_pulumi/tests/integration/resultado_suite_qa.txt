@@ -1,0 +1,71 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0 -- /Users/edithbg/PoC/IaC/ai_sandbox_pulumi/venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /Users/edithbg/PoC/IaC/ai_sandbox_pulumi
+configfile: pyproject.toml
+plugins: asyncio-1.4.0, langsmith-0.12.4, anyio-4.15.1
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 2 items
+
+tests/integration/test_self_healing.py::test_ejecucion_voraz_ingesta_incidentes 2026-09-14 14:46:41.393 | INFO     | test_self_healing:test_ejecucion_voraz_ingesta_incidentes:23 - 🧪 [TEST-SUITE] Inicializando validador de autocurado dinámico ultra-optimizado...
+2026-09-14 14:46:42.381 | INFO     | src.infrastructure.persistence.vector_repo:__init__:57 - [VECTOR-REPO] 🚀 Instanciado en RAM. DB: 'data/lancedb' | Tabla Forense: 'incident_forensics_e2e_session'
+2026-09-14 14:46:42.391 | INFO     | src.infrastructure.ai.brains.cortexLlm:_initialize_driver_state:211 - [Cortex-Engine] 🚀 Canal O(1) activo original: 'VIRTUAL' | Key: 'virtual_odin-cortex-v1_0.2'
+2026-09-14 14:46:42.392 | INFO     | test_self_healing:test_ejecucion_voraz_ingesta_incidentes:54 - 🚀 [CONCURRENCIA] Disparando ráfaga paralela de 10 ingestas simultáneas. DB: 'data/lancedb' | Tabla: 'incident_forensics_e2e_session'...
+[2026-09-14T20:46:42Z WARN  lance_index::vector::kmeans] KMeans: more than 10% of clusters are empty: 14 of 15.
+    Help: this could mean your dataset is too small to have a meaningful index (240 < 3840) or has many duplicate vectors.
+[2026-09-14T20:46:42Z WARN  lance_index::vector::kmeans] KMeans: more than 10% of clusters are empty: 14 of 15.
+    Help: this could mean your dataset is too small to have a meaningful index (240 < 3840) or has many duplicate vectors.
+[2026-09-14T20:46:42Z WARN  lance_index::vector::kmeans] KMeans: more than 10% of clusters are empty: 14 of 15.
+    Help: this could mean your dataset is too small to have a meaningful index (240 < 3840) or has many duplicate vectors.
+[2026-09-14T20:46:42Z WARN  lance_index::vector::kmeans] KMeans: more than 10% of clusters are empty: 14 of 15.
+    Help: this could mean your dataset is too small to have a meaningful index (240 < 3840) or has many duplicate vectors.
+[2026-09-14T20:46:42Z WARN  lance_index::vector::kmeans] KMeans: more than 10% of clusters are empty: 14 of 15.
+    Help: this could mean your dataset is too small to have a meaningful index (240 < 3840) or has many duplicate vectors.
+[2026-09-14T20:46:42Z WARN  lance_index::vector::kmeans] KMeans: more than 10% of clusters are empty: 14 of 15.
+    Help: this could mean your dataset is too small to have a meaningful index (240 < 3840) or has many duplicate vectors.
+2026-09-14 14:46:42.685 | DEBUG    | src.infrastructure.persistence.vector_repo:_optimize_search_index:181 - [Vector-Index-Skip] Saltando optimización en caliente (Volumen de lote insuficiente para entrenamiento): lance error: LanceError(Index): Not enough rows to train PQ. Requires 256 rows but only 240 available, /Users/runner/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/lance-index-0.39.0/src/vector/pq/builder.rs:180:27
+2026-09-14 14:46:42.687 | SUCCESS  | src.infrastructure.persistence.vector_repo:store_incident_batch_vectorized:166 - [Vector-Repo-SIMD] 📊 Tormenta Distribuida x10 (190 tokens) inyectada vía Flyweight Arrow.
+2026-09-14 14:46:42.726 | SUCCESS  | test_self_healing:test_ejecucion_voraz_ingesta_incidentes:96 - ✨ [INGESTA] Alerta consolidada de forma concurrente exitosa x10.
+2026-09-14 14:46:42.726 | SUCCESS  | test_self_healing:test_ejecucion_voraz_ingesta_incidentes:97 - ✨ [TEST-SUITE] Perfilamiento por Componente Concluido.
+2026-09-14 14:46:42.726 | SUCCESS  | test_self_healing:test_ejecucion_voraz_ingesta_incidentes:117 - 
+========================================================================================
+🦾 [COMPONENTE_CORE]     Latencia media Core Ingesta:        2388.4174 ms
+🧠 [INGESTA_OLLAMA]      Embedding Ingesta (Fase 1):         2094.0736 ms
+🗃️ [INGESTA_LANCEDB]     Escritura Física .lance Disco:        294.3438 ms
+========================================================================================
+🧠 [QUERY_OLLAMA]        Inferencia Embedding Query:         2094.0736 ms
+🗃️ [QUERY_LANCEDB]       Consulta de Vecinos Cercanos Rust:    38.3427 ms
+========================================================================================
+👥 [AGENTE_NET-WORKER]   Latencia Procesamiento Red MoA:     0.0350 ms
+👥 [AGENTE_SEC-WORKER]   Latencia Procesamiento ZeroTrust:   0.0290 ms
+========================================================================================
+📟 [MLOPS_TELEMETRÍA]    Volumen Neto de Tokens Generados:   190 tokens
+⏱️ [MÉTRICA_MAESTRA]     Throughput Ráfaga Global Real:     333.5382 ms
+📉 [PROMEDIO_NATIVO]     Tiempo medio neto por hilo de CPU:   33.3538 ms
+========================================================================================
+PASSED
+tests/integration/test_saga.py::test_ciclo_vida_saga_con_compensacion_automatica 2026-09-14 14:46:42.739 | INFO     | test_saga:test_ciclo_vida_saga_con_compensacion_automatica:80 - 🧪 [SAGA-TEST] Inicializando validador de resiliencia transaccional...
+2026-09-14 14:46:42.748 | INFO     | src.infrastructure.persistence.vector_repo:__init__:57 - [VECTOR-REPO] 🚀 Instanciado en RAM. DB: 'data/lancedb' | Tabla Forense: 'incident_forensics'
+2026-09-14 14:46:42.749 | INFO     | src.infrastructure.ai.brains.cortexLlm:_initialize_driver_state:211 - [Cortex-Engine] 🚀 Canal O(1) activo original: 'VIRTUAL' | Key: 'virtual_odin-cortex-v1_0.1'
+2026-09-14 14:46:42.749 | INFO     | test_saga:execute_saga:43 - 🔮 [SAGA-Engine] Inicializando Forward Pipeline de Transacciones...
+2026-09-14 14:46:42.749 | INFO     | test_saga:execute_saga:48 - 🔄 [SAGA-Step] Forward -> Ejecutando: 'Persistencia Forense RAG LanceDB'
+2026-09-14 14:46:42.796 | INFO     | test_saga:execute_saga:48 - 🔄 [SAGA-Step] Forward -> Ejecutando: 'Inferencia Cognitiva Multi-Cloud Enjambre'
+2026-09-14 14:46:42.797 | INFO     | test_saga:execute_saga:60 - ⚠️ [SAGA-Simulation] Interrupción controlada de infraestructura: TLS perimeter gateway handshake failure timeout (Simulado).. Procesando Rollbacks...
+2026-09-14 14:46:42.797 | WARNING  | test_saga:_execute_compensations:70 - ↩️ [SAGA-Compensar] Backward -> Deshaciendo de forma atómica: 'Inferencia Cognitiva Multi-Cloud Enjambre'
+2026-09-14 14:46:42.797 | WARNING  | test_saga:_execute_compensations:70 - ↩️ [SAGA-Compensar] Backward -> Deshaciendo de forma atómica: 'Persistencia Forense RAG LanceDB'
+2026-09-14 14:46:42.799 | SUCCESS  | test_saga:step_1_rollback:97 - 🗑️ [LanceDB-Cleanup] SAGA eliminó del bloque .lance el ID 'saga-incident-step1' en Ring 3.
+2026-09-14 14:46:42.800 | SUCCESS  | test_saga:test_ciclo_vida_saga_con_compensacion_automatica:119 - ✨ [SAGA-TEST] Resiliencia validada con éxito. Ciclo inverso completado de forma atómica.
+2026-09-14 14:46:42.800 | SUCCESS  | test_saga:test_ciclo_vida_saga_con_compensacion_automatica:134 - 
+========================================================================================
+⚙️ [SAGA_FORWARD]        Tiempo Forward (Forward Transacciones): 47.0604 ms
+↩️ [SAGA_BACKWARD]       Tiempo Backward (Rollback Atómico):     2.7398 ms
+========================================================================================
+🧠 [SAGA_COGNITIVO]      Análisis Forense Fallas Core:           2094.0736 ms
+🗑️ [SAGA_PERSISTENCIA]   Purga Física Registros .lance:          1.0959 ms
+========================================================================================
+⏱️ [SAGA_MÉTRICA_CORE]   Throughput SAGA Resiliencia Global:     50.5111 ms
+📉 [SAGA_EFICIENCIA]     Costo de Penalización por Conmutación:  5.42 %
+========================================================================================
+PASSED
+
+============================== 2 passed in 16.46s ==============================
