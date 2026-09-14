@@ -133,12 +133,13 @@ El plano de control de **Project ODIN** se parametriza de forma **100% externa y
 Para entender cómo interoperan estos componentes sin generar overhead en las CPUs del clúster, el flujo de ejecución automatizada se divide en tres fases asíncronas ciegas:
 
 #### 1. Intercepción y Captura Perimetral de bajo nivel (Nivel 0)
+
 Cuando Apache APISIX o un microservicio cloud sufren un pánico de conexión, la sonda nativa en **Rust de eBPF** (compilada de forma segura mediante **Maturin** e integrada vía **PyO3**) intercepta la llamada del sistema operativo `sys_enter_connect` directamente sobre los registros físicos de la CPU en Ring 0. Los bytes crudos se empaquetan en una estructura homogeneizada `SocketPanicEvent` y se escupen sin bloqueos (*lock-free*) a un canal **RingBuffer compartido de 16MB en RAM** hacia el espacio de usuario (Ring 3).
 
 #### 2. Transmisión Columnar Criptográfica y Reducción de Tokens (Nivel 2)
 Al absorber el string del pánico (`ERR_KERNEL_SOCKET_PANIC`), el repositorio vectorial **`ForensicVectorRepository`** activa su pipeline distribuido MapReduce:
 * **Fase Map (Cifrado Paralelo):** Un pool de hilos de hardware (`ThreadPoolExecutor`) cifra la metadata del incidente en paralelo real usando el algoritmo simétrico **AES-GCM de 256 bits**.
-* **Fase Reduce (Data Flyweight):** En lugar de instanciar miles de diccionarios JSON en el Heap saturando al Garbage Collector de Python, los arrays continuos de datos se empaquetan directamente en memoria continua de C mediante **`pyarrow.RecordBatch`** [2026-09-13]. Esto reduce drásticamente la latencia de volcado en disco hacia LanceDB.
+* **Fase Reduce (Data Flyweight):** En lugar de instanciar miles de diccionarios JSON en el Heap saturando al Garbage Collector de Python, los arrays continuos de datos se empaquetan directamente en memoria continua de C mediante **`pyarrow.RecordBatch`**. Esto reduce drásticamente la latencia de volcado en disco hacia LanceDB.
 * **MLOps Token Audit:** La metadata se pre-calcula de forma analítica utilizando el tokenizador oficial de OpenAI **`tiktoken`** sobre la codificación `cl100k_base`, compactando las llaves estructurales a un volumen mínimo récord de **190 tokens por lote**, optimizando los costos de almacenamiento y red de forma contundente.
 
 #### 3. Orquestación SAGA y Conmutación de Estados Polimórficos
@@ -163,6 +164,7 @@ Si el proveedor principal de la nube (ej. AWS Bedrock) sufre una desconexión po
 * **CortexLlmDynamicFactory:** Factoría encargada de abstraer el aprovisionamiento de infraestructura IaC vía **Pulumi** (Mapeo automático de políticas IAM y variables de entorno del `config.toml` físico), entregando el motor cognitivo listo y parametrizado.
 
 * **Auditoría MLOps de Tokens (`tiktoken`):** Sincronización asíncrona estricta (`async/await`) en Python 3.12 con soporte integrado para medir el volumen neto de tokens emitidos en tiempo real utilizando la codificación Byte-Pair Encoding (BPE) oficial de `cl100k_base`.
+
 
 ### 2. Patrones de Diseño, Persistencia Vectorial & Cloud
 
@@ -465,7 +467,7 @@ Este diagrama modela la topología física, la segregación perimetral y el plan
 
 *   **Apache APISIX Gateway:** Actúa como el balanceador de carga de alto rendimiento y punto único de entrada al clúster para el tráfico externo bajo el host virtualizado corporativo `ai-ops.platform.local`. 
 
-*   **🦀 Sonda Nativa de Observabilidad eBPF (Ring 0 Kernel Probe):** Interceptor físico inyectado directamente en el Kernel space del sistema operativo Linux mediante el framework **Aya en Rust** [video-games]. Se cuelga de forma atómica de la llamada del sistema `sys_enter_connect` o pánicos de comunicación TCP [video-games]. Escupe las alertas de caídas de sockets sin bloqueos (*lock-free*) a un canal **RingBuffer compartido de 16MB en RAM** y las transmite vía bindeos **PyO3-Log** hacia el plano de control en Python en tiempo constante $\mathcal{O}(1)$, mitigando por completo el overhead en la CPU [video-games].
+*   **🦀 Sonda Nativa de Observabilidad eBPF (Ring 0 Kernel Probe):** Interceptor físico inyectado directamente en el Kernel space del sistema operativo Linux mediante el framework **Aya en Rust**. Se cuelga de forma atómica de la llamada del sistema `sys_enter_connect` o pánicos de comunicación TCP. Escupe las alertas de caídas de sockets sin bloqueos (*lock-free*) a un canal **RingBuffer compartido de 16MB en RAM** y las transmite vía bindeos **PyO3-Log** hacia el plano de control en Python en tiempo constante $\mathcal{O}(1)$, mitigando por completo el overhead en la CPU.
 
 *   **🔒 Capa de Seguridad Perimetral Inyectada:** El acceso a la infraestructura está estrictamente blindado mediante tres plugins criptográficos nativos ejecutados en el Edge de APISIX:
 
@@ -478,44 +480,41 @@ Este diagrama modela la topología física, la segregación perimetral y el plan
 
 #### 🧠 2. Entorno de Ejecución del Plano de Control (Namespace: ai-ops-control-plane)
 
-*   **Segmento de Red Dedicado (CIDR: 172.16.10.0/24):** Aísla de forma estricta los componentes lógicos de la IA del tráfico ordinario de la aplicación [video-games].
+*   **Segmento de Red Dedicado (CIDR: 172.16.10.0/24):** Aísla de forma estricta los componentes lógicos de la IA del tráfico ordinario de la aplicación.
 
-*   **AgentSupervisor Daemon:** Nodo core asíncrono que corre la máquina de estados del grafo agéntico (`LangGraph`). Centraliza el control y es el responsable directo de gobernar la transacción distribuida **Saga** [video-games].
+*   **AgentSupervisor Daemon:** Nodo core asíncrono que corre la máquina de estados del grafo agéntico (`LangGraph`). Centraliza el control y es el responsable directo de gobernar la transacción distribuida **Saga** .
 
-*   **`CortexLLMEngine` & `CortexLlmDynamicFactory`:** Motor cognitivo polimórfico de orquestación multi-cloud que gestiona sockets Keep-Alive persistentes en la caché RAM [video-games]. Realiza enrutamientos en $\mathcal{O}(1)$ abstrayendo los endpoints físicos de Amazon Bedrock (Amazon Nova), Azure OpenAI y Google Vertex AI de forma 100% externa desde el archivo centralizado `config.toml`, delegando la E/S bloqueante de red en un Thread Pool de hardware [video-games].
+*   **`CortexLLMEngine` & `CortexLlmDynamicFactory`:** Motor cognitivo polimórfico de orquestación multi-cloud que gestiona sockets Keep-Alive persistentes en la caché RAM. Realiza enrutamientos en $\mathcal{O}(1)$ abstrayendo los endpoints físicos de Amazon Bedrock (Amazon Nova), Azure OpenAI y Google Vertex AI de forma 100% externa desde el archivo centralizado `config.toml`, delegando la E/S bloqueante de red en un Thread Pool de hardware.
 
-*   **Enjambre de Workers Especialistas:** Contenedores independientes (`secops-guard`, `sre-debugger`, `finops-optimizer`) estructurados bajo el formato de prompts minificados para el control de consumo en USD de tokens. El SRE Agent posee canales prioritarios para inyectar configuraciones y *hot-reloads* directos sobre los Upstreams de **Apache APISIX** tras una reparación exitosa [video-games].
+*   **Enjambre de Workers Especialistas:** Contenedores independientes (`secops-guard`, `sre-debugger`, `finops-optimizer`) estructurados bajo el formato de prompts minificados para el control de consumo en USD de tokens. El SRE Agent posee canales prioritarios para inyectar configuraciones y *hot-reloads* directos sobre los Upstreams de **Apache APISIX** tras una reparación exitosa.
 
-*   **LanceDB Persistent Store (Data Flyweight Mesh):** Almacén empotrado de memoria RAG de largo plazo estructurado bajo el formato de memoria columnar continua **Apache Arrow (`.lance`)** [video-games]. Los lotes vectoriales se transfieren directo a nivel de bytes en Rust mediante **`pyarrow.RecordBatch`** libres de allocations de basura intermedios en el Heap [video-games]. Las firmas de los incidentes se indexan mediante la compresión **Product Quantization (PQ)** y el grafo **HNSW**, el cual está gobernado por el mecanismo *Hybrid Index Gate*: opera en modo `FLAT` instantáneo para micro-lotes de pruebas y conmuta de forma automática al grafo vectorizado al cruzar el umbral de **256 filas** en disco, ejecutando consultas en menos de **~17 ms** [video-games].
+*   **LanceDB Persistent Store (Data Flyweight Mesh):** Almacén empotrado de memoria RAG de largo plazo estructurado bajo el formato de memoria columnar continua **Apache Arrow (`.lance`)**. Los lotes vectoriales se transfieren directo a nivel de bytes en Rust mediante **`pyarrow.RecordBatch`** libres de allocations de basura intermedios en el Heap. Las firmas de los incidentes se indexan mediante la compresión **Product Quantization (PQ)** y el grafo **HNSW**, el cual está gobernado por el mecanismo *Hybrid Index Gate*: opera en modo `FLAT` instantáneo para micro-lotes de pruebas y conmuta de forma automática al grafo vectorizado al cruzar el umbral de **256 filas** en disco, ejecutando consultas en menos de **~17 ms**.
 
 
 #### 🔬 4. Nodo de Aislamiento Experimental (Validation Sandbox Jailer)
-
 
 *   **SandboxController API & Firecracker WarmPool Manager:** Componentes del plano de control que administran un búfer circular libre de bloqueos (*Lock-Free Ring Buffer*) para el aprovisionamiento inmediato de laboratorios protegidos.
 
 *   **Micro-VM Sandbox Minimalista:** Entorno virtual seguro y efímero que se inicializa en **~5 milisegundos** clonando un sistema de archivos base de solo lectura (`rootfs.ext4`). El **SRE Agent** despliega de forma aislada la propuesta de parche aquí para validar su comportamiento real antes de propagar cambios a producción.
 
 
-
 #### 📦 5. Plano de Cargas Vivas y Balanceo Multi-Tier (Namespace: production-workloads)
 
-*   **Segmento de Red de Producción (CIDR: 172.16.20.0/24):** Zona reservada exclusivamente para la ejecución de servicios del negocio [video-games].
+*   **Segmento de Red de Producción (CIDR: 172.16.20.0/24):** Zona reservada exclusivamente para la ejecución de servicios del negocio.
 
 *   **Balanceo Interno Kube-Proxy:** Utiliza IPTables/IPVS para exponer los servicios de red internos de Kubernetes. `frontend-service` actúa en Capa 4 distribuyendo el tráfico web de forma equitativa (*Round-Robin*) entre dos réplicas redundantes (`Replica A` y `Replica B`), garantizando alta disponibilidad.
 
 *   **Universal Kubernetes Pod [Caja Gris Agnóstica Cortocircuito]:** Representa el backend observado del sistema. Es una auténtica caja negra inmutable para el plano de control (el cual puede albergar cualquier microservicio, API REST o App genérica). Está definido estrictamente por sus límites de hardware (`limits.cpu/memory`), variables de entorno cifradas de un objeto `Secret` y un volumen de persistencia elástico de datos (`pvc-app-storage` de 50Gi), quedando completamente aislado de la exposición pública de internet.
 
 
-
 #### 🔄 6. Resiliencia y Mecanismo Automático de Retorno de Versión (Saga Rollback)
 
 
-*   Si la solución de infraestructura diseñada por la IA supera los filtros normativos de **Pydantic** y el umbral de riesgo de OWASP, se propaga mediante la **Pulumi Automation API** [video-games]. Sin embargo, si el clúster real la rechaza o si el endpoint de la nube remota sufre un *TLS Handshake Timeout*, el `CortexLLMEngine` aborta la transacción distribuida de la Saga de inmediato [video-games].
+*   Si la solución de infraestructura diseñada por la IA supera los filtros normativos de **Pydantic** y el umbral de riesgo de OWASP, se propaga mediante la **Pulumi Automation API**. Sin embargo, si el clúster real la rechaza o si el endpoint de la nube remota sufre un *TLS Handshake Timeout*, el `CortexLLMEngine` aborta la transacción distribuida de la Saga de inmediato.
 
-*   **Backward Pipeline Transaccional:** El orquestador congela el flujo, invierte instantáneamente los hilos de hardware de su bitácora en la RAM y ejecuta los rollbacks compensatorios en **~2.16 ms**, purgando los bloques `.lance` corruptos de LanceDB [video-games]. 
+*   **Backward Pipeline Transaccional:** El orquestador congela el flujo, invierte instantáneamente los hilos de hardware de su bitácora en la RAM y ejecuta los rollbacks compensatorios en **~2.16 ms**, purgando los bloques `.lance` corruptos de LanceDB. 
 
-*   **Saga Fallback Gate:** De forma simultánea y transparente para el usuario, el motor de inferencia activa su compuerta de contingencia mutando su estado operativo original en caliente hacia el motor de **Ollama local**, procesando la mitigación perimetral de forma ininterrumpida y resguardando la bitácora inmutable final bajo el escudo simétrico de **AES-GCM de 256 bits con un Nonce único de 12 bytes**, haciéndola invulnerable a manipulaciones físicas en disco [video-games].
+*   **Saga Fallback Gate:** De forma simultánea y transparente para el usuario, el motor de inferencia activa su compuerta de contingencia mutando su estado operativo original en caliente hacia el motor de **Ollama local**, procesando la mitigación perimetral de forma ininterrumpida y resguardando la bitácora inmutable final bajo el escudo simétrico de **AES-GCM de 256 bits con un Nonce único de 12 bytes**, haciéndola invulnerable a manipulaciones físicas en disco .
 
 ---
 
@@ -781,9 +780,18 @@ topology_name = "aws-eks-enterprise-hardened"
 Cada uno de los bloques de este manifiesto de producción es absorbido directamente hacia la memoria del proceso a través de la directiva unificada `ProjectConfigurationRegistry.load_registry()`, gobernando las acciones de mitigación asíncronas de manera ciega:
 
 *   **`[infrastructure].cloud_provider` e `[iac_pulumi]`**: Controlan la orquestación elástica del aprovisionamiento. La factoría mapea el string dinámico de la nube destino (ej. `"aws"`) y conmuta de forma automática en $\mathcal{O}(1)$ para inyectar las topologías del bloque `[providers.aws]` y los metadatos de tipado de `[blueprints.aws]` hacia la **Pulumi Automation API**, aislando por completo la lógica del negocio frente a los CLI tradicionales de shell.
+
 *   **`[security.hardening]` (Shield Perimetral)**: Sella el candado criptográfico del **`ForensicVectorRepository`** consumiendo la cadena `hmac_signature_key`. El adaptador columnar inicializa el motor simétrico **AES-GCM de 256 bits**, enmascara las trazas usando el catálogo de expresiones regulares de `regex_patterns` (`"password"`, `"bearer"`) y normaliza el flujo compactando las claves en arrays continuos de **`pyarrow.RecordBatch`** que fijan el baseline óptimo de **190 tokens por lote**.
+
 *   **`[ai]` y `[ai_engines.*]` (Gobernanza del AI Driver)**: Regula el canal de comunicación del **`CortexLLMEngine`**. El motor lee de forma paramétrica el campo principal `provider`. Si se detecta un pánico TLS o un fallo de handshake en la nube activa, el orquestador **SAGA** detona el pipeline inverso de rollbacks automáticos en **~2.16 ms** y conmuta el estado de inferencia hacia el bloque alternativo de contingencia local de Ollama en microsegundos y sin usar condicionales rígidos.
+
 *   **`[moa.agents.*]` y `[orchestration]` (Temporal Multi-Agent Workers)**: Define la identidad atómica y las colas de tareas organizadas en **Ray** para el enjambre de agentes concurrentes, coordinando los límites de ejecución (`activity_schedule_to_close_seconds`) y los veredictos de seguridad antes de autorizar cualquier mutación física sobre la infraestructura viva.
+
+
+> ⚠️ **MANDATORIO DE GOBERNANZA OPERATIVA (HARDENING MULTI-CLOUD):**
+> Antes de autorizar cualquier promoción de código o parche IaC hacia la rama principal (`main`) en los entornos de Staging o Producción, **es obligatorio ejecutar y pasar en limpio la suite de Pytest de forma individual sobre cada uno de los proveedores Cloud de destino** (`aws`, `azure` y `gcp`).
+>
+> Al operar bajo estados polimórficos, cada backend de nube remota posee particularidades críticas en la negociación de handshakes TLS y cuotas de Rate-Limiting. Certificar el pipeline de failover de la SAGA en hardware real mitiga al 100% los parpadeos de conexión perimetrales y asegura la inmutabilidad de los registros en LanceDB antes de liberar la telemetría en producción.
 
 ---
 
@@ -932,6 +940,7 @@ PASSED
 
 A continuación se detallan las seis fronteras arquitectónicas implementadas, justificando los componentes tecnológicos seleccionados y sus resultados reales validados en las suites de QA:
 
+
 ### 1. 🚦 Connection Pool Persistence & Actor Cluster Routing
 
 * **Qué se cambió y qué se usó:** Se eliminaron por completo los servidores HTTP tradicionales planos (`FastAPI/Uvicorn`), inyectando de forma nativa el motor de **Ray [default]** acoplado a un pool persistente no bloqueante de **`httpx.AsyncClient`** en el constructor global.
@@ -939,6 +948,7 @@ A continuación se detallan las seis fronteras arquitectónicas implementadas, j
 * **Para qué:** Para transformar los flujos web síncronos en un **Enjambre de Actores Concurrentes Distribuidos** que procesan la telemetría en paralelo absoluto, manteniendo canales TCP Keep-Alive calientes en la memoria RAM.
 
 * **Resultado Real:** Erradicación total del overhead de handshakes repetitivos. Las comunicaciones asíncronas entre los hilos del enjambre Mixture-of-Agents colapsaron a niveles récord: apenas **0.66 ms** para el agente de red (`net-worker`) y **0.55 ms** para el agente Zero-Trust (`sec-worker`).
+
 
 ### 🗄️ 2. Eficiencia en Capa de Persistencia Criptográfica (MLOps Hardening)
 
@@ -956,6 +966,7 @@ A continuación se detallan las seis fronteras arquitectónicas implementadas, j
 
 * **Resultado Real:** Aunque la inferencia lineal en frío consume **2094.07 ms** de operaciones matriciales en el hardware, al despacharse concurrentemente, el tiempo medio neto real por alerta disminuyó drásticamente, logrando un Throughput global elástico de la ráfaga de 10 ingestas de **648.14 ms** (solo **64.81 ms** netos por hilo de CPU).
 
+
 ### 🔀 4. State-Driven Distributed SAGA Core
 
 * **Qué se cambió y qué se usó:** Se inyectó el SDK oficial de **Temporalio** en el arnés de dependencias, acoplándolo al flujo de trabajo del supervisor de orquestación asíncrona (`supervisor.py`).
@@ -964,6 +975,7 @@ A continuación se detallan las seis fronteras arquitectónicas implementadas, j
 
 * **Resultado Real:** Resiliencia absoluta del plano de control. El motor drena la tormenta de incidentes de forma asíncrona y, si el clúster sufre un colapso intermedio, revierte los cambios en caliente garantizando la consistencia del estado global.
 
+
 ### ⚙️ 5. Type-Registry Dynamic Dispatch ($\mathcal{O}(1)$ Engine)
 
 * **Qué se cambió y qué se usó:** Se refactoreó de raíz el componente de infraestructura cognitiva (`cortexLlm.py`), eliminando las estructuras de control `if/else` recursivas e integrando un registro de estrategias basado en funciones lambda. Se sincronizó el motor con las llaves unificadas del **`ProjectConfigurationRegistry`**.
@@ -971,6 +983,7 @@ A continuación se detallan las seis fronteras arquitectónicas implementadas, j
 * **Para qué:** Para erradicar el acoplamiento rígido de código (*Hardcode*) y permitir que el proveedor analítico (`ollama`/`openai`/`virtual`) y sus prompts blindados se despachen en tiempo constante $\mathcal{O}(1)$ de forma inmutable.
 
 * **Resultado Real:** Eliminación total del pánico sintáctico `AttributeError`. El motor resuelve el endpoint y el modelo cuantizado de forma secuencial limpia en la RAM, logrando procesar **100 dictámenes analíticos simultáneos en solo 35 ms** durante las pruebas de estrés.
+
 
 ### ☁️ 6. Agnostic Abstract Cloud Factory (Pulumi CRD Mesh)
 
@@ -1021,7 +1034,6 @@ Durante el ciclo de vida de la transacción distribuida de la SAGA y el volcado 
 *   **AES-GCM 256-bit Governance Encryptor:** En lugar de persistir las bitácoras del árbol de pensamiento (ToT) y el *Monte Carlo Tree Search* (MCTS) en texto plano, el repositorio vectorial **`ForensicVectorRepository`** inicializa la llave simétrica robusta derivada de la constante `hmac_signature_key`. Cifra el bloque completo generando un **Nonce único de 12 bytes** por registro, haciendo las tablas inmutables e inmunes ante intrusiones físicas en el almacenamiento.
 
 *   **Rust eBPF RingBuffer Bridge:** El submódulo perimetral **`cortex_ebpf_probe`** (compilado nativamente mediante **Maturin** e integrado vía **PyO3**) aísla las trazas sensibles del Kernel space. Abre un búfer circular de 16MB bloqueado en RAM y utiliza macros no bloqueantes de la biblioteca `log` para transmitir strings estructurados JSON sanitizados directo al espacio de usuario, impidiendo la manipulación de cabeceras de red en Ring 0.
-
 
 
 ## 📊 Vademécum Ampliado de Expresiones PromQL (QA Performance)
